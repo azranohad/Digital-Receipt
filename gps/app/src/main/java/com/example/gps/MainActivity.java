@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(MainActivity.this
                             , new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 44);
                     System.out.println("denied");
-                    //getLocation();
 
                 }
             }
