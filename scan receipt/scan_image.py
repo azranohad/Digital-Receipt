@@ -1,5 +1,4 @@
 import cv2
-
 import receiptData
 import preProcessReceipt
 try:
@@ -15,7 +14,7 @@ custom_config = r'-l eng --oem 3 --psm 6'
 preprocess = preProcessReceipt.PreProcessReceipt()
 rd = receiptData.ReceiptData
 
-image = preprocess.gussianBlurProcess(cv2.imread('train.png'), 5)
+image = preprocess.gussianBlurProcess(cv2.imread('train_real3.jpeg'), 5)
 rec_train = pytesseract.image_to_string(image, config=custom_config)
 print(rec_train)
 rd.create_receipt_data_from_text(rec_train)
