@@ -5,12 +5,11 @@ from enum import Enum
 import dateutil.parser
 from scipy.spatial.distance import hamming
 import re
-import datefinder
 import fnmatch
 
 
 class ReceiptData():
-    def __init__(self, config, raw):
+    def __init__(self, config, lines):
         self.buyerID = None
         self.company = None
         self.date = None
@@ -20,7 +19,7 @@ class ReceiptData():
         self.methodOfPayment = methodsOfPayment
         self.CreditCardID = None
         self.receiptID = None
-        self.lines = raw
+        self.lines = lines
         self.config = config
 
     def create_receipt_data_from_text(text):
@@ -48,20 +47,16 @@ class ReceiptData():
         """
 
         for line in self.lines:
-            match = list(datefinder.find_dates(line))
-            date_str = ''
-            if len(match) > 0:  # We"re happy with the first match for now
-                # validate date using the dateutil library (see: https://dateutil.readthedocs.io/)
-                for date in match:
-                    date_str = date.date()
-                    # date_str = match.group(1)
-                # date_str = date_str.replace(" ", "")
-                # try:
-                #     dateutil.parser.parse(date_str)
-                # except ValueError:
-                #     return None
+            match = re.search(self.config.date_format, line)
+            if match:  # We"re happy with the first match for now
+                date_str = match.group(1)
+                date_str = date_str.replace(" ", "")
+                try:
+                    dateutil.parser.parse(date_str)
+                except ValueError:
+                    return None
 
-        return date_str
+                self.date = date_str
     def fuzzy_find(self, keyword, accuracy=0.6):
         """
         :param keyword: str
