@@ -1,9 +1,6 @@
 import datetime
-from collections import namedtuple
-import pytesseract as pts
 from fuzzywuzzy import fuzz
 import re
-import fnmatch
 
 from DataObjects.receiptData import itemObject
 
@@ -22,15 +19,17 @@ class parseReceiptDataService():
                 except Exception as e:
                     pass
 
-        lines = raw_string.splitlines()
 
 
 
         return None
 
     def create_list_of_markets(self):
+        import os
+        current_path = os.getcwd()
+        path = current_path[:current_path.find("Digital-Receipt") + 16] + "DB\shop_list.csv"
         market_dict = {}
-        market_file = open(r"C:\Users\azran\PycharmProjects\Digital-Receipt\DB\shop_list.csv", 'r')
+        market_file = open(path, 'r')
         for line in market_file:
             name_of_market = []
             name_of_market.append(line)

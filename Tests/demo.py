@@ -24,6 +24,8 @@ class demo_1():
 
 
 if __name__ == '__main__':
-    path = r"C:\Users\azran\PycharmProjects\Digital-Receipt\Tests\image_for_test"
+    import os
+    current_path = os.getcwd()
+    path = current_path[:current_path.find("Digital-Receipt") + 16] + "Tests\image_for_test"
     demo1 = demo_1()
     demo1.scan_images_from_path(path)
