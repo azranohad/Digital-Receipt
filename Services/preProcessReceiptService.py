@@ -1,20 +1,16 @@
-import math
-
 import cv2
 import numpy as np
-from scipy.ndimage import interpolation as inter
 import matplotlib.pyplot as plt
 
 
 
-class PreProcessReceipt:
+class preProcessReceiptService:
     def __init__(self):
         self.kernel = np.ones((1, 1), np.uint8)
         self.fx = 1.2
         self.fy = 1.2
 
-    @staticmethod
-    def unwarp(img, src, dst):
+    def unwarp(self, img, src, dst):
         """
         Args:
             img: np.array
@@ -47,8 +43,7 @@ class PreProcessReceipt:
         """
         return un_warped
 
-    @staticmethod
-    def detectReceiptEdges(preproc, image):
+    def detectReceiptEdges(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
         kernel = np.ones((5, 5), np.float32) / 15
         filtered = cv2.filter2D(gray, -1, kernel)
@@ -99,8 +94,8 @@ class PreProcessReceipt:
 
         #destination_corners = np.float32([(0, h - 1), (w - 1, h - 1),  (0, 0), (w - 1, 0)])
         destination_corners = np.float32([(0, 0), (w - 1, 0), (0, h - 1), (w - 1, h - 1)])
-        un_warped = preproc.unwarp(image, np.float32(corners), destination_corners)
-        cv2.imwrite('unwarp.jpg', un_warped)
+        un_warped = self.unwarp(image, np.float32(corners), destination_corners)
+        cv2.imwrite('../../scan receipt/unwarp.jpg', un_warped)
         cropped = un_warped[0:h, 0:w]
         cv2.imwrite('crop.jpg', cropped)
         f, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 8))
@@ -111,8 +106,8 @@ class PreProcessReceipt:
         plt.show()
         return cropped
 
-    def gussianBlurProcess(self, img, size):
-        img = self.detectReceiptEdges(self, img)
+    def gussianBlurProcess(self, img):
+        #img = self.detectReceiptEdges(img)
         #cv2.imwrite("Result.jpg", dst)
         img = cv2.resize(img, None, fx=self.fx, fy=self.fy, interpolation=cv2.INTER_CUBIC)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -129,3 +124,5 @@ class PreProcessReceipt:
         img = cv2.bilateralFilter(img, 5, 75, 75)
         img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
         return img
+
+

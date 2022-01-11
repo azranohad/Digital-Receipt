@@ -42,5 +42,5 @@ def out_to_csv_by_object_from_txt_file_in_directory(directory_path, name_of_obje
 if __name__ == '__main__':
 
     path = r"C:\Users\azran\PycharmProjects\DataBaseDigitalReceipt\DataBaseReceiptImages\0325updated.task2train(626p)"
-    output_path = r"/DataBase"
+    output_path = r"\DataBase"
     out_to_csv_by_object_from_txt_file_in_directory(path, ": ", "shop_list", output_path)
