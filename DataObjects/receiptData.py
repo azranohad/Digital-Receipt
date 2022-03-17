@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 
 
@@ -15,6 +16,7 @@ class receiptData():
 
 class itemObject():
     def __init__(self, itemDescription, price, amount=None, itemID=None):
+        self.date_buy = None
         self.itemID = itemID
         self.itemDescription = itemDescription
         self.amount = amount

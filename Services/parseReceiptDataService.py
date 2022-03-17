@@ -1,6 +1,7 @@
 import datetime
 from fuzzywuzzy import fuzz
 import re
+from dateutil.parser import parse
 
 from DataObjects.receiptData import itemObject
 
@@ -8,20 +9,97 @@ STOPWORDS = ['summe', 'visa', 'mwst', 'brutto', 'netto', 'zahlen']
 
 
 class parseReceiptDataService():
+    def is_date(self, string, fuzzy=False):
+        """
+        Return whether the string can be interpreted as a date.
 
-    def parse_date(self, raw_string, lines):
+        :param string: str, string to check for date
+        :param fuzzy: bool, ignore unknown tokens in string if True
+        """
+        if string is None or len(string) > 12:
+            return False
+        try:
+            parse(string, fuzzy=fuzzy)
+            return True
 
-        for fmt in ['%d/%m/%Y', '%b %d %Y', '%d %b %Y', '%d/%m/%y', '%d.%m.%y', '%Y-%m-%d', '%d.%m.%y %H:%M', '%d.%m.%Y', '%Y/%m/%d']:
+        except ValueError:
+            return False
+    def date_three_words(self, date_string):
+        for fmt in ['%d %b %Y', '%d %b %y', '%b %d %Y', '%b %d %y', '%Y %b %d', '%y %b %d', '%Y %d %b', '%y %d %b']:
+            try:
+                new_purch_date = datetime.datetime.strptime(date_string, fmt).strftime('%d/%m/%Y')
+                new_purch_date
+                return new_purch_date
+            except Exception as e:
+                pass
+    def date_two_words(self, date_string):
+        for fmt in ['%b %Y', '%b %y', '%y %b', '%Y %b']:
+            try:
+                new_purch_date = datetime.datetime.strptime(date_string, fmt).strftime('%m/%Y')
+                return new_purch_date
+            except Exception as e:
+                pass
+
+        for fmt in ['%d %b', '%b %d']:
+            try:
+                new_purch_date = datetime.datetime.strptime(date_string, fmt).strftime('%d/%m')
+                return new_purch_date
+            except Exception as e:
+                pass
+
+    #unit test to check the
+    def is_month(self, month):
+        if 1 <= int(month) <= 12:
+            return True
+        return False
+    def is_year(self, year):
+        if 2000 <= int(year) <= datetime.date.today().year:
+            return True
+        return False
+    def is_day(self, day):
+        if 1 <= int(day) <= 31:
+            return True
+        return False
+
+    def parse_date(self, raw_string_receipt):
+        raw_string = raw_string_receipt.replace('\n', " ")
+        new_purch_date = ''
+        count_continuity = 0
+        for iteration, fmt in enumerate(['%d/%m/%Y', '%d/%m/%y', '%d.%m.%y', '%d-%m-%y', '%d-%m-%Y', '%d.%m.%Y', '%Y/%m/%d','%d%m%Y']):
             for substr in raw_string.split(' '):
                 try:
                     new_purch_date = datetime.datetime.strptime(substr, fmt).strftime('%d/%m/%Y')
-                    return new_purch_date
+                    date_split = new_purch_date.split('/')
+                    if self.is_day(date_split[0]) and self.is_month(date_split[1]) and self.is_year(date_split[2]):
+                        return new_purch_date
+                    else:
+                        continue
                 except Exception as e:
                     pass
 
 
+                if iteration == 0:
+                    if self.is_date(substr):
+                        if count_continuity == 0:
+                            new_purch_date = substr
+                        else:
+                            new_purch_date = new_purch_date + ' ' + substr
 
+                        count_continuity += 1
+                        if count_continuity == 3:
+                            date_parse = self.date_three_words(new_purch_date)
+                            if self.is_date(date_parse):
+                                date_split = date_parse.split('/')
+                                if self.is_day(date_split[0]) and self.is_month(date_split[1]) and self.is_year(date_split[2]):
+                                    return date_parse
+                    else:
+                        if count_continuity == 2:
+                            date_parse = self.date_three_words(new_purch_date)
+                            if self.is_date(date_parse):
+                                return date_parse
 
+                        count_continuity = 0
+                        new_purch_date = ''
         return None
 
     def create_list_of_markets(self):
@@ -44,7 +122,6 @@ class parseReceiptDataService():
             for nickname in market_dict[market]:
                 if fuzz.token_sort_ratio(line, nickname) >= accuracy:
                     return market
-
         return None
 
     def parse_market(self, lines):
@@ -52,7 +129,7 @@ class parseReceiptDataService():
         :return: str
             Parses market data
         """
-        for int_accuracy in range(10, 6, -1):
+        for int_accuracy in range(10, 4, -1):
             accuracy = int_accuracy * 10.0
             for line in lines:
                 market = self.search_market_in_line(accuracy, line)
@@ -66,11 +143,11 @@ class parseReceiptDataService():
                        'Receipt No', 'Order No', 'INV NO', 'Tax Inovice']
         for pre_word in word_pre_id:
             for line in lines:
-                if fuzz.partial_ratio(pre_word.lower(), line) >= 90:
-                    words = re.split(', | : | - | ;', line)
+                if fuzz.partial_ratio(pre_word.lower(), line) >= 75:
+                    words = re.split(', |:|-|; ', line)
 
                     for i in range(len(words)):
-                        if fuzz.partial_ratio(pre_word.lower(), words[i]) >= 90:
+                        if fuzz.partial_ratio(pre_word.lower(), words[i]) >= 75:
                             if (i+1) < len(words):
                                 return words[i+1]
         return None
