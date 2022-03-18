@@ -2,13 +2,14 @@ import datetime
 from fuzzywuzzy import fuzz
 import re
 from dateutil.parser import parse
-
 from DataObjects.receiptData import itemObject
+from singleton_decorator import singleton
 
 STOPWORDS = ['summe', 'visa', 'mwst', 'brutto', 'netto', 'zahlen']
 
 
-class parseReceiptDataService():
+@singleton
+class parseReceiptDataService:
     def is_date(self, string, fuzzy=False):
         """
         Return whether the string can be interpreted as a date.
