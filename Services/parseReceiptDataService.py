@@ -153,13 +153,20 @@ class parseReceiptDataService:
                                 return words[i+1]
         return None
 
+    def parse_items(self, test_str, market_name):
+        if market_name == 'PAPPARICH BMC':
+            return self.parse_items_papparich(test_str)
+        elif market_name == 'YIN MA (M) SDN.BHD':
+            return self.parse_items_YinMa(test_str)
+        else:
+            return self.parse_items_papparich(test_str)
 
-    def parse_items(self, test_str):
-        #item_list = []
+    def parse_items_papparich(self, test_str):
+        # item_list = []
         amout_num = None
         debug = False
         max_height = 5
-        #test_str = pts.image_to_data(page, config=r'-l eng --oem 3 --psm 6')
+        # test_str = pts.image_to_data(page, config=r'-l eng --oem 3 --psm 6')
         lines = test_str.split('\n')
         items = []
         total_price = 0
@@ -223,9 +230,10 @@ class parseReceiptDataService:
                 else:
                     if line_number > 0:
                         if self.blacklist(line_value):
-                            if 'total' in line_value.lower() :
-                                total_price = line_number
-                                break
+                            if 'total' in line_value.lower():
+                                if 'subtotal' not in line_value.lower() and 'sub-total' not in line_value.lower():
+                                    total_price = line_number
+                                    break
                                 # items.append(
                                 #     # {
                                 #     # 'label': line_value,
@@ -234,7 +242,13 @@ class parseReceiptDataService:
                                 # )
                             elif 'cash' in line_value.lower():
                                 total_price = line_number
-                                #continue
+                                # continue
+                            elif 'srv chg' in line_value.lower():
+                                line_value = suggestion
+                                line_number = 0
+                                block_top = top
+                                is_valid = True
+                                continue
                             else:
                                 items.append(
                                     # {
@@ -247,7 +261,7 @@ class parseReceiptDataService:
                         block_top = top
                         is_valid = True
                     else:
-                        if block_top + max_height*height > top:
+                        if block_top + max_height * height > top:
                             if debug:
                                 print('Appending ' + str(suggestion))
                             line_value += ' ' + suggestion
@@ -257,10 +271,10 @@ class parseReceiptDataService:
                             line_value = suggestion
                             block_top = top
             if is_valid:
-                valid_top = min(valid_top, round(block_top-height))
-                valid_bot = max(valid_bot, round(top+2*height))
-                valid_r = max(valid_r, round(left+1.5*width))
-                valid_l = min(valid_l, left-width)
+                valid_top = min(valid_top, round(block_top - height))
+                valid_bot = max(valid_bot, round(top + 2 * height))
+                valid_r = max(valid_r, round(left + 1.5 * width))
+                valid_l = min(valid_l, left - width)
             if is_done:
                 if line_number > 0:
                     items.append(
@@ -271,7 +285,126 @@ class parseReceiptDataService:
                     )
                 break
         # the first article is usually rubbish, hence we drop it
-        return items, total_price#, (0, 0, page.size[0], valid_bot)
+        return items, total_price  # , (0, 0, page.size[0], valid_bot)
+
+    def parse_items_YinMa(self, test_str):
+        # item_list = []
+        amout_num = None
+        debug = False
+        max_height = 5
+        # test_str = pts.image_to_data(page, config=r'-l eng --oem 3 --psm 6')
+        lines = test_str.split('\n')
+        items = []
+        total_price = 0
+        price_position = 0
+        line_value = ''
+        line_number = 0
+        block_top = 0
+        block_left = 0
+        valid_top = 999999
+        valid_bot = 0
+        valid_r = 0
+        valid_l = 999999
+        is_done = False
+        for line in lines[1:]:
+            is_valid = False
+            tokens = line.split('\t')
+            if not tokens[-1]:
+                continue
+            line_num = int(tokens[4])
+            word_num = tokens[5]
+            left = int(tokens[6])
+            top = int(tokens[7])
+            width = int(tokens[8])
+            height = int(tokens[9])
+            word = self.clean_word(tokens[-1])
+            if debug:
+                print(word)
+            if self.is_number(word.replace(',', '.')):
+                new_num = float(word.replace(',', '.'))
+                if self.is_decimal(new_num):
+                    if self.is_decimal(line_number):
+                        if left > price_position:
+                            price_position = left
+                            if debug:
+                                print(str(line_number) + ' gets replaced by ' + str(new_num))
+                            line_number = new_num
+                            is_valid = True
+                    else:
+                        line_number = new_num
+                        is_valid = True
+                # else:
+                #    amout_num = new_num
+
+            else:
+                # if word.isalpha() and len(word) > self.min_length:
+                #     suggestions = self.dict_ger.suggest(word)
+                #     if len(suggestions) > 0:
+                #         suggestion = suggestions[0]
+                #     else:
+                #         suggestion = word
+                # else:
+                suggestion = word
+                if suggestion.lower() in STOPWORDS:
+                    # print('Stop word ' + suggestion)
+                    suggestion = 'grand_total'
+                    is_done = True
+                    # break
+                if line_value == '':
+                    line_value = suggestion
+                    block_top = top
+                else:
+                    if line_number > 0:
+                        if self.blacklist(line_value):
+                            if 'total' in line_value.lower():
+                                total_price = line_number
+                                break
+                                # items.append(
+                                #     # {
+                                #     # 'label': line_value,
+                                #     # 'price': line_number}
+                                #     itemObject(line_value, line_number, amout_num, 'total')
+                                # )
+                            elif 'cash' in line_value.lower():
+                                total_price = line_number
+                                # continue
+                            else:
+                                items.append(
+                                    # {
+                                    # 'label': line_value,
+                                    # 'price': line_number}
+                                    itemObject(line_value, line_number)
+                                )
+                        line_value = suggestion
+                        line_number = 0
+                        block_top = top
+                        is_valid = True
+                    else:
+                        if block_top + max_height * height > top:
+                            if debug:
+                                print('Appending ' + str(suggestion))
+                            line_value += ' ' + suggestion
+                        else:
+                            if debug:
+                                print(line_value + ' gets replaced by ' + suggestion)
+                            line_value = suggestion
+                            block_top = top
+            if is_valid:
+                valid_top = min(valid_top, round(block_top - height))
+                valid_bot = max(valid_bot, round(top + 2 * height))
+                valid_r = max(valid_r, round(left + 1.5 * width))
+                valid_l = min(valid_l, left - width)
+            if is_done:
+                if line_number > 0:
+                    items.append(
+                        # {
+                        # 'label': line_value,
+                        # 'price': line_number}
+                        itemObject(line_value, line_number, amout_num)
+                    )
+                break
+        # the first article is usually rubbish, hence we drop it
+        return items, total_price  # , (0, 0, page.size[0], valid_bot)
 
 
     def is_number(self, in_str):

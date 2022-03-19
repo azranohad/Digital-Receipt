@@ -31,7 +31,7 @@ class scanReceiptManager:
         receipt_data_object.date = self.parse_receipt_data_service.parse_date(raw_string_receipt)
         receipt_data_object.market = self.parse_receipt_data_service.parse_market(lines)
         receipt_data_object.receiptID = self.parse_receipt_data_service.parse_receipt_id(lines)
-        receipt_data_object.itemsList, receipt_data_object.total_price = self.parse_receipt_data_service.parse_items(raw_data_receipt)
+        receipt_data_object.itemsList, receipt_data_object.total_price = self.parse_receipt_data_service.parse_items(raw_data_receipt, receipt_data_object.market)
 
     def receipt_data_to_db(self, name_of_receipt, receipt_data_object):
         receipt_dict = {
