@@ -31,7 +31,7 @@ class scanReceiptManager():
         self.receipt_data.date = self.parse_receipt_data_service.parse_date(raw_string_receipt, lines)
         self.receipt_data.market = self.parse_receipt_data_service.parse_market(lines)
         self.receipt_data.receiptID = self.parse_receipt_data_service.parse_receipt_id(lines)
-        self.receipt_data.itemsList, self.receipt_data.total_price = self.parse_receipt_data_service.parse_items(raw_data_receipt)
+        self.receipt_data.itemsList, self.receipt_data.total_price = self.parse_receipt_data_service.parse_items(raw_data_receipt,self.receipt_data.market)
 
 
 
