@@ -1,4 +1,7 @@
 import datetime
+from datetime import datetime as datatime1
+
+import dateutil
 from fuzzywuzzy import fuzz
 import re
 from dateutil.parser import parse
@@ -432,4 +435,34 @@ class parseReceiptDataService:
             return False
         return True
 
+    def items_to_map(self,  receipt_data_object):
+        items = {}
+        i = 1
+        for item in receipt_data_object.itemsList:
+            items[str(i) + ". " + item.itemDescription] = item.price
+            i += 1
+        return items
 
+    def receipt_data_to_db(self, name_of_receipt, image_id, receipt_data_object):
+        items = {}
+        if len(receipt_data_object.itemsList) != 0:
+            items = self.items_to_map(receipt_data_object)
+        receipt_dict = {
+            "_id": str(image_id),
+            "scan_date": dateutil.parser.parse(datatime1.now().strftime('%d/%m/%Y %H:%M:%S')),
+            "name_for_client": str(name_of_receipt),
+            "receiptID": str(receipt_data_object.receiptID),
+            "date_of_receipt": dateutil.parser.parse(receipt_data_object.date),
+            "market": str(receipt_data_object.market),
+            "items": items,
+            "total_price": float(receipt_data_object.total_price),
+        }
+        return receipt_dict
+
+    def receipt_data_to_app(self, name_of_receipt, receipt_data_object):
+        receipt_dict = {
+            "_id": str(name_of_receipt),
+            "date": str(receipt_data_object.date),
+            "market": str(receipt_data_object.market),
+        }
+        return receipt_dict
