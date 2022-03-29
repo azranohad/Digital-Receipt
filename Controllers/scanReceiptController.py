@@ -1,6 +1,7 @@
 from flask import Flask, request
 from Features.Scan_receipt.scanReceiptManager import scanReceiptManager
 from Repositories.receiptRepository import receiptRepository
+from Repositories.serverLocalRepository import serverLocalRepository
 
 app = Flask(__name__)
 
@@ -30,7 +31,7 @@ def get_receipt_by_date():
 def get_markets_receipt():
     user_details = request.form['user_name']
     receipt_repository = receiptRepository()
-    return receipt_repository.get_values_by_key(user_details, "market")@app.route('/get_markets', methods=['GET'])
+    return receipt_repository.get_values_by_key(user_details, "market")
 
 
 @app.route('/get_receipt_by_market', methods=['GET'])
@@ -46,4 +47,15 @@ def get_receipt_by_name():
     name_search = request.form['name_search']
     receipt_repository = receiptRepository()
     return receipt_repository.get_receipt_by_name(user_details, name_search)
+
+@app.route('/get_image_receipt', methods=['GET'])
+def get_image_receipt():
+    user_details = request.form['user_name']
+    image_name = request.form['image_name']
+    server_local_repository = serverLocalRepository()
+    return server_local_repository.get_image_receipt(user_details, image_name)
+
+
+
+
 app.run()
