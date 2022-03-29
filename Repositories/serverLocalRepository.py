@@ -1,8 +1,14 @@
+import base64
 import os
+import io
+from shutil import copyfileobj
+from tempfile import NamedTemporaryFile
 
+import cv2
+from flask import send_file
 from singleton_decorator import singleton
 import re
-
+from PIL import Image
 from systemFiles.logger.loggerService import loggerService
 
 
@@ -29,3 +35,14 @@ class serverLocalRepository:
         image_file.save(path_image)
 
         return path_image
+
+    def get_image_receipt(self, user_details, image_name):
+        path_image = os.path.join(self.get_user_folder_scan_receipt(user_details), image_name)
+        tempFileObj = NamedTemporaryFile(mode='w+b', suffix='jpg')
+        pilImage = open(path_image, 'rb')
+        copyfileobj(pilImage, tempFileObj)
+        pilImage.close()
+        tempFileObj.seek(0, 0)
+        response = send_file(tempFileObj, as_attachment=True, attachment_filename=image_name)
+        return response
+

@@ -46,6 +46,6 @@ class receiptRepository:
         receipt_list = {}
         for name in list_of_names.values():
             if name.__contains__(name_search):
-                #add all receipt with this name
+                #add all receipt that contains this name
                 receipt_list.update(self.get_receipt_by_value(user_details, "name_for_client", name))
         return receipt_list
