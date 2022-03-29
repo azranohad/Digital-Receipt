@@ -1,9 +1,9 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from singleton_decorator import singleton
 
-
-
+@singleton
 class preProcessReceiptService:
     def __init__(self):
         self.kernel = np.ones((1, 1), np.uint8)
