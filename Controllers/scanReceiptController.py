@@ -56,6 +56,10 @@ def get_image_receipt():
     return server_local_repository.get_image_receipt(user_details, image_name)
 
 
+@app.route('/get_receipt_store', methods=['GET'])
+def get_image_receipt():
+    check = 3
+    return check
 
 
-app.run()
+app.run(threaded=True)
