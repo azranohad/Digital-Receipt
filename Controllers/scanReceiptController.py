@@ -57,7 +57,7 @@ def get_image_receipt():
 
 
 @app.route('/get_receipt_store', methods=['GET'])
-def get_image_receipt():
+def get_receipt_store():
     check = 3
     return check
 
