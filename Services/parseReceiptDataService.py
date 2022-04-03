@@ -5,7 +5,7 @@ import dateutil
 from fuzzywuzzy import fuzz
 import re
 from dateutil.parser import parse
-from DataObjects.receiptData import itemObject
+from DataObjects.receiptDataObject import itemObject
 from singleton_decorator import singleton
 
 STOPWORDS = ['summe', 'visa', 'mwst', 'brutto', 'netto', 'zahlen']

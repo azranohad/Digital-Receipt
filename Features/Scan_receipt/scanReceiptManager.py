@@ -1,4 +1,4 @@
-from DataObjects.receiptData import receiptData
+from DataObjects.receiptDataObject import receiptData
 from Repositories.mongoDbRepository import mongoDbRepository
 from Repositories.receiptRepository import receiptRepository
 from Repositories.serverLocalRepository import serverLocalRepository

@@ -1,7 +1,6 @@
 from singleton_decorator import singleton
 from Repositories.mongoDbRepository import mongoDbRepository
 from datetime import datetime
-# import datetime
 
 @singleton
 class receiptRepository:
