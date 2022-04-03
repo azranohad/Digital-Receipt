@@ -1,7 +1,7 @@
 {
-  "devToolsPort": 19003,
-  "expoServerPort": 19001,
-  "packagerPort": 19001,
+  "devToolsPort": 19002,
+  "expoServerPort": 19000,
+  "packagerPort": 19000,
   "packagerPid": null,
   "expoServerNgrokUrl": "https://f5-vqp.anonymous.finalprojectapp.exp.direct",
   "packagerNgrokUrl": "https://packager.f5-vqp.anonymous.finalprojectapp.exp.direct",
