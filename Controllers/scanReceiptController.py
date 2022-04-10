@@ -10,8 +10,8 @@ logger = loggerService()
 scan_receipt_manager = scanReceiptManager()
 receipt_repository = receiptRepository()
 server_local_repository = serverLocalRepository()
-
-
+#convertPDF = convertReceiptToPDFService()
+#convertPDF.convertToPDF()
 @scan_receipt_api.route('/scan_receipt', methods=['POST'])
 def scan_receipt():
     image_file = request.files['image']
