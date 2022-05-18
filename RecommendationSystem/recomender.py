@@ -6,7 +6,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 # load data
-data = pd.read_csv("Dataset.csv")
+data = pd.read_csv("walmart.csv")
 
 print("data.head(4)" + data.head(4))
 
