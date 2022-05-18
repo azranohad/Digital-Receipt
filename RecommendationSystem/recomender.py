@@ -10,14 +10,38 @@ data = pd.read_csv("Dataset.csv")
 
 print("data.head(4)" + data.head(4))
 
+# add R column - the number of days that have passed since the purchase until today
+today = date.today()
+# dd/mm/YY
+d1 = today.strftime("%d/%m/%Y")
+x = d1.split("/")
+day= x[0]
+month=x[1]
+year=x[2]
+
+R=[]
+for i in tqdm(range(len(data))):
+# for i in range(100):
+  c = data.date[i].split("/")
+  f_date = date(int(year), int(month), int(day))
+  l_date = date(int(c[2]), int(c[1]), int(c[0]))
+  delta = f_date - l_date
+  R.append(delta.days)
+
+
+data["R"] = R
+
+print(data.head(5))
+
 # liron - check if need to change
 def score(r,f,m):
-    return((r*100)+(f*10)+m)
+    return(10*r+f+m)
 
-# add column "RFM score" in the data
+# add column "RFM score" in the data - liron add F כשיהיה מעמית
 RFM_score=[]
 for i in tqdm(range(len(data))):
-    RFM_score.append(score(data.R[i],data.F[i],data.M[i]))
+    RFM_score.append(score(data.R[i],data.price[i],data.price[i]))
+    # RFM_score.append(score(data.R[i],data.F[i],data.M[i]))
 
 data["RFM_score"] = RFM_score
 
@@ -25,11 +49,12 @@ data.isnull().values.any()
 
 temp_main = data
 temp = data[["RFM_score"]]
-
+t = temp.fillna(0)
 temp.head(2)
 
 # divide the data into 5 set according to kmeans alg
-kmeans = KMeans(n_clusters=5,random_state=0).fit(temp)
+kmeans = KMeans(n_clusters=5,random_state=0)
+kmeans.fit(t)
 
 labels = kmeans.labels_
 
@@ -48,11 +73,11 @@ class2 = temp_main[temp_main["label"]==2]
 class3 = temp_main[temp_main["label"]==3]
 class4 = temp_main[temp_main["label"]==4]
 
-temp_0 = class0[["Gender","Age"]]
-temp_1 = class1[["Gender","Age"]]
-temp_2 = class2[["Gender","Age"]]
-temp_3 = class3[["Gender","Age"]]
-temp_4 = class4[["Gender","Age"]]
+temp_0 = class0[["gender","age"]]
+temp_1 = class1[["gender","age"]]
+temp_2 = class2[["gender","age"]]
+temp_3 = class3[["gender","age"]]
+temp_4 = class4[["gender","age"]]
 
 def convert(df):
     gender = {"male":0,"female":1}
@@ -68,10 +93,10 @@ chk_4 = convert(temp_4).values
 
 # divide each set into 3 sub-set by kmeans
 kmeans0 = KMeans(n_clusters=3,random_state=0).fit(chk_0)
-kmeans1 = KMeans(n_clusters=3,random_state=0).fit(chk_1)
+kmeans1 = KMeans(n_clusters=2,random_state=0).fit(chk_1)
 kmeans2 = KMeans(n_clusters=3,random_state=0).fit(chk_2) 
 kmeans3 = KMeans(n_clusters=3,random_state=0).fit(chk_3)
-kmeans4 = KMeans(n_clusters=3,random_state=0).fit(chk_4)
+kmeans4 = KMeans(n_clusters=1,random_state=0).fit(chk_4)
 
 class0["label"] = kmeans0.labels_
 class1["label"] = kmeans1.labels_
@@ -106,7 +131,9 @@ def topitem(df):
     PId = list(sub_0a.ProductId.unique())
     store = {}
     for i in tqdm(range(len(PId))):
-        store[PId[i]] = df[df['ProductId']==PId[i]].Quantity.sum()
+        # store[PId[i]] = df[df['ProductId']==PId[i]].Quantity.sum()
+        store[PId[i]] = df[df['productId']==PId[i]].F.sum()
+
    
     max_value = max(store.values())
     top_item = [key for key in store.keys() if store[key]==max_value]
@@ -150,18 +177,18 @@ ids_4c = sub_4c.MemberId.unique()
 
 # create a list of our conditions
 conditions = [
-    (data['MemberId'].isin(ids_1a)),
-    (data['MemberId'].isin(ids_1b)),
-    (data['MemberId'].isin(ids_1c)),
-    (data['MemberId'].isin(ids_2a)),
-    (data['MemberId'].isin(ids_2b)),
-    (data['MemberId'].isin(ids_2c)),
-    (data['MemberId'].isin(ids_3a)),
-    (data['MemberId'].isin(ids_3b)),
-    (data['MemberId'].isin(ids_3c)),
-    (data['MemberId'].isin(ids_4a)),
-    (data['MemberId'].isin(ids_4b)),
-    (data['MemberId'].isin(ids_4c)),
+    (data['userId'].isin(ids_1a)),
+    (data['userId'].isin(ids_1b)),
+    (data['userId'].isin(ids_1c)),
+    (data['userId'].isin(ids_2a)),
+    (data['userId'].isin(ids_2b)),
+    (data['userId'].isin(ids_2c)),
+    (data['userId'].isin(ids_3a)),
+    (data['userId'].isin(ids_3b)),
+    (data['userId'].isin(ids_3c)),
+    (data['userId'].isin(ids_4a)),
+    (data['userId'].isin(ids_4b)),
+    (data['userId'].isin(ids_4c)),
     ]
 
 # create a list of the values we want to assign for each condition
@@ -182,7 +209,7 @@ print(data.head(100))
 # print(sub_topitem[v])
 
 def getReccomendById(idd):
-  member = data[data['MemberId'] == idd]
+  member = data[data['userId'] == idd]
   print("fun")
   valOfClass = (member['class'].values)[0]
   print(sub_topitem[valOfClass])
