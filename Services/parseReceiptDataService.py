@@ -456,6 +456,7 @@ class parseReceiptDataService:
             "market": str(receipt_data_object.market),
             "items": items,
             "total_price": float(receipt_data_object.total_price),
+            "is_digital_receipt": False
         }
         return receipt_dict
 
