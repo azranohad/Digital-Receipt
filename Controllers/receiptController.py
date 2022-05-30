@@ -1,8 +1,8 @@
 from flask import request, Blueprint
-from Features.Scan_receipt.scanReceiptManager import scanReceiptManager
+from Features.ScanReceipt.scanReceiptManager import scanReceiptManager
 from Repositories.receiptRepository import receiptRepository
 from Repositories.serverLocalRepository import serverLocalRepository
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 scan_receipt_api = Blueprint('scan_receipt_api', __name__)
 
@@ -15,7 +15,7 @@ server_local_repository = serverLocalRepository()
 @scan_receipt_api.route('/scan_receipt', methods=['POST'])
 def scan_receipt():
     image_file = request.files['image']
-    user_details = request.form['user_name']
+    user_details = request.get_json(force=True)['user_key']
     logger.print_api_message("received scan receipt post request | user: " + user_details)
 
     #temporary solution --> default name from app
@@ -26,18 +26,18 @@ def scan_receipt():
 @scan_receipt_api.route('/get_receipt_by_date', methods=['GET'])
 def get_receipt_by_date():
 
-    user_details = request.form['user_name']
+    user_details = request.get_json(force=True)['user_key']
     logger.print_api_message("received get_receipt_by_date request | user: " + user_details)
 
-    from_date = request.form['from_date']
-    to_date = request.form['to_date']
+    from_date = request.get_json(force=True)['from_date']
+    to_date = request.get_json(force=True)['to_date']
 
     scan_receipt_repository = receiptRepository()
     return scan_receipt_repository.get_by_date(user_details, from_date, to_date)
 
 @scan_receipt_api.route('/get_markets', methods=['GET'])
 def get_markets_receipt():
-    user_details = request.form['user_name']
+    user_details = request.get_json(force=True)['user_key']
     logger.print_api_message("received get_markets request | user: " + user_details)
 
     return receipt_repository.get_values_by_key(user_details, "market")
@@ -45,24 +45,24 @@ def get_markets_receipt():
 
 @scan_receipt_api.route('/get_receipt_by_market', methods=['GET'])
 def get_receipt_by_market():
-    user_details = request.form['user_name']
-    market = request.form['market']
+    user_details = request.get_json(force=True)['user_key']
+    market = request.get_json(force=True)['market']
     logger.print_api_message("received get_receipt_by_market request | user: " + user_details + "| market:" + market)
 
     return receipt_repository.get_receipt_by_value(user_details, "market", market)
 
 @scan_receipt_api.route('/get_receipt_by_name', methods=['GET'])
 def get_receipt_by_name():
-    user_details = request.form['user_name']
-    name_search = request.form['name_search']
+    user_details = request.get_json(force=True)['user_key']
+    name_search = request.get_json(force=True)['name_search']
     logger.print_api_message("received get_receipt_by_name request | user: " + user_details + "| name receipt:" + name_search)
 
     return receipt_repository.get_receipt_by_name(user_details, name_search)
 
 @scan_receipt_api.route('/get_image_receipt', methods=['GET'])
 def get_image_receipt():
-    user_details = request.form['user_name']
-    image_name = request.form['image_name']
+    user_details = request.get_json(force=True)['user_key']
+    image_name = request.get_json(force=True)['image_name']
     logger.print_api_message("received get_image_receipt request | user: " + user_details + "| image name:" + image_name)
 
     return server_local_repository.get_image_receipt(user_details, image_name)
