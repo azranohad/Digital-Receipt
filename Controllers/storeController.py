@@ -1,7 +1,5 @@
 from flask import request, Blueprint
-import json
 
-from sqlalchemy import true
 
 from Services.parseStoreDataService import parseStoreDataService
 
