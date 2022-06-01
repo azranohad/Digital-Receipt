@@ -4,7 +4,7 @@ from datetime import datetime
 import uuid
 
 
-from Features.ScanReceipt.scanReceiptManager import scanReceiptManager
+from Server.Features.ScanReceipt.scanReceiptManager import scanReceiptManager
 
 
 def image_from_path(path):

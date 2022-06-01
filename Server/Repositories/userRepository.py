@@ -1,6 +1,4 @@
-import datetime
-from singleton_decorator import singleton
-from Repositories.mongoDbRepository import mongoDbRepository
+from Server.Repositories.mongoDbRepository import mongoDbRepository
 from SystemFiles.logger.loggerService import loggerService
 
 
@@ -42,10 +40,10 @@ class userRepository:
                 match_list = self.get_users_by_generic_value(item, request[item])
                 if len(match_list) > 0:
                     self.logger.print_info_message("the user is exist, user_key: " + match_list[0])
-                    return True, match_list[0]
+                    return match_list[0]
         self.logger.print_info_message("the user is not exist")
 
-        return False, "the user is not exist"
+        return "the user is not exist"
 
     def get_users_by_generic_value(self, field, value):
         users_collection = self.get_collection()
@@ -68,7 +66,7 @@ class userRepository:
         if result.acknowledged:
             self.logger.print_event("usersRepository | user: " + user_key + " deleted from data base")
         self.logger.print_severe_message("usersRepository | delete user from Data Base Failed. user key: " + user_key)
-
+        return str(result.acknowledged)
 
     def user_name_exist(self, user_name_hash):
         cursor = self.get_collection().find({'user_name': user_name_hash})
@@ -88,9 +86,9 @@ class userRepository:
         if len(cursor_list) > 0:
             user_details_map = cursor_list[0]
             if password_hash.__eq__(user_details_map['password']):
-                return True, user_details_map['user_key']
+                return user_details_map['user_key']
 
         # the user name or password incorrect
         self.logger.print_info_message('the user name or password incorrect')
-        return False, 'the user name or password incorrect'
+        return 'the user name or password incorrect'
 

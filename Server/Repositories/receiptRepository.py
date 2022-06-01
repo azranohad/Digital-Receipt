@@ -1,5 +1,4 @@
-from singleton_decorator import singleton
-from Repositories.mongoDbRepository import mongoDbRepository
+from Server.Repositories.mongoDbRepository import mongoDbRepository
 from datetime import datetime
 
 # @singleton
@@ -58,6 +57,15 @@ class receiptRepository:
         cursor = collection.find({key: value, "user_key": user_key})
         receipt_list = {}
         for record in cursor:
+            receipt_list[record['_id']] = record
+        return receipt_list
+
+    def get_all_receipts_user(self, user_key):
+        collection = self.mongoDb_repository.get_client()["Receipts"]['receipts']
+        cursor_sort = collection.find({"user_key": user_key}).sort("date_of_receipt", 1)
+
+        receipt_list = {}
+        for record in cursor_sort:
             receipt_list[record['_id']] = record
         return receipt_list
 

@@ -1,5 +1,5 @@
 from flask import request, Blueprint
-from Repositories.locationRepository import locationRepository
+from Server.Repositories.locationRepository import locationRepository
 from SystemFiles.logger.loggerService import loggerService
 
 #'/location_controller'

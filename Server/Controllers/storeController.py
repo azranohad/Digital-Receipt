@@ -1,7 +1,7 @@
 from flask import request, Blueprint
 
 
-from Services.parseStoreDataService import parseStoreDataService
+from Server.Services.parseStoreDataService import parseStoreDataService
 
 store_api = Blueprint('store_api', __name__)
 convertPDF = parseStoreDataService()
