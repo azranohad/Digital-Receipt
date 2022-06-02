@@ -1,10 +1,10 @@
-from DataObjects.receiptDataObject import receiptData
-from Repositories.mongoDbRepository import mongoDbRepository
-from Repositories.receiptRepository import receiptRepository
-from Repositories.serverLocalRepository import serverLocalRepository
-from Services.parseReceiptDataService import parseReceiptDataService
-from Services.preProcessReceiptService import preProcessReceiptService
-from Services.scanImageService import scanImageService
+from Server.DataObjects.receiptDataObject import receiptData
+from Server.Repositories.mongoDbRepository import mongoDbRepository
+from Server.Repositories.receiptRepository import receiptRepository
+from Server.Repositories.serverLocalRepository import serverLocalRepository
+from Server.Services.parseReceiptDataService import parseReceiptDataService
+from Server.Services.preProcessReceiptService import preProcessReceiptService
+from Server.Services.scanImageService import scanImageService
 from singleton_decorator import singleton
 import uuid
 import cv2

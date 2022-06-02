@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 
-from Repositories.userRepository import userRepository
-from Services.userService import userService
+from Server.Repositories.userRepository import userRepository
+from Server.Services.userService import userService
 from SystemFiles.logger.loggerService import loggerService
 
 logger = loggerService()
@@ -21,7 +21,7 @@ def create_user():
     user_key = user_service.create_user(phone_number, request.get_json(force=True))
     #user_key[0] --> key
 
-    return user_key[1]
+    return user_key
 
 
 @users_api.route('/update_user', methods=['POST'])
@@ -56,7 +56,7 @@ def add_user_name_and_password():
     return user_service.add_user_name_and_password(user_key, user_name, password)
 
 
-@users_api.route('/change_password', methods=['POST'])
+@users_api.route('/change_password', methods=['PATCH'])
 def change_password():
     user_name = request.get_json(force=True)['user_name']
     last_password = request.get_json(force=True)['last_password']
@@ -73,4 +73,7 @@ def login_user_name_and_password():
     return user_service.login_user_name_and_password(user_name, password)
 
 
-
+@users_api.route('/delete_user', methods=['DELETE'])
+def delete_user():
+    user_key = request.get_json(force=True)['user_key']
+    return user_service.delete_user(user_key)

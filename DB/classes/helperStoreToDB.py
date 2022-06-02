@@ -7,8 +7,8 @@ import dateutil
 from dateutil.parser import parse
 import names
 
-from Repositories.receiptRepository import receiptRepository
-from Services.userService import userService
+from Server.Repositories.receiptRepository import receiptRepository
+from Server.Services.userService import userService
 
 
 def create_product_dict(row, store_name):

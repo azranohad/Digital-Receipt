@@ -1,9 +1,8 @@
-from Services.storeLocationService import storeLocationService
-import csv
+from Server.Services.storeLocationService import storeLocationService
 import geopy.distance
 from singleton_decorator import singleton
 from pymongo import GEO2D
-from Repositories.mongoDbRepository import mongoDbRepository
+from Server.Repositories.mongoDbRepository import mongoDbRepository
 from SystemFiles.logger.loggerService import loggerService
 
 

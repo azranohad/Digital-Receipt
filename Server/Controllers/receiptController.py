@@ -1,7 +1,7 @@
 from flask import request, Blueprint
-from Features.ScanReceipt.scanReceiptManager import scanReceiptManager
-from Repositories.receiptRepository import receiptRepository
-from Repositories.serverLocalRepository import serverLocalRepository
+from Server.Features.ScanReceipt.scanReceiptManager import scanReceiptManager
+from Server.Repositories.receiptRepository import receiptRepository
+from Server.Repositories.serverLocalRepository import serverLocalRepository
 from SystemFiles.logger.loggerService import loggerService
 
 scan_receipt_api = Blueprint('scan_receipt_api', __name__)
@@ -50,6 +50,14 @@ def get_receipt_by_market():
     logger.print_api_message("received get_receipt_by_market request | user: " + user_details + "| market:" + market)
 
     return receipt_repository.get_receipt_by_value(user_details, "market", market)
+
+
+@scan_receipt_api.route('/get_all_receipts_user', methods=['GET'])
+def get_all_receipts_user():
+    user_key = request.get_json(force=True)['user_key']
+    logger.print_api_message("received get_all_receipts_user request | user: " + user_key)
+
+    return receipt_repository.get_all_receipts_user(user_key)
 
 @scan_receipt_api.route('/get_receipt_by_name', methods=['GET'])
 def get_receipt_by_name():

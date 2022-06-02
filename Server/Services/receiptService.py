@@ -1,4 +1,4 @@
-from Repositories.receiptRepository import receiptRepository
+from Server.Repositories.receiptRepository import receiptRepository
 from SystemFiles.logger.loggerService import loggerService
 
 # @singleton
