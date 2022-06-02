@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { View, Text, ImageBackground, Button, TextInput, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
 // import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
-import DatePicker from 'react-native-datepicker';
+// import DatePicker from 'react-native-datepicker';
 
 const SignupScreen = () => {
     const [username, setUsername] = useState('');
@@ -31,43 +31,43 @@ const SignupScreen = () => {
         }
       }
     
-      const datePicker = () => {
-      return (<DatePicker
-          style={styles.datePickerStyle}
-          date={birthday}
-          mode="date"
-          placeholder="select date"
-          format="DD/MM/YYYY"
-          minDate="01-01-1900"
-          maxDate="01-01-2000"
-          confirmBtnText="Confirm"
-          cancelBtnText="Cancel"
-        //   customStyles={{
-        //     dateIcon: {
-        //       position: 'absolute',
-        //       right: -5,
-        //       top: 4,
-        //       marginLeft: 0,
-        //     },
-        //     dateInput: {
-        //       borderColor : "gray",
-        //       alignItems: "flex-start",
-        //       borderWidth: 0,
-        //       borderBottomWidth: 1,
-        //     },
-        //     placeholderText: {
-        //       fontSize: 17,
-        //       color: "gray"
-        //     },
-        //     dateText: {
-        //       fontSize: 17,
-        //     }
-        //   }}
-          onDateChange={(birthday) => {
-            setBirthday(birthday);
-          }}
-        />
-      )};
+      // const datePicker = () => {
+      // return (<DatePicker
+      //     style={styles.datePickerStyle}
+      //     date={birthday}
+      //     mode="date"
+      //     placeholder="select date"
+      //     format="DD/MM/YYYY"
+      //     minDate="01-01-1900"
+      //     maxDate="01-01-2000"
+      //     confirmBtnText="Confirm"
+      //     cancelBtnText="Cancel"
+      //   //   customStyles={{
+      //   //     dateIcon: {
+      //   //       position: 'absolute',
+      //   //       right: -5,
+      //   //       top: 4,
+      //   //       marginLeft: 0,
+      //   //     },
+      //   //     dateInput: {
+      //   //       borderColor : "gray",
+      //   //       alignItems: "flex-start",
+      //   //       borderWidth: 0,
+      //   //       borderBottomWidth: 1,
+      //   //     },
+      //   //     placeholderText: {
+      //   //       fontSize: 17,
+      //   //       color: "gray"
+      //   //     },
+      //   //     dateText: {
+      //   //       fontSize: 17,
+      //   //     }
+      //   //   }}
+      //     onDateChange={(birthday) => {
+      //       setBirthday(birthday);
+      //     }}
+      //   />
+      // )};
       
     async function sendDetails() {
         // fetch("http://192.168.43.254:3000/userName", {

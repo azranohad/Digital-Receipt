@@ -69,6 +69,7 @@ def change_password():
 def login_user_name_and_password():
     user_name = request.get_json(force=True)['user_name']
     password = request.get_json(force=True)['password']
+    print(user_name,password)
     return user_service.login_user_name_and_password(user_name, password)
 
 
