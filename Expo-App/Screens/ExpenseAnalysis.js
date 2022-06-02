@@ -29,7 +29,7 @@ import {
   StackedBarChart,
 } from 'react-native-chart-kit';
 import { useState } from 'react';
-import style from 'react-native-datepicker/style';
+//import style from 'react-native-datepicker/style';
 
 const getData = async () => {
   try {

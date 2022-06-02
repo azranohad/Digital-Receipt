@@ -4,7 +4,7 @@ import io
 from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
 
-import cv2
+# import cv2
 from flask import send_file
 from singleton_decorator import singleton
 import re
