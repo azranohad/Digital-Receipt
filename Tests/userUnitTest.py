@@ -1,5 +1,6 @@
-from Server.Services import userService
 import unittest
+
+from Server.Services.userService import userService
 
 user_service = userService()
 

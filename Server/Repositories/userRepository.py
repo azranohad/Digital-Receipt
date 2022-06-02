@@ -65,8 +65,9 @@ class userRepository:
         result = self.get_collection().delete_one({'user_key': user_key})
         if result.acknowledged:
             self.logger.print_event("usersRepository | user: " + user_key + " deleted from data base")
-        self.logger.print_severe_message("usersRepository | delete user from Data Base Failed. user key: " + user_key)
-        return str(result.acknowledged)
+        else:
+            self.logger.print_severe_message("usersRepository | delete user from Data Base Failed. user key: " + user_key)
+        return "user deleted from data base"
 
     def user_name_exist(self, user_name_hash):
         cursor = self.get_collection().find({'user_name': user_name_hash})
@@ -89,6 +90,6 @@ class userRepository:
                 return user_details_map['user_key']
 
         # the user name or password incorrect
-        self.logger.print_info_message('the user name or password incorrect')
+        self.logger.print_info_message('usersRepository | the user name or password incorrect')
         return 'the user name or password incorrect'
 

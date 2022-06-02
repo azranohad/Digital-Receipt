@@ -14,6 +14,8 @@ STOPWORDS = ['summe', 'visa', 'mwst', 'brutto', 'netto', 'zahlen']
 
 @singleton
 class parseReceiptDataService:
+    def __init__(self):
+        self.market_dict = self.create_list_of_markets()
     def is_date(self, string, fuzzy=False):
         """
         Return whether the string can be interpreted as a date.
@@ -122,9 +124,8 @@ class parseReceiptDataService:
 
 
     def search_market_in_line(self, accuracy, line):
-        market_dict = self.create_list_of_markets()
-        for market in market_dict:
-            for nickname in market_dict[market]:
+        for market in self.market_dict:
+            for nickname in  self.market_dict[market]:
                 if fuzz.token_sort_ratio(line, nickname) >= accuracy:
                     return market
         return None

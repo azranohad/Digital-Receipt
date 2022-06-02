@@ -15,7 +15,7 @@ server_local_repository = serverLocalRepository()
 @scan_receipt_api.route('/scan_receipt', methods=['POST'])
 def scan_receipt():
     image_file = request.files['image']
-    user_details = request.get_json(force=True)['user_key']
+    user_details = request.form['user_key']
     logger.print_api_message("received scan receipt post request | user: " + user_details)
 
     #temporary solution --> default name from app
