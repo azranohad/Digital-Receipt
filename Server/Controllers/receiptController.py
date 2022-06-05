@@ -10,22 +10,27 @@ logger = loggerService()
 scan_receipt_manager = scanReceiptManager()
 receipt_repository = receiptRepository()
 server_local_repository = serverLocalRepository()
-#convertPDF = convertReceiptToPDFService()
-#convertPDF.convertToPDF()
+
 @scan_receipt_api.route('/scan_receipt', methods=['POST'])
 def scan_receipt():
     image_file = request.files['image']
-    user_details = request.form['user_key']
-    logger.print_api_message("received scan receipt post request | user: " + user_details)
+    user_key = request.form['user_key']
+    image_name = request.form['image_name']
+    logger.print_api_message("received scan receipt post request | user: " + user_key)
 
-    #temporary solution --> default name from app
-    response = scan_receipt_manager.action_scan_receipt_manager(image_file, user_details, "default name")
+    response = scan_receipt_manager.action_scan_receipt_manager(image_file, user_key, image_name)
     return response
+
+
+@scan_receipt_api.route('/update_receipt', methods=['PATCH'])
+def update_credit():
+    user_key = request.get_json(force=True)['user_key']
+    receipt_id = request.get_json(force=True)['credit_id']
+    logger.print_api_message("received update receipt post request | user: " + user_key + ", receipt id: " + receipt_id)
 
 
 @scan_receipt_api.route('/get_receipt_by_date', methods=['GET'])
 def get_receipt_by_date():
-
     user_details = request.get_json(force=True)['user_key']
     logger.print_api_message("received get_receipt_by_date request | user: " + user_details)
 
@@ -34,6 +39,7 @@ def get_receipt_by_date():
 
     scan_receipt_repository = receiptRepository()
     return scan_receipt_repository.get_by_date(user_details, from_date, to_date)
+
 
 @scan_receipt_api.route('/get_markets', methods=['GET'])
 def get_markets_receipt():
@@ -59,6 +65,7 @@ def get_all_receipts_user():
 
     return receipt_repository.get_all_receipts_user(user_key)
 
+
 @scan_receipt_api.route('/get_receipt_by_name', methods=['GET'])
 def get_receipt_by_name():
     user_details = request.get_json(force=True)['user_key']
@@ -67,13 +74,14 @@ def get_receipt_by_name():
 
     return receipt_repository.get_receipt_by_name(user_details, name_search)
 
+
 @scan_receipt_api.route('/get_image_receipt', methods=['GET'])
 def get_image_receipt():
     user_details = request.get_json(force=True)['user_key']
     image_name = request.get_json(force=True)['image_name']
     logger.print_api_message("received get_image_receipt request | user: " + user_details + "| image name:" + image_name)
 
-    return server_local_repository.get_image_receipt(user_details, image_name)
+    return server_local_repository.get_image(user_details, image_name)
 
 
 

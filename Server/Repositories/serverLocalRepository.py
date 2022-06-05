@@ -1,14 +1,11 @@
-import base64
 import os
-import io
+import re
 from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
 
-# import cv2
 from flask import send_file
 from singleton_decorator import singleton
-import re
-from PIL import Image
+
 from SystemFiles.logger.loggerService import loggerService
 
 
@@ -18,9 +15,9 @@ class serverLocalRepository:
     def __init__(self):
         self.logger = loggerService()
 
-    def get_user_folder_scan_receipt(self, user_details):
+    def get_user_folder_scans(self, user_details):
         project_folder = re.split(r'.(?=Digital-Receipt)', os.getcwd())[0]
-        base_path = os.path.join(project_folder, 'Digital-Receipt', 'DB')
+        base_path = os.path.join(project_folder, 'Digital-Receipt', 'DB', 'scanStorage')
         path = os.path.join(base_path, user_details)
 
         if os.path.exists(path):
@@ -30,14 +27,14 @@ class serverLocalRepository:
             self.logger.print_event("serverLocalRepository | User directory '% s' scan receipt folder created" % user_details)
         return path
 
-    def save_receipt_image(self, image_file, image_name, user_details):
-        path_image = os.path.join(self.get_user_folder_scan_receipt(user_details), image_name)
+    def save_scan_image(self, image_file, image_name, user_details):
+        path_image = os.path.join(self.get_user_folder_scans(user_details), image_name)
         image_file.save(path_image)
 
         return path_image
 
-    def get_image_receipt(self, user_details, image_name):
-        path_image = os.path.join(self.get_user_folder_scan_receipt(user_details), image_name)
+    def get_image(self, user_details, image_name):
+        path_image = os.path.join(self.get_user_folder_scans(user_details), image_name)
         tempFileObj = NamedTemporaryFile(mode='w+b', suffix='jpg')
         pilImage = open(path_image, 'rb')
         copyfileobj(pilImage, tempFileObj)
