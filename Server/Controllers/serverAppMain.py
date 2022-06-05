@@ -9,7 +9,6 @@ from locationController import location_api
 app = Flask(__name__)
 
 
-
 #list of controller
 app.register_blueprint(scan_receipt_api, url_prefix='/scan_receipt_controller')
 app.register_blueprint(store_api, url_prefix='/store_controller')
