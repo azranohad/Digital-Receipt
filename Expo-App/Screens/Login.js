@@ -23,7 +23,7 @@ const LoginScreen = () => {
     async function sendDetails() {
         fetch("http://192.168.43.254:3000/login", {
             method: 'POST',
-            body:JSON.stringify({"username": username, "password": password}),
+            body:JSON.stringify({"user_name": username, "password": password}),
             headers: {
                 'content-type': 'aplication/json',
             },
