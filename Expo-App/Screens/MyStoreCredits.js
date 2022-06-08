@@ -4,7 +4,7 @@ import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 
-const MyStoreCreditsScreen = () => {
+const MyStoreCreditsScreen = (props) => {
   const [single, setSingle]= useState(false);
   const [found, setFound]= useState(false);
   const [showSearch, setShowSearch]= useState(false);
@@ -38,10 +38,11 @@ const MyStoreCreditsScreen = () => {
   async function getCredits() {
     let userId = getId();
     userId = 1;
-    fetch(`http://192.168.43.254:3000/get_credits_by_date?id=${userId}&&num=${num}`, {
+    fetch(`http://${props.url}/scan_credit_controller/get_all_credits_user`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
+            'user_key' : userId,
         },
     }).then(res => res.json()).then(data => {
       if (Object.keys(data).length == 0){
@@ -91,10 +92,12 @@ const MyStoreCreditsScreen = () => {
     
     const searchName = ()=> {
  
-      fetch(`http://192.168.43.254:3000/get_credit_by_name?id=${userId}&name=${searchByName}`, {
+      fetch(`http://${props.url}/scan_credit_controller/get_credit_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
+              'user_key' : userId,
+              'name_search' : searchByName,
           },
       }).then(res => res.json()).then(data => {
         let len = (Object.keys(data)).length;
@@ -118,10 +121,11 @@ const MyStoreCreditsScreen = () => {
   }
   const getStores = ()=> {
     let userId=1;
-    fetch(`http://192.168.43.254:3000/get_credit_stores?id=${userId}`, {
+    fetch(`http://${props.url}/scan_credit_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
+            'user_key' : userId,
         },
     }).then(res => res.json()).then(data => {
       
@@ -129,10 +133,12 @@ const MyStoreCreditsScreen = () => {
 }
 
 const getCreditsByStore = ()=> {
-  fetch(`http://192.168.43.254:3000/get_credits_by_store?id=${userId}&name=${storeName}`, {
+  fetch(`http://${props.url}/scan_credit_controller/get_credit_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
+          'user_key' : userId,
+          'market' : storeName,
       },
   }).then(res => res.json()).then(data => {
     let len = (Object.keys(data)).length;
@@ -157,10 +163,13 @@ const getCreditsByStore = ()=> {
 }
 
 const getCreditsByDate = ()=> {
-  fetch(`http://192.168.43.254:3000/get_credits_by_date?id=${userId}&from=${fromDate}&&to=${toDate}`, {
+  fetch(`http://${props.url}/scan_credit_controller/get_credit_by_date`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
+          'user_key' : userId,
+          'from_date' : fromDate,
+          'to_date' : toDate,
       },
   }).then(res => res.json()).then(data => {
     let len = (Object.keys(data)).length;
