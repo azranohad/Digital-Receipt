@@ -5,7 +5,7 @@ import { Camera } from 'expo-camera'
 //import * as MediaLibrary from 'expo-media-library'
 import * as ImagePicker from 'expo-image-picker'
 //import { launchCamera } from 'react-native-image-picker';
-export default function App() {
+export default function App({navigation, route}) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null)
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null)
   const [camera, setCamera] = useState(null)

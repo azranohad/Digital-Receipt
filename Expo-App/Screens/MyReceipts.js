@@ -4,7 +4,7 @@ import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 
-const MyReceiptsScreen = (props) => {
+const MyReceiptsScreen = ({navigation, route}) => {
   const [single, setSingle]= useState(false);
   const [found, setFound]= useState(false);
   const [showSearch, setShowSearch]= useState(false);
@@ -13,28 +13,34 @@ const MyReceiptsScreen = (props) => {
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
 
-  useEffect(()=>{getId();getReceipts();}, []);
+  useEffect(()=>{
+    getId();
+    }, []);
  
   // get id of user
   const getId = async () => {
-    try {
-      const value = await AsyncStorage.getItem('userId')
-      if(value !== null) {
-        console.log("getdata: ",value);
-        setUserId(value);
-      }
-    } catch(e) {
-      // error reading value
-    }
+    // try {
+    //   const value = await AsyncStorage.getItem('userId')
+    //   if(value !== null) {
+    //     console.log("getdata: ",value);
+    //     getReceipts(1);
+    //     setUserId(value);
+    //   }
+    // } catch(e) {
+    //   // error reading value
+    // }
+    setUserId(1);
+    getReceipts(1);
   }
 
   // default receipts view -  by date
-  async function getReceipts() {
-    fetch(`http://${props.url}/scan_receipt_controller/get_receipt_by_date`, {
+  async function getReceipts(value) {
+    let user = 19;
+    fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_date`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user-key': {userId},
+            'user_key': user,
         },
     }).then(res => res.json()).then(data => {
       console.log();
@@ -89,7 +95,7 @@ const MyReceiptsScreen = (props) => {
       setSearchByName('');
       //let userId=getData();
       let userId=1;
-      fetch(`http://${props.url}/scan_receipt_controller/get_receipt_by_name`, {
+      fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
@@ -120,7 +126,7 @@ const MyReceiptsScreen = (props) => {
 
   const getStores = ()=> {
     let userId=1;
-    fetch(`http://${props.url}/scan_receipt_controller/get_markets`, {
+    fetch(`http://${route.params.url}/scan_receipt_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
@@ -132,7 +138,7 @@ const MyReceiptsScreen = (props) => {
 }
 
 const getReceiptsByStore = ()=> {
-  fetch(`http://${props.url}/scan_receipt_controller/get_receipt_by_market`, {
+  fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
@@ -162,7 +168,7 @@ const getReceiptsByStore = ()=> {
 }
 
 const getReceiptsByDate = ()=> {
-  fetch(`http://${props.url}/scan_receipt_controller/get_receipt_by_date`, {
+  fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_date`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
