@@ -2,7 +2,7 @@ from flask import Blueprint, request
 
 from Server.Repositories.userRepository import userRepository
 from Server.Services.userService import userService
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 logger = loggerService()
 users_api = Blueprint('users_api', __name__)
@@ -35,12 +35,12 @@ def update_user_data():
 def get_user_key():
     return user_repository.get_user_from_db(request.get_json(force=True))
 
-@users_api.route('/send_smsCode_to_verify', methods=['GET'])
+@users_api.route('/send_smsCode_to_verify', methods=['POST','OPTIONS'])
 def send_smsCode_to_verify():
     phone_number = request.get_json(force=True)['phone_number']
     return user_service.log_in_phone_number(phone_number)
 
-@users_api.route('/verify_sms_code', methods=['GET'])
+@users_api.route('/verify_sms_code', methods=['POST','OPTIONS'])
 def verify_sms_code():
     phone_number = request.get_json(force=True)['phone_number']
     temp_password = request.get_json(force=True)['temp_password']
