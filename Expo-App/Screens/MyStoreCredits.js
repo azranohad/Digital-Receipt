@@ -38,7 +38,7 @@ const MyStoreCreditsScreen = () => {
   async function getCredits() {
     let userId = getId();
     userId = 1;
-    fetch(`http://192.168.43.254:3000/get_credits_by_date?id=${userId}&&num=${num}`, {
+    fetch(`http://172.20.10.2:3000/get_credits_by_date?id=${userId}&&num=${num}`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
@@ -91,7 +91,7 @@ const MyStoreCreditsScreen = () => {
     
     const searchName = ()=> {
  
-      fetch(`http://192.168.43.254:3000/get_credit_by_name?id=${userId}&name=${searchByName}`, {
+      fetch(`http://172.20.10.2:3000/get_credit_by_name?id=${userId}&name=${searchByName}`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',

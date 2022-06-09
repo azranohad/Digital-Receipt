@@ -70,6 +70,29 @@ const SignupScreen = () => {
       // )};
       
     async function sendDetails() {
+        if(username === '') {
+            alert('Please Enter user name');
+            return;
+        } else if (password === '') {
+            alert('Please Enter Password');
+             return;
+         } else if (confirmPassword === '') {
+             alert('Please Enter Password confirm');
+             return;
+         } else if (confirmPassword !== password) {
+             alert('password and password confirmation is not equal');
+             return;
+        // }  else if (name === '') {
+        //     alert('Please Enter Name');
+        //     return;
+         } else if (phonenumber === '') {
+             alert('Please Enter phone number');
+             return;
+         }
+        // }    else if (email === '') {
+        //     alert('Please Enter email');
+        //     return;
+        // } 
         // fetch("http://192.168.43.254:3000/userName", {
         //     method: 'POST',
         //     body:JSON.stringify({"username": username}),
@@ -83,7 +106,7 @@ const SignupScreen = () => {
         //     }
         // });
 
-        fetch("http://192.168.43.254:3000/signup", {
+        fetch("http://192.168.0.111:5000/add_user_name_and_password", {
             method: 'POST',
             body:JSON.stringify({
                 "username": username,
@@ -119,7 +142,11 @@ const SignupScreen = () => {
                 id = data
                 storeData(id.toString());
             }
-        });
+        }).catch(function(error) {
+            console.log('There has been a problem with your fetch operation: ' + error.message);
+             // ADD THIS THROW error
+              throw error;
+            });
     }
     return (
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

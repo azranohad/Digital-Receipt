@@ -16,4 +16,4 @@ app.register_blueprint(users_api, url_prefix='/users_controller')
 app.register_blueprint(location_api, url_prefix='/location_controller')
 
 app.debug = True
-app.run(host="0.0.0.0", threaded=True)
+app.run(host="192.168.0.111", threaded=True)

@@ -9,7 +9,8 @@ from flask import send_file
 from singleton_decorator import singleton
 import re
 from PIL import Image
-from SystemFiles.logger.loggerService import loggerService
+
+from systemFiles.logger.loggerService import loggerService
 
 
 @singleton
