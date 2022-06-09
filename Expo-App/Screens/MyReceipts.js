@@ -4,7 +4,7 @@ import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 
-const MyReceiptsScreen = () => {
+const MyReceiptsScreen = (props) => {
   const [single, setSingle]= useState(false);
   const [found, setFound]= useState(false);
   const [showSearch, setShowSearch]= useState(false);
@@ -30,10 +30,11 @@ const MyReceiptsScreen = () => {
 
   // default receipts view -  by date
   async function getReceipts() {
-    fetch(`http://192.168.43.254:3000/get_receipt_by_date?id=${userId}&&num=${num}`, {
+    fetch(`http://${props.url}/scan_receipt_controller/get_receipt_by_date`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
+            'user-key': {userId},
         },
     }).then(res => res.json()).then(data => {
       console.log();
@@ -88,10 +89,12 @@ const MyReceiptsScreen = () => {
       setSearchByName('');
       //let userId=getData();
       let userId=1;
-      fetch(`http://192.168.43.254:3000/get_receipt_by_name?id=${userId}&&name=${searchByName}`, {
+      fetch(`http://${props.url}/scan_receipt_controller/get_receipt_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
+              'user-key': userId,
+              'name_search' : searchByName,
           },
       }).then(res => res.json()).then(data => {
         let len = (Object.keys(data)).length;
@@ -117,10 +120,11 @@ const MyReceiptsScreen = () => {
 
   const getStores = ()=> {
     let userId=1;
-    fetch(`http://192.168.43.254:3000/get_receipts_stores?id=${userId}`, {
+    fetch(`http://${props.url}/scan_receipt_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
+            'user-key': {userId},
         },
     }).then(res => res.json()).then(data => {
       
@@ -128,10 +132,12 @@ const MyReceiptsScreen = () => {
 }
 
 const getReceiptsByStore = ()=> {
-  fetch(`http://192.168.43.254:3000/get_receipts_by_store?id=${userId}&name=${storeName}`, {
+  fetch(`http://${props.url}/scan_receipt_controller/get_receipt_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
+          'user-key': {userId},
+          'market' : storeName
       },
   }).then(res => res.json()).then(data => {
     let len = (Object.keys(data)).length;
@@ -156,10 +162,13 @@ const getReceiptsByStore = ()=> {
 }
 
 const getReceiptsByDate = ()=> {
-  fetch(`http://192.168.43.254:3000/get_receipts_by_date?id=${userId}&from=${fromDate}&&to=${toDate}`, {
+  fetch(`http://${props.url}/scan_receipt_controller/get_receipt_by_date`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
+          'user-key': {userId},
+          'from_date': fromDate,
+          'to_date' : toDate,
       },
   }).then(res => res.json()).then(data => {
     let len = (Object.keys(data)).length;

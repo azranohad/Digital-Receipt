@@ -109,12 +109,12 @@ def insert_list_of_receipts(user_receipts):
 
 user_service = userService()
 receipt_repository = receiptRepository()
-user_key = "ec2eac3508b24882bc45b09dfeee2ee3"
-x = receipt_repository.get_receipt_by_value(user_key, "market", "super-pharm")
-t = receipt_repository.get_by_date(user_key, "01/03/1995", "29/10/2023")
-markets = receipt_repository.get_values_by_key(user_key, "market")
-y = 3
-# users = {}
+# user_key = "ec2eac3508b24882bc45b09dfeee2ee3"
+# x = receipt_repository.get_receipt_by_value(user_key, "market", "super-pharm")
+# t = receipt_repository.get_by_date(user_key, "01/03/1995", "29/10/2023")
+# markets = receipt_repository.get_values_by_key(user_key, "market")
+# y = 3
+users = {}
 # load_receipt_and_user_to_db("superpharm_receipts.csv", 'super-pharm')
 # load_receipt_and_user_to_db("walmart_receipts.csv", 'walmart')
 #

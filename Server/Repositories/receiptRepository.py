@@ -35,12 +35,6 @@ class receiptRepository:
             receipt_list[record['_id']] = record
         return receipt_list
 
-    # def get_last_N_receipt(self, user_key, collection, N, start_from_index):
-    #     collection = self.mongoDb_repository.get_client()[user_key][collection]
-    #     last_docs = collection.find().sort({"date_of_receipt":1}).limit(N)
-    #     return last_docs
-
-
     # function generic search
     def get_values_by_key(self, user_key, key):
         coll_db = self.mongoDb_repository.get_client()["Receipts"]['receipts']
