@@ -93,3 +93,17 @@ class userRepository:
         self.logger.print_info_message('usersRepository | the user name or password incorrect')
         return 'the user name or password incorrect'
 
+    def get_user_data(self, user_key):
+        cursor = self.get_collection().find({'user_key': user_key})
+        cursor_list = list(cursor)
+
+        # the list exist single element - data of user key
+        user_data_dict = cursor_list[0]
+        list_of_keys = list(user_data_dict.keys())
+
+        #filter keys
+        keys_unwanted_to_send = ['_id', 'password', 'user_name']
+        for unwanted_key in keys_unwanted_to_send:
+            if list_of_keys.__contains__(unwanted_key):
+                del user_data_dict[unwanted_key]
+        return user_data_dict

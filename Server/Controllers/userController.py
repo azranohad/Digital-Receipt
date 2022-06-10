@@ -35,6 +35,12 @@ def update_user_data():
 def get_user_key():
     return user_repository.get_user_from_db(request.get_json(force=True))
 
+
+@users_api.route('/get_user_data', methods=['GET'])
+def get_user_data():
+    user_key = request.headers['user_key']
+    return user_repository.get_user_data(user_key)
+
 @users_api.route('/send_smsCode_to_verify', methods=['GET'])
 def send_smsCode_to_verify():
     phone_number = request.get_json(force=True)['phone_number']
