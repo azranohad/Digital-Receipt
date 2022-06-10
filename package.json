@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "@rneui/base": "^4.0.0-rc.4",
+    "@rneui/themed": "^4.0.0-rc.4",
     "expo-camera": "^12.2.0",
     "expo-image-picker": "^13.1.1"
   }
