@@ -4,7 +4,7 @@ import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 
-const MyStoreCreditsScreen = (props) => {
+const MyStoreCreditsScreen = ({navigation, route}) => {
   const [single, setSingle]= useState(false);
   const [found, setFound]= useState(false);
   const [showSearch, setShowSearch]= useState(false);
@@ -38,7 +38,7 @@ const MyStoreCreditsScreen = (props) => {
   async function getCredits() {
     let userId = getId();
     userId = 1;
-    fetch(`http://${props.url}/scan_credit_controller/get_all_credits_user`, {
+    fetch(`http://${route.params.url}/scan_credit_controller/get_all_credits_user`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
@@ -92,7 +92,7 @@ const MyStoreCreditsScreen = (props) => {
     
     const searchName = ()=> {
  
-      fetch(`http://${props.url}/scan_credit_controller/get_credit_by_name`, {
+      fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
@@ -121,7 +121,7 @@ const MyStoreCreditsScreen = (props) => {
   }
   const getStores = ()=> {
     let userId=1;
-    fetch(`http://${props.url}/scan_credit_controller/get_markets`, {
+    fetch(`http://${route.params.url}/scan_credit_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
@@ -133,7 +133,7 @@ const MyStoreCreditsScreen = (props) => {
 }
 
 const getCreditsByStore = ()=> {
-  fetch(`http://${props.url}/scan_credit_controller/get_credit_by_market`, {
+  fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
@@ -163,7 +163,7 @@ const getCreditsByStore = ()=> {
 }
 
 const getCreditsByDate = ()=> {
-  fetch(`http://${props.url}/scan_credit_controller/get_credit_by_date`, {
+  fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_date`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
