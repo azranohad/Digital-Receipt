@@ -2,7 +2,7 @@ from flask import request, Blueprint
 from Server.Features.ScanReceipt.scanReceiptManager import scanReceiptManager
 from Server.Repositories.receiptRepository import receiptRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 scan_receipt_api = Blueprint('scan_receipt_api', __name__)
 
@@ -15,7 +15,8 @@ server_local_repository = serverLocalRepository()
 def scan_receipt():
     image_file = request.files['image']
     user_key = request.form['user_key']
-    image_name = request.form['image_name']
+    #image_name = request.form['name']
+    image_name = "request.form['name']"
     logger.print_api_message("received scan receipt post request | user: " + user_key)
 
     response = scan_receipt_manager.action_scan_receipt_manager(image_file, user_key, image_name)

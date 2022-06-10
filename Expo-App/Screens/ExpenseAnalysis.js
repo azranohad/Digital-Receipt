@@ -311,7 +311,7 @@ const MyContributionGraph = () => {
     </>
   );
 };
-const ExpenseAnalysisScreen = () => {
+const ExpenseAnalysisScreen = ({navigation, route}) => {
 const [change, setChange] = useState(true);
 const [single, setSingle] = useState(false);
 const [found, setFound] = useState(false);
@@ -334,7 +334,7 @@ useEffect(getMonthReceipts, []);
 
 async function getMonthReceipts() {
   let userId=1;
-  fetch(`http://192.168.43.254:3000/get_month_shopping_items?id=${userId}&&month=${currentMonth}`, {
+  fetch(`http://${route.params.url}/get_month_shopping_items?id=${userId}&&month=${currentMonth}`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
