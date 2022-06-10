@@ -2,7 +2,7 @@ from flask import request, Blueprint
 from Server.Features.ScanCredit.scanCreditManager import scanCreditManager
 from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 scan_credit_api = Blueprint('scan_credit_api', __name__)
 

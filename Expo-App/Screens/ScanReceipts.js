@@ -5,7 +5,7 @@ import { Camera } from 'expo-camera'
 //import * as MediaLibrary from 'expo-media-library'
 import * as ImagePicker from 'expo-image-picker'
 //import { launchCamera } from 'react-native-image-picker';
-export default function App({navigation, route}) {
+export default function App(props) {
   const [hasCameraPermission, setHasCameraPermission] = useState(null)
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null)
   const [camera, setCamera] = useState(null)
@@ -135,18 +135,23 @@ export default function App({navigation, route}) {
     // ImagePicker saves the taken photo to disk and returns a local URI to it
     let localUri = result.uri;
     let filename = localUri.split('/').pop();
-    let formData = new FormData();
+    const formData = new FormData();
     // // Assume "photo" is the name of the form field the server expects
     let y = { uri: localUri, name: filename, type: 'image/jpeg' }
     formData.append('image', y);
-    formData.append('user_name', "shoval");
-    // fetch("http://192.168.43.254:3000/scan_receipt", {
-    //   method: 'POST',
-    //   body:formData,
-    //   headers: {
-    //     'content-type': 'multipart/form-data',
-    //   },
-    // });
+    formData.append('user_key', "shoval");
+    console.log(formData);
+
+    fetch(`http://192.168.0.111:5000/scan_receipt_controller/scan_receipt`, {
+      method: 'POST',
+      body:formData,
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    }).then(res => res.json()).then(data => {
+      console.log(data);
+
+    });
     // method: 'POST',
     //         headers: {
     //           Accept: 'application/json',

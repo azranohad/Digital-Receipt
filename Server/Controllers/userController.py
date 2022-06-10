@@ -24,11 +24,11 @@ def create_user():
     return user_key
 
 
-@users_api.route('/update_user', methods=['POST'])
+@users_api.route('/update_user', methods=['POST','OPTIONS'])
 def update_user_data():
     user_key = request.get_json(force=True)['user_key']
     user_repository.update_user(user_key, request.get_json(force=True))
-
+    #return {'username': 'Amit','city': 'Tel Aviv','phonenumber': '0505199015'}
 
 # unique identifier phone_number/mail_address/ID
 @users_api.route('/get_user_key', methods=['GET'])
