@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { View, Text,Button, ImageBackground, TextInput, SafeAreaView, StyleSheet } from 'react-native';
-import {  ThemeProvider, createTheme } from '@rneui/themed';
 import GpsScreen from './Gps';
 import {useNavigation, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -27,7 +26,7 @@ const LoginScreen = ( ) => {
       }
      
     async function sendDetails() {
-        fetch("http://192.168.0.111:3000/login", {
+        fetch(`http://${props.url}/users_controller/login_user_name_and_password`, {
             method: 'POST',
             body:JSON.stringify({"username": username, "password": password}),
             headers: {
@@ -95,12 +94,6 @@ container: {
     backgroundColor: '#e8e8e8'
   },
 });
-const theme = createTheme({
-    Button: {
-      titleStyle: {
-        color: 'red',
-      },
-    },
-  });
+
 
 export default LoginScreen

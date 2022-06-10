@@ -14,30 +14,34 @@ import GpsScreen from './Screens/Gps';
 import LoginScreen from './Screens/Login';
 import SignupScreen from './Screens/Signup';
 import ProfileScreen from './Screens/Profile';
+import SMSLoginScreen from './Screens/SMSLogin';
 
 
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.43.254:3000";
+  const url="192.168.0.111:5000";
   
   return (
     <NavigationContainer>
       <Drawer.Navigator initialRouteName = "Home">
-      <Drawer.Screen name="Receipts" component={()=><MyReceiptsScreen url={url}/>} options={{ drawerIcon: ({ tintColor }) => (
+        <Drawer.Screen name="Home" component={HomeScreen} options={{ drawerIcon: ({ tintColor }) => (
       <Image
         source={require('./Images/ProfilePic.jpg')}
         style={[styles.icon, { tintColor: tintColor }]}
       />
     ) }}/>
-        <Drawer.Screen name="My Profile" component={()=><ProfileScreen url={url}/>}/>
-        <Drawer.Screen name="Scan Receipts" component={()=><ScanReceiptsScreen url={url}/>}/>
-        <Drawer.Screen name="Store Credits" component={()=><MyStoreCreditsScreen url={url}/>}/>
-        <Drawer.Screen name="Expense Analysis" component={()=><ExpenseAnalysisScreen url={url}/>}/>
-        <Drawer.Screen name="Settings" component={()=><SettingScreen url={url}/>}/>
-        <Drawer.Screen name="Sign Up" component={()=><SignupScreen url={url}/>}/>
-        <Drawer.Screen name="Login" component={() => <LoginScreen url={url}/>}/>
+        <Drawer.Screen name="My Profile" component={ProfileScreen}/>
+        <Drawer.Screen name="Scan Receipts" component={ScanReceiptsScreen}/>
+        <Drawer.Screen name="Store Credits" component={MyStoreCreditsScreen}/>
+        <Drawer.Screen name="Receipts" component={MyReceiptsScreen}/>
+        <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen}/>
+        <Drawer.Screen name="Settings" component={SettingScreen}/>
+        <Drawer.Screen name="Sign Up" component={SignupScreen}/>
+        <Drawer.Screen name="Login" component={LoginScreen}/>
         <Drawer.Screen name="Gps" component={GpsScreen}/>
+        <Drawer.Screen name="SMSLogin" component={SMSLoginScreen}/>
+
       </Drawer.Navigator>
     </NavigationContainer>
   );

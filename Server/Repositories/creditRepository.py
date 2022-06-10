@@ -2,7 +2,8 @@ from Server.Repositories.mongoDbRepository import mongoDbRepository
 from datetime import datetime
 
 # @singleton
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
+
 
 class creditRepository:
     def __init__(self):

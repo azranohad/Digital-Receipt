@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { View, Text,Button, ImageBackground, TextInput, SafeAreaView, StyleSheet } from 'react-native';
-import {  ThemeProvider, createTheme } from '@rneui/themed';
 import GpsScreen from './Gps';
 import {useNavigation, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 
-const SMSLoginScreen = ( ) => {
+const SMSLoginScreen = ( props) => {
     const [phoneNumber, setUsername] = useState('');
     const [isPhoneNumsent, setPhoneNum] = useState(false);
     const [isTempPasswordsent, setTempPasswordsent] = useState(false);
@@ -31,7 +30,7 @@ const SMSLoginScreen = ( ) => {
      
     async function sendDetails() {
         setPhoneNum(true)
-        fetch("http://192.168.0.111:5000//users_controller/send_smsCode_to_verify", {
+        fetch(`http://${props.url}/users_controller/send_smsCode_to_verify`, {
             method: 'POST',
             body:JSON.stringify({"phone_number": phoneNumber}),
             headers: {
@@ -161,12 +160,6 @@ container: {
     backgroundColor: '#e8e8e8'
   },
 });
-const theme = createTheme({
-    Button: {
-      titleStyle: {
-        color: 'red',
-      },
-    },
-  });
+
 
 export default SMSLoginScreen

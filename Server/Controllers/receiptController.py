@@ -15,7 +15,8 @@ server_local_repository = serverLocalRepository()
 def scan_receipt():
     image_file = request.files['image']
     user_key = request.form['user_key']
-    image_name = request.form['image_name']
+    #image_name = request.form['name']
+    image_name = "request.form['name']"
     logger.print_api_message("received scan receipt post request | user: " + user_key)
 
     response = scan_receipt_manager.action_scan_receipt_manager(image_file, user_key, image_name)
