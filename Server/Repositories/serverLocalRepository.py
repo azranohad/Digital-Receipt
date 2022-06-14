@@ -6,7 +6,7 @@ from tempfile import NamedTemporaryFile
 from flask import send_file
 from singleton_decorator import singleton
 
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 
 @singleton

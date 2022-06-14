@@ -2,7 +2,7 @@ from Server.Repositories.mongoDbRepository import mongoDbRepository
 
 
 # @singleton
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 
 class userRepository:
@@ -13,7 +13,7 @@ class userRepository:
 
 
     def get_collection(self):
-        return self.mongoDb_repository.get_client()["Users"]["Users"]
+        return self.mongoDb_repository.get_client()["Users"]["users"]
 
     def get_temp_password_coll(self):
         return self.mongoDb_repository.get_client()["login"]["temp_pass"]
