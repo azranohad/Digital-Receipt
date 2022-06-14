@@ -27,8 +27,8 @@ class serverLocalRepository:
             self.logger.print_event("serverLocalRepository | User directory '% s' scan receipt folder created" % user_details)
         return path
 
-    def save_scan_image(self, image_file, image_name, user_details):
-        path_image = os.path.join(self.get_user_folder_scans(user_details), image_name)
+    def save_scan_image(self, image_file, image_key, user_details):
+        path_image = os.path.join(self.get_user_folder_scans(user_details), image_key)
         image_file.save(path_image)
 
         return path_image

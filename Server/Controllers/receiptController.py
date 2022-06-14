@@ -16,10 +16,8 @@ server_local_repository = serverLocalRepository()
 def scan_receipt():
     image_file = request.files['image']
     user_key = request.form['user_key']
-    #image_name = request.form['name']
-    image_name = "request.form['name']"
     logger.print_api_message("received scan receipt post request | user: " + user_key)
-    response = scan_receipt_manager.action_scan_receipt_manager(image_file, user_key, image_name)
+    response = scan_receipt_manager.action_scan_receipt_manager(image_file, user_key)
     return response
 
 
@@ -72,11 +70,22 @@ def get_receipt_by_name():
 
 @scan_receipt_api.route('/get_image_receipt', methods=['GET'])
 def get_image_receipt():
-    user_details = request.headers['user_key']
-    image_name = request.headers['image_name']
-    logger.print_api_message("received get_image_receipt request | user: " + user_details + "| image name:" + image_name)
+    user_key = request.headers['user_key']
+    _id = request.headers['_id']
+    logger.print_api_message("received get_image_receipt request | user: " + user_key + "| _id:" + _id)
 
-    return server_local_repository.get_image(user_details, image_name)
+    return server_local_repository.get_image(user_key, _id)
+
+
+@scan_receipt_api.route('/get_digital_receipt', methods=['GET'])
+def get_digital_receipt():
+    user_key = request.headers['user_key']
+    _id = request.headers['_id']
+    logger.print_api_message("received get_digital_receipt request | user: " + user_key + "| _id:" + _id)
+
+    return receipt_repository.get_receipt_by_value(user_key, '_id', _id)
+
+
 
 
 

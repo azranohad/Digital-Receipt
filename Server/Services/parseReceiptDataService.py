@@ -445,7 +445,7 @@ class parseReceiptDataService:
             i += 1
         return items
 
-    def receipt_data_to_db(self, user_key, name_of_receipt, image_id, receipt_data_object):
+    def receipt_data_to_db(self, user_key, image_id, receipt_data_object):
         items = {}
         if len(receipt_data_object.items) != 0:
             items = self.items_to_map(receipt_data_object)
@@ -453,7 +453,6 @@ class parseReceiptDataService:
             "_id": str(image_id),
             "user_key": user_key,
             "scan_date": dateutil.parser.parse(datatime1.now().strftime('%d/%m/%Y %H:%M:%S')),
-            "name_for_client": str(name_of_receipt),
             "receiptID": str(receipt_data_object.receiptID),
             "date_of_receipt": dateutil.parser.parse(receipt_data_object.date_of_receipt),
             "market": str(receipt_data_object.market),
