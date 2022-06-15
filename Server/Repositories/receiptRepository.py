@@ -71,3 +71,25 @@ class receiptRepository:
                 #add all receipt that contains this name
                 receipt_list.update(self.get_receipt_by_value(user_key, "name_for_client", name))
         return receipt_list
+
+    def update_receipt(self, _id, request):
+        user_data_update = {}
+        for item in request:
+            user_data_update[item] = request[item]
+
+        user_data_update['_id'] = _id
+        self.update_receipt_data_impl(_id, user_data_update)
+
+    def update_receipt_data_impl(self, _id, dict_update_user):
+        result = self.get_collection().update({'_id': _id}, {'$set': dict_update_user})
+        if result['updatedExisting']:
+            self.logger.print_info_message(
+                "receiptRepository | details (" + str(dict_update_user.keys()) + ") of receeipt: " + str(
+                    _id) + " updated in data base")
+        else:
+            self.logger.print_severe_message(
+                "receiptRepository | failed update data of receipt: " + _id)
+
+    def get_collection(self):
+        return self.mongoDb_repository.get_client()["Receipts"]['receipts']
+
