@@ -35,7 +35,6 @@ class parseReceiptDataService:
         for fmt in ['%d %b %Y', '%d %b %y', '%b %d %Y', '%b %d %y', '%Y %b %d', '%y %b %d', '%Y %d %b', '%y %d %b']:
             try:
                 new_purch_date = datetime.datetime.strptime(date_string, fmt).strftime('%d/%m/%Y')
-                new_purch_date
                 return new_purch_date
             except Exception as e:
                 pass

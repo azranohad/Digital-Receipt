@@ -15,7 +15,9 @@ app.register_blueprint(store_api, url_prefix='/store_controller')
 app.register_blueprint(users_api, url_prefix='/users_controller')
 app.register_blueprint(location_api, url_prefix='/location_controller')
 app.register_blueprint(scan_credit_api, url_prefix='/scan_credit_controller')
+app.register_blueprint(scan_credit_api, url_prefix='/recommendation_system_controller')
 
 
 app.debug = True
 app.run(host="127.0.0.1", threaded=True)
+

@@ -4,6 +4,7 @@ import os
 from Server.Repositories.mongoDbRepository import mongoDbRepository
 from datetime import datetime
 # @singleton
+from Server.Repositories.receiptRepository import receiptRepository
 from Server.Repositories.userRepository import userRepository
 from SystemFiles.logger.loggerService import loggerService
 
@@ -12,6 +13,7 @@ class recommendationSystemRepository:
     def __init__(self):
         self.mongoDb_repository = mongoDbRepository()
         self.user_repository = userRepository()
+        self.receipt_repository = receiptRepository()
         self.logger = loggerService()
 
     def get_user_data(self, user_maps, user_key):
@@ -24,7 +26,7 @@ class recommendationSystemRepository:
         current_path = os.getcwd()
         path = current_path[:current_path.find("Digital-Receipt") + 16] + "RecommendationSystem\itemsDataFromDB\\"
         header_info = ['user_key', 'age', 'gender', 'date', 'itemID', 'itemDescription', 'brand', 'category', 'amount', 'price']
-        file = open(path + str(datetime.now().strftime('%d_%m_%Y')) + '_' + market + '_items_data.csv', 'w', newline='', encoding = "ISO-8859-8", errors="ignore")
+        file = open(path + str(datetime.now().strftime('%d_%m_%Y')) + '$' + market + '$items_data.csv', 'w', newline='', encoding = "ISO-8859-8", errors="ignore")
         writer = csv.DictWriter(file, fieldnames=header_info)
         writer.writeheader()
 
@@ -69,9 +71,15 @@ class recommendationSystemRepository:
             receipt_list[record['_id']] = record
         return receipt_list
 
+    def get_all_distinct_users(self):
+        return self.user_repository.get_all_user_distinct()
+
+    def get_all_store_distinct(self):
+        return self.receipt_repository.get_distinct_values_by_key("market")
 
 
-
-rec = recommendationSystemRepository()
-rec.get_all_receipt_by_market('super-pharm')
-rec.get_all_receipt_by_market('walmart')
+# rec = recommendationSystemRepository()
+# stores = rec.get_all_store_distinct()
+# users = rec.get_all_distinct_users()
+# rec.get_all_receipt_by_market('super-pharm')
+# rec.get_all_receipt_by_market('walmart')
