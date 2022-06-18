@@ -2,38 +2,63 @@ import React, { useState } from "react";
 import { View, SafeAreaView, FlatList } from "react-native";
 
 import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
+import SimpleSearch from "../components/SimpleSearch";
 import { COLORS, NFTData } from "../constants";
 
 const Products = () => {
-  const [JsonProdData, setJsonProdData] = useState(NFTData);
+  const [JsonData, setJsonData] = useState([]);
+  const [userKey, setuserKey] = useState('');
+  const [isLoading, setisLoading] = useState(true);
 
-  const handleSearch = (value) => {
-    if (value.length === 0) {
-      setJsonProdData(JsonProdData);
-    }
+  useEffect(()=>{
+    getIdandProducts();
+},[]);
 
-    const filteredData = JsonProdData.filter((item) =>
-      item.name.toLowerCase().includes(value.toLowerCase())
-    );
+// get id of user and all his receipts
+const getIdandProducts = async () => {
+  // try {
+  //   const value = await AsyncStorage.getItem('userKey')
+  //   if(value !== null) {
+  //     console.log("getdata: ",value);
+  //     setuserKey(value);
+  //   }
+  // } catch(e) {
+  //   // error reading value
+  // }
+  setuserKey("fd18ed355cd74ae38799f76dc7d20609");
+  // getImg("p");
+  //getProducts("fd18ed355cd74ae38799f76dc7d20609");
+}
 
-    if (filteredData.length === 0) {
-      setJsonProdData(JsonProdData);
-    } else {
-      setJsonProdData(filteredData);
-    }
-  };
 
+  const searchByName = (val)=>{
+    console.log(val);
+    fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_name`, {
+        method: 'GET',
+        headers: {
+            'content-type': 'aplication/json',
+            'user-key': userKey,
+            'name_search' : val,
+        },
+    }).then(res => res.json()).then(data => {
+      setAll(data);
+  });
+}
+
+
+
+if (!isLoading){
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <View style={{ flex: 1 }}>
         <View style={{ zIndex: 0 }}>
           <FlatList
-            data={JsonProdData}
-            renderItem={({ item }) => <NFTCard data={item} />}
-            keyExtractor={(item) => item.id}
+            data={Object.values(JsonData)}
+            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} handleImage={()=>getImg(item._id)}/>}
+            keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<HomeHeader onSearch={handleSearch} />}
+            ListHeaderComponent={<HomeHeader/>}
           />
         </View>
 
@@ -48,12 +73,25 @@ const Products = () => {
           }}
         >
           <View
-            style={{ height: 300, backgroundColor: COLORS.primary }} />
+            style={{ height: 300, backgroundColor: COLORS.midnightblue }} />
           <View style={{ flex: 1, backgroundColor: COLORS.white }} />
         </View>
       </View>
     </SafeAreaView>
-  );
-};
+  )
+}
+else {
+return (
+  <View style={styles.container}> 
+  <TextInput value={searchByName}
+      onChangeText={(searchByName) => searchName(searchByName)}
+      placeholder={'Search Receipt'}/>   
+    <Button title='Search' onPress={()=>{getReceiptsByStore();}}></Button> 
+    <Text>Loading...</Text>
+    </View>
+
+)
+}
+}
 
 export default Products;

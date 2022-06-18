@@ -1,8 +1,10 @@
-import { useState, Component, useEffect } from 'react';
-import { StyleSheet, TextInput, View, Button, Text } from 'react-native';
+import React, { useState, Component, useEffect } from 'react';
+import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-
+import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
+import { COLORS, NFTData } from "../constants";
+import { event } from 'react-native-reanimated';
 
 const MyReceiptsScreen = ({navigation, route}) => {
   const [found, setFound]= useState(false);
@@ -14,7 +16,6 @@ const MyReceiptsScreen = ({navigation, route}) => {
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
   const [isLoading, setisLoading] = useState(true);
-  const i = 'user_key';
 
 
 
@@ -34,7 +35,7 @@ const MyReceiptsScreen = ({navigation, route}) => {
     //   // error reading value
     // }
     setuserKey("fd18ed355cd74ae38799f76dc7d20609");
-    getImg("p");
+    // getImg("p");
     getAllReceipts("fd18ed355cd74ae38799f76dc7d20609");
   }
 
@@ -69,14 +70,15 @@ const MyReceiptsScreen = ({navigation, route}) => {
     });
   }
     
-    const searchName = ()=> {
-      setisLoading(true);
+    const searchName = (s)=> {
+      // setisLoading(true);
+      console.log(s);
       fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
               'user-key': userKey,
-              'name_search' : searchByName,
+              'name_search' : s,
           },
       }).then(res => res.json()).then(data => {
         setAll(data);
@@ -112,6 +114,8 @@ const getReceiptsByStore = ()=> {
 
 const getAllReceipts = (val)=> {
   setisLoading(true);
+  console.log("heyyyy");
+  console.log(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`);
   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`, {
       method: 'GET',
       headers: {
@@ -119,64 +123,91 @@ const getAllReceipts = (val)=> {
           'user_key' : val,
       },
   }).then(res => res.json()).then(data => {
+    // console.log(data);
     setOriginal(data);
     setAll(data);
 });
 }
 
-const getImg =  (id)=> {
-  setisLoading(true);
-  fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts`, {
-      method: 'GET',
+const getImg =  (e)=> {
+  console.log(e);
+//   setisLoading(true);
+//   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts`, {
+//       method: 'GET',
+//       headers: {
+//           'content-type': 'aplication/json',
+//           'user_key' : 'b661e90ea0fe4cb5bb6c53b68ad5d555',
+//           'image_name' : 'ef2561389f2b4322b40d9c0c6e18240e',
+//       },
+//   }).then(res => res.json()).then(res => {
+//     console.log("res:",res);
+//     const imageBlob = res.blob();
+//     const imageObjectURL = URL.createObjectURL(imageBlob);
+//     //setImg(imageObjectURL);
+//     console.log(imageBlob);
+// });
+}
+
+const trashReceipt = (val)=> {
+  fetch(`http://${route.params.url}/scan_receipt_controller/delete_receipt`, {
+      method: 'DELETE',
+      body: JSON.stringify({
+        'user_key': userKey,
+          '_id' : val,
+      }),
       headers: {
           'content-type': 'aplication/json',
-          'user_key' : 'b661e90ea0fe4cb5bb6c53b68ad5d555',
-          'image_name' : 'ef2561389f2b4322b40d9c0c6e18240e',
       },
-  }).then(res => res.json()).then(res => {
-    console.log("res:",res);
-    const imageBlob = res.blob();
-    const imageObjectURL = URL.createObjectURL(imageBlob);
-    //setImg(imageObjectURL);
-    console.log(imageBlob);
+  }).then(res => {console.log("res", res);; res.json();}).then(data => {
+    console.log(data);
+    if (data==true){
+      Object.values(JsonData).map((account)=>{
+        if (account._id==val){
+          x = JsonData[account._id]
+          console.log(x);
+      }
+        })
+    }
+    // setAll(data);
 });
 }
 
+
+
+
+
   if (!isLoading){
     return (
-      <View style={styles.container}> 
-        <TextInput value={searchByName}
-            onChangeText={(searchByName) => setSearchByName(searchByName)}
-            placeholder={'Search By Name'}/>   
-          <Button title='Search' onPress={()=>{searchName();}}></Button> 
-          <TextInput value={storeName}
-            onChangeText={(storeName) => setStoreName(storeName)}
-            placeholder={'Search By Store'}/>   
-          <Button title='Search' onPress={()=>{getReceiptsByStore(); getStores();}}></Button> 
-          {!found && <Text>Not Found</Text>}
-          {!found && <Button title='Go Back' onPress={()=>{setJsonData(original);}}/>}
-          {found && <DataTable >
-        <DataTable.Header>
-          <DataTable.Title></DataTable.Title>
-          <DataTable.Title>Total Amount</DataTable.Title>
-          <DataTable.Title>Store</DataTable.Title>
-          <DataTable.Title>Date</DataTable.Title>
-          <DataTable.Title>Receipt Name</DataTable.Title>
-        </DataTable.Header>
-        {found && Object.values(JsonData).map((account)=>(
-          <DataTable.Row style={{alignContent:'center', alignItems:'center'}} key={account._id}>
-            <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getImg(account._id);}}>Show</DataTable.Cell>
-            <DataTable.Cell>{account.total_price}$</DataTable.Cell>
-            <DataTable.Cell>{account.market}</DataTable.Cell>
-            <DataTable.Cell>{account.date_of_receipt}</DataTable.Cell>
-            <DataTable.Cell>{account.name_for_client}</DataTable.Cell>
-        </DataTable.Row>
-        )
-        )}
-      </DataTable>}
-      {found && <Button title='Show More' style={{backgroundColor:'blue'}}></Button>}
-    </View>
-  )
+      <SafeAreaView style={{ flex: 1 }}>
+        <FocusedStatusBar backgroundColor={COLORS.primary} />
+        <View style={{ flex: 1 }}>
+          <View style={{ zIndex: 0 }}>
+            <FlatList
+              data={Object.values(JsonData)}
+              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} handleImage={()=>getImg(item._id)}/>}
+              keyExtractor={(item) => item._id}
+              showsVerticalScrollIndicator={false}
+              ListHeaderComponent={<HomeHeader/>}
+            />
+          </View>
+  
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              zIndex: -1,
+            }}
+          >
+            <View
+              style={{ height: 300, backgroundColor: COLORS.midnightblue }} />
+            <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+          </View>
+        </View>
+      </SafeAreaView>
+    )
 }
 else {
   return (
@@ -207,3 +238,62 @@ const styles = StyleSheet.create({
 });
 
 export default MyReceiptsScreen
+
+
+
+
+
+
+// const Home = () => {
+//   const [nftData, setNftData] = useState(NFTData);
+
+  // const handleSearch = (value) => {
+  //   if (value.length === 0) {
+  //     setNftData(NFTData);
+  //   }
+
+  //   const filteredData = NFTData.filter((item) =>
+  //     item.name.toLowerCase().includes(value.toLowerCase())
+  //   );
+
+  //   if (filteredData.length === 0) {
+  //     setNftData(NFTData);
+  //   } else {
+  //     setNftData(filteredData);
+  //   }
+  // };
+
+  // return (
+  //   <SafeAreaView style={{ flex: 1 }}>
+  //     <FocusedStatusBar backgroundColor={COLORS.primary} />
+  //     <View style={{ flex: 1 }}>
+  //       <View style={{ zIndex: 0 }}>
+  //         <FlatList
+  //           data={nftData}
+  //           renderItem={({ item }) => <NFTCard data={item} />}
+  //           keyExtractor={(item) => item.id}
+  //           showsVerticalScrollIndicator={false}
+  //           ListHeaderComponent={<HomeHeader onSearch={handleSearch} />}
+  //         />
+  //       </View>
+
+  //       <View
+  //         style={{
+  //           position: "absolute",
+  //           top: 0,
+  //           bottom: 0,
+  //           right: 0,
+  //           left: 0,
+  //           zIndex: -1,
+  //         }}
+  //       >
+  //         <View
+  //           style={{ height: 300, backgroundColor: COLORS.primary }} />
+  //         <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+  //       </View>
+  //     </View>
+  //   </SafeAreaView>
+  // );
+// };
+
+// export default Home;
