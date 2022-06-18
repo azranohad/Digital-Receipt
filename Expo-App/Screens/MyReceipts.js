@@ -5,207 +5,156 @@ import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 
 const MyReceiptsScreen = ({navigation, route}) => {
-  const [single, setSingle]= useState(false);
   const [found, setFound]= useState(false);
-  const [showSearch, setShowSearch]= useState(false);
   const [searchByName, setSearchByName] = useState('');
-  const [userId, setUserId] = useState('');
+  const [storeName, setStoreName] = useState('');
+  const [userKey, setuserKey] = useState('');
+  const [fromDate, setfromDate] = useState('1/1/1950');
+  const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
+  const [isLoading, setisLoading] = useState(true);
+  const i = 'user_key';
+
+
 
   useEffect(()=>{
-    getId();
-    }, []);
+      getIdandReceipts();
+ },[]);
  
-  // get id of user
-  const getId = async () => {
+  // get id of user and all his receipts
+  const getIdandReceipts = async () => {
     // try {
-    //   const value = await AsyncStorage.getItem('userId')
+    //   const value = await AsyncStorage.getItem('userKey')
     //   if(value !== null) {
     //     console.log("getdata: ",value);
-    //     getReceipts(1);
-    //     setUserId(value);
+    //     setuserKey(value);
     //   }
     // } catch(e) {
     //   // error reading value
     // }
-    setUserId(1);
-    getReceipts(1);
+    setuserKey("fd18ed355cd74ae38799f76dc7d20609");
+    getImg("p");
+    getAllReceipts("fd18ed355cd74ae38799f76dc7d20609");
   }
 
-  // default receipts view -  by date
-  async function getReceipts(value) {
-    let user = 19;
+
+  // set all variables:
+  const setAll = (data)=>{
+    let len = (Object.keys(data)).length;
+    if (len==0){
+      setFound(false);
+    }
+    else {
+      setJsonData(data);
+      setFound(true);
+    }
+    setisLoading(false)
+  }
+
+
+  // default receipts view -  by date_of_receipt
+  async function getReceiptsByDate() {
+    setisLoading(true);
     fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_date`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user_key': user,
+            'user_key': userKey,
+            'from_date': fromDate,
+            'to_date': toDate,
         },
     }).then(res => res.json()).then(data => {
-      console.log();
-      if (Object.keys(data).length == 0){
-        console.log("NONE");
-        setSingle(false);
-        setShowSearch(false);
-        setFound(false);
-      }
-      else if(Object.keys(data).length == 1){
-        setJsonData(data); 
-        setFound(true);
-        setSingle(true);
-        setShowSearch(false);
-      }
-      else {
-        setJsonData(data); 
-        setOriginal(data); 
-        setFound(true);
-        setSingle(false);
-        setShowSearch(true);
-        console.log("in else");
-        setJsonData(JsonData);
-      }
+      setAll(data);
     });
-    // data.forEach(obj => {
-      //   Object.entries(obj).forEach(([key, value]) => {
-        //     console.log(`${key} ${value}`);
-        //console.log(JsonData[0].Receipt_name);
-        //JsonData[JsonData.keys(JsonData)[0]] = "78";
-        // JsonData[0].Receipt_name = '5';
-      //   });
-      //   console.log('-------------------');
-      // });
-      // console.log("data1: ", data[0]);
-      // console.log("data2: ", data[1]);
-      // let response = data[Object.keys(data)[0]];
-      // let respons = Object.keys(data)[0];
-      // console.log("res: ",response);
-      // console.log("resp: ",respons);
-      // console.log("data: ", data);
-  
-      // console.log("Object.keys(data): ",Object.keys(data));
-      // console.log("--------", Object.keys(data)[0]);
-      // console.log("--------", Object.values(data)[0]);
-      // if (Object.keys(data).length == 0){
-      //     console.log("NONE");
-      // }
   }
     
     const searchName = ()=> {
-      setSearchByName('');
-      //let userId=getData();
-      let userId=1;
+      setisLoading(true);
       fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
-              'user-key': userId,
+              'user-key': userKey,
               'name_search' : searchByName,
           },
       }).then(res => res.json()).then(data => {
-        let len = (Object.keys(data)).length;
-        if (len==0){
-          setFound(false);
-          setSingle(false);
-          setShowSearch(false);
-        }
-        else if(len==1){
-          setJsonData(data);
-          setFound(true);
-          setSingle(true);
-          setShowSearch(false);
-        }
-        else {
-          setJsonData(data);
-          setShowSearch(true);
-          setSingle(false);
-          setFound(true);
-        }
+        setAll(data);
     });
   }
 
   const getStores = ()=> {
-    let userId=1;
+    setisLoading(true);
     fetch(`http://${route.params.url}/scan_receipt_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user-key': {userId},
+            'user-key': userKey,
         },
     }).then(res => res.json()).then(data => {
-      
+      console.log(data);
   });
 }
 
 const getReceiptsByStore = ()=> {
+  setisLoading(true);
   fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
-          'user-key': {userId},
+          'user-key': userKey,
           'market' : storeName
       },
   }).then(res => res.json()).then(data => {
-    let len = (Object.keys(data)).length;
-    if (len==0){
-      setFound(false);
-      setSingle(false);
-      setShowSearch(false);
-    }
-    else if(len==1){
-      setJsonData(data);
-      setFound(true);
-      setSingle(true);
-      setShowSearch(false);
-    }
-    else {
-      setJsonData(data);
-      setShowSearch(true);
-      setSingle(false);
-      setFound(true);
-    }
+    setAll(data);
 });
 }
 
-const getReceiptsByDate = ()=> {
-  fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_date`, {
+const getAllReceipts = (val)=> {
+  setisLoading(true);
+  fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
-          'user-key': {userId},
-          'from_date': fromDate,
-          'to_date' : toDate,
+          'user_key' : val,
       },
   }).then(res => res.json()).then(data => {
-    let len = (Object.keys(data)).length;
-    if (len==0){
-      setFound(false);
-      setSingle(false);
-      setShowSearch(false);
-    }
-    else if(len==1){
-      setJsonData(data);
-      setFound(true);
-      setSingle(true);
-      setShowSearch(false);
-    }
-    else {
-      setJsonData(data);
-      setShowSearch(true);
-      setSingle(false);
-      setFound(true);
-    }
+    setOriginal(data);
+    setAll(data);
 });
 }
 
-  return (
+const getImg =  (id)=> {
+  setisLoading(true);
+  fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts`, {
+      method: 'GET',
+      headers: {
+          'content-type': 'aplication/json',
+          'user_key' : 'b661e90ea0fe4cb5bb6c53b68ad5d555',
+          'image_name' : 'ef2561389f2b4322b40d9c0c6e18240e',
+      },
+  }).then(res => res.json()).then(res => {
+    console.log("res:",res);
+    const imageBlob = res.blob();
+    const imageObjectURL = URL.createObjectURL(imageBlob);
+    //setImg(imageObjectURL);
+    console.log(imageBlob);
+});
+}
+
+  if (!isLoading){
+    return (
       <View style={styles.container}> 
         <TextInput value={searchByName}
             onChangeText={(searchByName) => setSearchByName(searchByName)}
-            placeholder={'Search Receipt'}/>   
+            placeholder={'Search By Name'}/>   
           <Button title='Search' onPress={()=>{searchName();}}></Button> 
+          <TextInput value={storeName}
+            onChangeText={(storeName) => setStoreName(storeName)}
+            placeholder={'Search By Store'}/>   
+          <Button title='Search' onPress={()=>{getReceiptsByStore(); getStores();}}></Button> 
           {!found && <Text>Not Found</Text>}
-          {!found && <Button title='Go Back' onPress={()=>{setJsonData(original); setShowSearch(true);}}/>}
+          {!found && <Button title='Go Back' onPress={()=>{setJsonData(original);}}/>}
           {found && <DataTable >
         <DataTable.Header>
           <DataTable.Title></DataTable.Title>
@@ -214,28 +163,33 @@ const getReceiptsByDate = ()=> {
           <DataTable.Title>Date</DataTable.Title>
           <DataTable.Title>Receipt Name</DataTable.Title>
         </DataTable.Header>
-
-        {single && !showSearch && found && <DataTable.Row style={{alignContent:'center', alignItems:'center'}}>
-            <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getReceipts();}}>Show</DataTable.Cell>
-            <DataTable.Cell>{JsonData[0].Total_amount}</DataTable.Cell>
-            <DataTable.Cell>{JsonData[0].Store_name}</DataTable.Cell>
-            <DataTable.Cell>{JsonData[0].Date}</DataTable.Cell>
-            <DataTable.Cell>{JsonData[0].Receipt_name}</DataTable.Cell>
-        </DataTable.Row>}
-        {showSearch && !single && found && JsonData.map((account, key)=>(
-        <DataTable.Row style={{alignContent:'center', alignItems:'center'}} key={key}>
-            <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getReceipts();}}>Show</DataTable.Cell>
-            <DataTable.Cell>{account.Total_amount}</DataTable.Cell>
-            <DataTable.Cell>{account.Store_name}</DataTable.Cell>
-            <DataTable.Cell>{account.Date}</DataTable.Cell>
-            <DataTable.Cell>{account.Receipt_name}</DataTable.Cell>
+        {found && Object.values(JsonData).map((account)=>(
+          <DataTable.Row style={{alignContent:'center', alignItems:'center'}} key={account._id}>
+            <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getImg(account._id);}}>Show</DataTable.Cell>
+            <DataTable.Cell>{account.total_price}$</DataTable.Cell>
+            <DataTable.Cell>{account.market}</DataTable.Cell>
+            <DataTable.Cell>{account.date_of_receipt}</DataTable.Cell>
+            <DataTable.Cell>{account.name_for_client}</DataTable.Cell>
         </DataTable.Row>
         )
-    )}
+        )}
       </DataTable>}
-      {!showSearch && found && !single && <Button title='Show More' style={{backgroundColor:'blue'}}></Button>}
+      {found && <Button title='Show More' style={{backgroundColor:'blue'}}></Button>}
     </View>
   )
+}
+else {
+  return (
+    <View style={styles.container}> 
+    <TextInput value={searchByName}
+        onChangeText={(searchByName) => searchName(searchByName)}
+        placeholder={'Search Receipt'}/>   
+      <Button title='Search' onPress={()=>{getReceiptsByStore();}}></Button> 
+      <Text>Loading...</Text>
+      </View>
+
+  )
+}
 }
 
 const styles = StyleSheet.create({
