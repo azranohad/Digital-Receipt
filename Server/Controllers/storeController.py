@@ -3,7 +3,7 @@ from flask import request, Blueprint
 
 from Server.Services.parseStoreDataService import parseStoreDataService
 from Server.Services.receiptService import receiptService
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 store_api = Blueprint('store_api', __name__)
 convertPDF = parseStoreDataService()

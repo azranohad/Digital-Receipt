@@ -12,7 +12,7 @@ from Server.Repositories.userRepository import userRepository
 
 
 # @singleton
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 
 class userService:

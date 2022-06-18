@@ -3,7 +3,7 @@ from flask import request, Blueprint
 from Server.Features.ScanReceipt.scanReceiptManager import scanReceiptManager
 from Server.Repositories.receiptRepository import receiptRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 receipt_api = Blueprint('scan_receipt_api', __name__)
 
