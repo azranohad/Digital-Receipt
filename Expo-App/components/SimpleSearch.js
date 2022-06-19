@@ -45,6 +45,7 @@ const SimpleSearch = ({ handleSearch }) => {
               placeholder="Search Store"
               style={{ flex: 1 }}
               onChangeText={val=>setSearch(val)}
+              // onSubmitEditing
               />
       
     </View>

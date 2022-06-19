@@ -1,70 +1,109 @@
-import React from "react";
+import React, {useState, useContext} from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Image , Text, ImageBackgroundBase} from "react-native";
+import { View, Image , Text, TextInput, StyleSheet, TouchableOpacity} from "react-native";
 
 import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
 //{ data,handlePress, date, price, receipt}
-export const PopUp = () =>{
-
+export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, setExpireDate, setMarket, setName, isReceipt}) =>{
+  
+  const [specUrl, setSpecUrl] = useState('')
+  const [isUpLoading, setisUpLoading] = useState(false);
   return (
-      <View
-        style={{
-          backgroundColor: COLORS.gray,
-          borderRadius: SIZES.base,
-          borderTopLeftRadius: SIZES.font,
-          borderTopRightRadius: SIZES.font,
-          width: "50%",
-          height: "50%",
-        }}
-      >
-                 {/* alignItems: "center",
-          borderTopLeftRadius: SIZES.font,
-         borderTopRightRadius: SIZES.font,
-         alignItems:"center",
-         justifyContent: "center", */}
-        {/* <Image
-          source={assets.nft01}
-          resizeMode="cover"
-          style={{
-            width: "100%",
-            height: "100%",
-            borderTopLeftRadius: SIZES.font,
-            borderTopRightRadius: SIZES.font,
-          }}
-        />
-
+    <>
+    {/* <View style={{alignItems: 'center', backgroundColor: COLORS.white}}>
+          </View> */}
+    <View style={{alignItems: 'center', backgroundColor: COLORS.white, borderRadius:SIZES.large}}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={()=>handleClose(false)}>
+           <Image source={require('../Images/x.png')}
+                    style={{height: 30, width: 30}}/>
+        </TouchableOpacity>
       </View>
-
-      <SubInfo date={date} receipt={receipt}/>
-
-      <View style={{ width: "100%", padding: SIZES.font }}>
-        <NFTTitle
-          title={data.name_for_client}
-          subTitle={data.market}
-          titleSize={SIZES.large}
-          subTitleSize={SIZES.small}
-        />
-
-        <View
-          style={{
-            marginTop: SIZES.font,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <EthPrice price={price.toFixed(2)} />
-          <RectButton
-            minWidth={80}
-            fontSize={SIZES.font}
-            handlePress={() => navigation.navigate("DigitalReceipt", { data })}
-            buttonText={"Show"}
+      {/* <Image
+        source={require('../Images/success.png')}
+        style={{height: 150, width: 150, marginVertical: 10}}
+      /> */}
+      {isUpLoading ? <Text>Uplaoding...</Text>:<>
+      <TextInput
+          value=""
+          onChangeText={(name) => setName(name)}
+          placeholder={'Name'}
+          style={styles.input}
           />
-        </View> */}
-      </View>
+      <Text>Store: </Text>
+      <Text>Date: </Text>
+      {isReceipt && <>
+      <Text>Total Amount is: 90$</Text>
+      </>}
+      {!isReceipt && <>
+        <Text>Please Enter:</Text>
+        <TextInput
+          value="{expireDate}"
+          onChangeText={(lname) => setExpireDate(lname)}
+          placeholder={'Expiration Date'}
+          style={styles.input}
+        />
+        <TextInput
+          value={data.total_price}
+          onChangeText={(name) => setAmount(name)}
+          placeholder={'Total Amount'}
+          style={styles.input}
+          />
+      </>}
+      <RectButton minWidth={120} fontSize={SIZES.medium} {...SHADOWS.dark} buttonText={"Confirm"}/>
+      {/* <Button title="Confirm" onPress={()=>{sendUpdates();}}></Button>
+      <Button title="Edit" onPress={()=>{}}></Button> */}
+    </>}
+    </View>
+</>
+
   );
 };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  camera: {
+    flex: 1,
+    aspectRatio: 1,
+    // shoval added
+    // These below are most important, they center your border view in container
+    // ref: https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+    alignItems: 'center',
+    justifyContent: 'center',
+    //
+  },
+  cameraContainer: {
+    flex: 1,
+    flexDirection: 'column',
+  },
+  button: {
+    flex: 1,
+  },
+  modalBackGround: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+    borderRadius: 20,
+    elevation: 20,
+  },
+  header: {
+    width: '100%',
+    height: 40,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+  },
+});
 

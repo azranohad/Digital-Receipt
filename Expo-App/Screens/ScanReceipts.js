@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {StyleSheet,Text,View,StatusBar, ImageBackground, Image} from 'react-native'
+import {StyleSheet,Text,View,StatusBar, ImageBackground, Image, Pressable} from 'react-native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
 import { CircleButton, RectButton, PopUp } from "../components";
+import Modal from "react-native-modal";
 
 
 const ScanReceipts = ({navigation, route}) => {
+  const [modalVisible, setModalVisible] = useState(true);
+
   const [hasCameraPermission, setHasCameraPermission] = useState(null)
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null)
   const [image, setImage] = useState(null)
@@ -162,8 +165,10 @@ const ScanReceipts = ({navigation, route}) => {
     setImage(local_uri);
     setImgBackground(local_uri);
     setisUpLoading(true);
+    setModalVisible(true);
     setPopUp(true);
 
+    
     // ImagePicker saves the taken photo to disk and returns a local URI to it
     let filename = local_uri.split('/').pop();
     const formData = new FormData();
@@ -190,6 +195,7 @@ const ScanReceipts = ({navigation, route}) => {
     //   setDate(data.date);
     //   setMarket(data.market);
     //   setisUpLoading(false);
+    //   setPopUp(true);
     // });
   }
 
@@ -218,6 +224,8 @@ const ScanReceipts = ({navigation, route}) => {
   }
 
   const sendUpdates = async () => {
+    setImage(null);
+    setPopUp(false);
     const myHeaders = new Headers();
     myHeaders.append('content-type', 'aplication/json');
     if (!isReceipt){
@@ -258,6 +266,8 @@ const ScanReceipts = ({navigation, route}) => {
     return <Text>No access to camera</Text>
   }
 
+
+
   return (
 
     <View 
@@ -268,7 +278,7 @@ const ScanReceipts = ({navigation, route}) => {
     }}
   >
      
-      {!popUp &&<ImageBackground
+      {!image &&<ImageBackground
        source={assets.nft01}
        resizeMode="cover"
        style={{
@@ -304,13 +314,40 @@ const ScanReceipts = ({navigation, route}) => {
       </>}
 
      </ImageBackground>}
-     <View >
-
-     {image && <Image source={{ uri: image }} style={{ flex: 1, opacity: opacity}} />}
+     {image && <Image source={{ uri: image }} style={{ flex: 1}}/>}
+     {popUp && 
+    //  <Modal animationType="slide"></Modal>
+     <Modal
+     animationType="slide"
+     transparent={true}
+     onBackdropPress={() => setModalVisible(false)}
+    //  backgroundColor={COLORS.gray}
+    backdropColor="black"
+    backdropOpacity="0.4"
+     visible={modalVisible}
+     onRequestClose={() => {
+       Alert.alert("Modal has been closed.");
+       setModalVisible(!modalVisible);
+     }}
+   >
+     {/* <View style={{backgroundColor: COLORS.white,
+          borderRadius: SIZES.base,
+          width: "50%",
+          height: "50%"}}>
+         <Text>Hello World!</Text>
+         <Pressable
+           
+           onPress={() => setModalVisible(!modalVisible)}
+         >
+           <Text>Hide Modal</Text>
+         </Pressable>
+     </View> */}
+     <PopUp data={JsonData} handleClose={()=>setPopUp(false)} handleConfirm={sendUpdates} setAmount={setAmount} setExpireDate={setExpireDate} setDate={setDate} setMarket={setMarket} setName={setName} isReceipt={isReceipt}/>
+   </Modal>
+     }
       {/* {popUp && 
       <PopUp />
       } */}
-     </View>
      
 
      
