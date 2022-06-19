@@ -22,7 +22,7 @@ export const NFTTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
           color: COLORS.primary,
         }}
       >
-        by {subTitle}
+        {subTitle}
       </Text>
     </View>
   );
@@ -31,11 +31,11 @@ export const NFTTitle = ({ title, subTitle, titleSize, subTitleSize }) => {
 export const EthPrice = ({ price }) => {
   return (
     <View style={{ flexDirection: "row", alignItems: "center" }}>
-      <Image
+      {/* <Image
         source={assets.eth}
         resizeMode="contain"
         style={{ width: 20, height: 20, marginRight: 2 }}
-      />
+      /> */}
       <Text
         style={{
           fontFamily: FONTS.medium,
@@ -43,11 +43,12 @@ export const EthPrice = ({ price }) => {
           color: COLORS.primary,
         }}
       >
-        {price}
+        {price}$
       </Text>
     </View>
   );
 };
+
 
 const ImageCmp = ({ imgUrl, index }) => {
   return (
@@ -75,13 +76,13 @@ export const People = () => {
   );
 };
 
-export const EndDate = () => {
+export const EndDate = ({ date , receipt}) => {
   return (
     <View
       style={{
         paddingHorizontal: SIZES.font,
         paddingVertical: SIZES.base,
-        backgroundColor: COLORS.white,
+        backgroundColor: COLORS.lightgray,
         borderRadius: SIZES.font,
         justifyContent: "center",
         alignItems: "center",
@@ -90,29 +91,30 @@ export const EndDate = () => {
         maxWidth: "50%",
       }}
     >
-      <Text
-        style={{
-          fontFamily: FONTS.regular,
-          fontSize: SIZES.small,
-          color: COLORS.primary,
-        }}
-      >
-        Ending in
-      </Text>
-      <Text
+     {!receipt && <Text
         style={{
           fontFamily: FONTS.semiBold,
           fontSize: SIZES.medium,
           color: COLORS.primary,
         }}
       >
-        12h 30m
+        Expires On
       </Text>
+}
+        <Text
+          style={{
+            fontFamily: FONTS.regular,
+            fontSize: SIZES.small,
+            color: COLORS.primary,
+          }}
+        >
+          {date}
+        </Text>
     </View>
   );
 };
 
-export const SubInfo = () => {
+export const SubInfo = ({date, receipt}) => {
   return (
     <View
       style={{
@@ -123,8 +125,8 @@ export const SubInfo = () => {
         justifyContent: "space-between",
       }}
     >
-      <People />
-      <EndDate />
+      {/* <People /> */}
+      <EndDate date={date} receipt={receipt}/>
     </View>
   );
 };

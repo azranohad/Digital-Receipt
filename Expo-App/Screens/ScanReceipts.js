@@ -1,15 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {StyleSheet,Text,View,TouchableOpacity,Button,Modal,Image,Animated, TextInput} from 'react-native'
+import {StyleSheet,Text,View,StatusBar, ImageBackground, Image, Pressable} from 'react-native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
-import MyReceiptsScreen from './MyReceipts'
+import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
+import { CircleButton, RectButton, PopUp } from "../components";
+import Modal from "react-native-modal";
+
 
 const ScanReceipts = ({navigation, route}) => {
+  const [modalVisible, setModalVisible] = useState(true);
+
   const [hasCameraPermission, setHasCameraPermission] = useState(null)
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null)
   const [image, setImage] = useState(null)
+  const [popUp, setPopUp] = useState(false);
+  const [opacity, setOpacity] = useState(1);
+  const [imgBackground, setImgBackground] = useState(assets.nft01);
   const [first, setFirst] = useState(true)
   const [visible, setVisible] = useState(false)
+  const [chooseAction, setChooseAction] = useState(false);
   const [userKey, setuserKey] = useState('')
   const [amount, setAmount] = useState('55')
   const [date, setDate] = useState('')
@@ -32,6 +41,7 @@ const ScanReceipts = ({navigation, route}) => {
     })();
     getId();
   }, [])
+
 
   const getId = async () => {
     // try {
@@ -153,8 +163,12 @@ const ScanReceipts = ({navigation, route}) => {
 
   const sendImage= async (local_uri) =>{
     setImage(local_uri);
+    setImgBackground(local_uri);
     setisUpLoading(true);
+    setModalVisible(true);
+    setPopUp(true);
 
+    
     // ImagePicker saves the taken photo to disk and returns a local URI to it
     let filename = local_uri.split('/').pop();
     const formData = new FormData();
@@ -168,20 +182,21 @@ const ScanReceipts = ({navigation, route}) => {
     formData.append('image', img);
     formData.append('user_key', userKey);
     console.log(`http://${route.params.url}/${specUrl}/scan`);
-    fetch(`http://${route.params.url}/${specUrl}/scan`, {
-      method: 'POST',
-      body:formData,
-      headers: {
-        'content-type': 'multipart/form-data',
-      },
-    }).then(res => res.json()).then(data => {
-      console.log(data);
-      setJsonData(data);
-      setImageId(data._id);
-      setDate(data.date);
-      setMarket(data.market);
-      setisUpLoading(false);
-    });
+    // fetch(`http://${route.params.url}/${specUrl}/scan`, {
+    //   method: 'POST',
+    //   body:formData,
+    //   headers: {
+    //     'content-type': 'multipart/form-data',
+    //   },
+    // }).then(res => res.json()).then(data => {
+    //   console.log(data);
+    //   setJsonData(data);
+    //   setImageId(data._id);
+    //   setDate(data.date);
+    //   setMarket(data.market);
+    //   setisUpLoading(false);
+    //   setPopUp(true);
+    // });
   }
 
   async function takeAndUploadPhotoAsync() {
@@ -209,6 +224,8 @@ const ScanReceipts = ({navigation, route}) => {
   }
 
   const sendUpdates = async () => {
+    setImage(null);
+    setPopUp(false);
     const myHeaders = new Headers();
     myHeaders.append('content-type', 'aplication/json');
     if (!isReceipt){
@@ -237,6 +254,11 @@ const ScanReceipts = ({navigation, route}) => {
     });
   }
 
+  const setType = (val)=>{
+    setisReceipt(val);
+    setChooseAction(true);
+  }
+
   if (hasCameraPermission === null || hasGalleryPermission === false) {
     return <View />
   }
@@ -244,69 +266,154 @@ const ScanReceipts = ({navigation, route}) => {
     return <Text>No access to camera</Text>
   }
 
+
+
   return (
-    <View style={styles.container}>
-      {first && <>
-        <Button title="Receipt" onPress={()=>{setisReceiptData(true);}}></Button>
-        <Button title="Credit" onPress={()=>{setisReceiptData(false);}}></Button>
-      </>}
-      {!image && !first && <>
-      <Button title="Scan" onPress={()=>takeAndUploadPhotoAsync()}></Button>
-      <Button title="Choose From Gallery" onPress={()=> pickImageFromGallery()}></Button>
-      </>}
-      {image && <>
-      <Image source={{ uri: image }} style={{ flex: 1 }} />
-      <Button title="Submit" onPress={()=>{setVisible(true); }}></Button>
-      </>}
-      {visible && <View>
-        <View style={{alignItems: 'center'}}>
-          <View style={styles.header}>
-            <TouchableOpacity onPress={() => setVisible(false)}>
-              <Image
-                source={require('../Images/x.png')}
-                style={{height: 30, width: 30}}
-              />
-            </TouchableOpacity>
-          </View>
+
+    <View 
+    style={{
+      width: "100%",
+      height: "100%",
+      
+    }}
+  >
+     
+      {!image &&<ImageBackground
+       source={assets.nft01}
+       resizeMode="cover"
+       style={{
+         width: "100%",
+         height: "100%",
+         borderTopLeftRadius: SIZES.font,
+         borderTopRightRadius: SIZES.font,
+         alignItems:"center",
+         justifyContent: "center",
+        }}
+     >
+      {!chooseAction && <> 
+        <View style={{padding: SIZES.base}}>
+                <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Receipt"} handlePress={()=>setType(true)}/>
         </View>
-        <View style={{alignItems: 'center'}}>
-          {/* <Image
-            source={require('../Images/success.png')}
-            style={{height: 150, width: 150, marginVertical: 10}}
-          /> */}
-          {isUpLoading ? <Text>Uplaoding...</Text>:<>
-          <TextInput
-              value={name}
-              onChangeText={(name) => setName(name)}
-              placeholder={'Name'}
-              style={styles.input}
-            />
-          <Text>Store: {market}</Text>
-          <Text>Date: {date}</Text>
-          {isReceipt && <>
-          <Text>Total Amount is: {amount}$</Text>
-          </>}
-          {!isReceipt && <>
-            <Text>Please Enter:</Text>
-            <TextInput
-              value={expireDate}
-              onChangeText={(lname) => setExpireDate(lname)}
-              placeholder={'Expiration Date'}
-              style={styles.input}
-            />
-            <TextInput
-              value={amount}
-              onChangeText={(name) => setAmount(name)}
-              placeholder={'Total Amount'}
-              style={styles.input}
-              />
-          </>}
-          <Button title="Confirm" onPress={()=>{sendUpdates();}}></Button>
-          <Button title="Edit" onPress={()=>{}}></Button>
-</>}
+        <View style={{padding: SIZES.base}}>
+                <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Store Credit"} handlePress={()=>setType(false)}/>
         </View>
-      </View>}
+      </>}
+      {chooseAction && <> 
+        <CircleButton
+      imgUrl={assets.left}
+      handlePress={() => setChooseAction(false)}
+      right={15}
+      top={StatusBar.currentHeight}
+    />
+        <View style={{padding: SIZES.base}}>
+                <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Scan"} handlePress={()=>takeAndUploadPhotoAsync()}/>
+        </View>
+        <View style={{padding: SIZES.base}}>
+                <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Choose From Gallery"} handlePress={()=>pickImageFromGallery()}/>
+        </View>
+      </>}
+
+     </ImageBackground>}
+     {image && <Image source={{ uri: image }} style={{ flex: 1}}/>}
+     {popUp && 
+    //  <Modal animationType="slide"></Modal>
+     <Modal
+     animationType="slide"
+     transparent={true}
+     onBackdropPress={() => setModalVisible(false)}
+    //  backgroundColor={COLORS.gray}
+    backdropColor="black"
+    backdropOpacity="0.4"
+     visible={modalVisible}
+     onRequestClose={() => {
+       Alert.alert("Modal has been closed.");
+       setModalVisible(!modalVisible);
+     }}
+   >
+     {/* <View style={{backgroundColor: COLORS.white,
+          borderRadius: SIZES.base,
+          width: "50%",
+          height: "50%"}}>
+         <Text>Hello World!</Text>
+         <Pressable
+           
+           onPress={() => setModalVisible(!modalVisible)}
+         >
+           <Text>Hide Modal</Text>
+         </Pressable>
+     </View> */}
+     <PopUp data={JsonData} handleClose={()=>setPopUp(false)} handleConfirm={sendUpdates} setAmount={setAmount} setExpireDate={setExpireDate} setDate={setDate} setMarket={setMarket} setName={setName} isReceipt={isReceipt}/>
+   </Modal>
+     }
+      {/* {popUp && 
+      <PopUp />
+      } */}
+     
+
+     
     </View>
+//     <View style={styles.container}>
+//       {first && <>
+//         <Button title="Receipt" onPress={()=>{setisReceiptData(true);}}></Button>
+//         <Button title="Credit" onPress={()=>{setisReceiptData(false);}}></Button>
+//       </>}
+//       {!image && !first && <>
+//       <Button title="Scan" onPress={()=>takeAndUploadPhotoAsync()}></Button>
+//       <Button title="Choose From Gallery" onPress={()=> pickImageFromGallery()}></Button>
+//       </>}
+//       {image && <>
+//       <Image source={{ uri: image }} style={{ flex: 1 }} />
+//       <Button title="Submit" onPress={()=>{setVisible(true); }}></Button>
+//       </>}
+//       {visible && <View>
+//         <View style={{alignItems: 'center'}}>
+//           <View style={styles.header}>
+//             <TouchableOpacity onPress={() => setVisible(false)}>
+//               <Image
+//                 source={require('../Images/x.png')}
+//                 style={{height: 30, width: 30}}
+//               />
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+//         <View style={{alignItems: 'center'}}>
+//           {/* <Image
+//             source={require('../Images/success.png')}
+//             style={{height: 150, width: 150, marginVertical: 10}}
+//           /> */}
+//           {isUpLoading ? <Text>Uplaoding...</Text>:<>
+//           <TextInput
+//               value={name}
+//               onChangeText={(name) => setName(name)}
+//               placeholder={'Name'}
+//               style={styles.input}
+//             />
+//           <Text>Store: {market}</Text>
+//           <Text>Date: {date}</Text>
+//           {isReceipt && <>
+//           <Text>Total Amount is: {amount}$</Text>
+//           </>}
+//           {!isReceipt && <>
+//             <Text>Please Enter:</Text>
+//             <TextInput
+//               value={expireDate}
+//               onChangeText={(lname) => setExpireDate(lname)}
+//               placeholder={'Expiration Date'}
+//               style={styles.input}
+//             />
+//             <TextInput
+//               value={amount}
+//               onChangeText={(name) => setAmount(name)}
+//               placeholder={'Total Amount'}
+//               style={styles.input}
+//               />
+//           </>}
+//           <Button title="Confirm" onPress={()=>{sendUpdates();}}></Button>
+//           <Button title="Edit" onPress={()=>{}}></Button>
+// </>}
+//         </View>
+//       </View>}
+//     </View>
   )
 }
 

@@ -1,8 +1,11 @@
-import { useState, Component, useEffect } from 'react';
-import { StyleSheet, TextInput, View, Button, Text } from 'react-native';
+
+import React, { useState, Component, useEffect } from 'react';
+import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-
+import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
+import { COLORS, NFTData } from "../constants";
+import { event } from 'react-native-reanimated';
 
 const MyStoreCreditsScreen = ({navigation, route}) => {
   const [found, setFound]= useState(false);
@@ -112,58 +115,94 @@ const getAllCredits = (val)=> {
           'user_key' : val,
       },
   }).then(res => res.json()).then(data => {
+    console.log(data);
    setAll(data);
    setOriginal(data);
 });
+}
+
+const trashCredit = (val)=> {
+  fetch(`http://${route.params.url}/scan_credit_controller/delete_credit`, {
+      method: 'DELETE',
+      body: JSON.stringify({
+        'user_key': userKey,
+          '_id' : val,
+      }),
+      headers: {
+          'content-type': 'aplication/json',
+      },
+  }).then(res => {console.log("res", res);; res.json();}).then(data => {
+    console.log(data);
+    if (data==true){
+      Object.values(JsonData).map((account)=>{
+        if (account._id==val){
+          x = JsonData[account._id]
+          console.log(x);
+      }
+        })
+    }
+    // setAll(data);
+});
+}
+
+const getImg =  (e)=> {
+  console.log(e);
+//   setisLoading(true);
+//   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts`, {
+//       method: 'GET',
+//       headers: {
+//           'content-type': 'aplication/json',
+//           'user_key' : 'b661e90ea0fe4cb5bb6c53b68ad5d555',
+//           'image_name' : 'ef2561389f2b4322b40d9c0c6e18240e',
+//       },
+//   }).then(res => res.json()).then(res => {
+//     console.log("res:",res);
+//     const imageBlob = res.blob();
+//     const imageObjectURL = URL.createObjectURL(imageBlob);
+//     //setImg(imageObjectURL);
+//     console.log(imageBlob);
+// });
 }
 
 
 
 if (!isLoading){
   return (
-    <View style={styles.container}> 
-      <TextInput value={searchByName}
-          onChangeText={(searchByName) => setSearchByName(searchByName)}
-          placeholder={'Search By Name'}/>   
-        <Button title='Search' onPress={()=>{searchName();}}></Button> 
-        <TextInput value={storeName}
-          onChangeText={(storeName) => setStoreName(storeName)}
-          placeholder={'Search By Store'}/>   
-        <Button title='Search' onPress={()=>{getCreditsByStore(); getStores();}}></Button> 
-        {!found && <Text>Not Found</Text>}
-        {!found && <Button title='Go Back' onPress={()=>{setJsonData(original);}}/>}
-        {found && <DataTable >
-      <DataTable.Header>
-        <DataTable.Title></DataTable.Title>
-        <DataTable.Title>Total Amount</DataTable.Title>
-        <DataTable.Cell>Expiration Date</DataTable.Cell>
-        <DataTable.Title>Store</DataTable.Title>
-        <DataTable.Title>Date</DataTable.Title>
-        <DataTable.Title>Credit Name</DataTable.Title>
-      </DataTable.Header>
-      {found && Object.values(JsonData).map((account)=>(
-        <DataTable.Row style={{alignContent:'center', alignItems:'center'}} key={account._id}>
-          <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getCreditsByDate();}}>Show</DataTable.Cell>
-          <DataTable.Cell>{account.total_price}$</DataTable.Cell>
-          <DataTable.Cell>{account.expiration_date}</DataTable.Cell>
-          <DataTable.Cell>{account.market}</DataTable.Cell>
-          <DataTable.Cell>{account.date_of_credit}</DataTable.Cell>
-          <DataTable.Cell>{account.name_for_client}</DataTable.Cell>
-      </DataTable.Row>
-      )
-      )}
-    </DataTable>}
-    {found && <Button title='Show More' style={{backgroundColor:'blue'}}></Button>}
-  </View>
-)
+    <SafeAreaView style={{ flex: 1 }}>
+      <FocusedStatusBar backgroundColor={COLORS.primary} />
+      <View style={{ flex: 1 }}>
+        <View style={{ zIndex: 0 }}>
+          <FlatList
+            data={Object.values(JsonData)}
+            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,-13)} price={90}  receipt={false}/>}
+            keyExtractor={(item) => item._id}
+            showsVerticalScrollIndicator={false}
+            ListHeaderComponent={<HomeHeader/>}
+          />
+        </View>
+
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            zIndex: -1,
+          }}
+        >
+          <View
+            style={{ height: 300, backgroundColor: COLORS.midnightblue }} />
+          <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+        </View>
+      </View>
+    </SafeAreaView>
+  )
 }
 else {
 return (
   <View style={styles.container}> 
-  <TextInput value={searchByName}
-      onChangeText={(searchByName) => searchName(searchByName)}
-      placeholder={'Search Credit'}/>   
-    <Button title='Search' onPress={()=>{getCreditsByStore();}}></Button> 
+
     <Text>Loading...</Text>
     </View>
 
@@ -172,9 +211,17 @@ return (
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 100,
-  },
+container: {
+  paddingTop: 100,
+},
+input: {
+  width: 250,
+  height: 44,
+  padding: 10,
+  marginTop: 20,
+  marginBottom: 10,
+  backgroundColor: '#e8e8e8'
+},
 });
 
 export default MyStoreCreditsScreen

@@ -1,5 +1,6 @@
 import HomeHeader from "./HomeHeader";
 import NFTCard from "./NFTCard";
+import { PopUp } from "./PopUp";
 import { RectButton, CircleButton } from "./Button";
 import { SubInfo, People, EndDate, EthPrice, NFTTitle } from "./SubInfo";
 import DetailsBid from "./DetailsBid";
@@ -11,6 +12,7 @@ export {
   NFTCard,
   SubInfo,
   People,
+  PopUp,
   EndDate,
   RectButton,
   CircleButton,

@@ -6,7 +6,7 @@ import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
-const NFTCard = ({ data }) => {
+const NFTCard = ({ data,handlePress, date, price, receipt}) => {
   const navigation = useNavigation();
 
   return (
@@ -22,11 +22,11 @@ const NFTCard = ({ data }) => {
       <View
         style={{
           width: "100%",
-          height: 250,
+          height: 30,
         }}
       >
         <Image
-          source={data.image}
+          source={assets.nft01}
           resizeMode="cover"
           style={{
             width: "100%",
@@ -36,15 +36,15 @@ const NFTCard = ({ data }) => {
           }}
         />
 
-        <CircleButton imgUrl={assets.heart} right={10} top={10} />
+        <CircleButton imgUrl={assets.trash} right={10} top={10} handlePress={handlePress}/>
       </View>
 
-      <SubInfo />
+      <SubInfo date={date} receipt={receipt}/>
 
       <View style={{ width: "100%", padding: SIZES.font }}>
         <NFTTitle
-          title={data.name}
-          subTitle={data.creator}
+          title={data.name_for_client}
+          subTitle={data.market}
           titleSize={SIZES.large}
           subTitleSize={SIZES.small}
         />
@@ -57,11 +57,12 @@ const NFTCard = ({ data }) => {
             alignItems: "center",
           }}
         >
-          <EthPrice price={data.price} />
+          <EthPrice price={price.toFixed(2)} />
           <RectButton
-            minWidth={120}
+            minWidth={80}
             fontSize={SIZES.font}
-            handlePress={() => navigation.navigate("Details", { data })}
+            handlePress={() => navigation.navigate("DigitalReceipt", { data })}
+            buttonText={"Show"}
           />
         </View>
       </View>
