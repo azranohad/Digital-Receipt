@@ -49,6 +49,7 @@ export const EthPrice = ({ price }) => {
   );
 };
 
+
 const ImageCmp = ({ imgUrl, index }) => {
   return (
     <Image
@@ -75,7 +76,7 @@ export const People = () => {
   );
 };
 
-export const EndDate = ({ date }) => {
+export const EndDate = ({ date , receipt}) => {
   return (
     <View
       style={{
@@ -90,29 +91,30 @@ export const EndDate = ({ date }) => {
         maxWidth: "50%",
       }}
     >
-      <Text
-        style={{
-          fontFamily: FONTS.regular,
-          fontSize: SIZES.small,
-          color: COLORS.primary,
-        }}
-      >
-        {date}
-      </Text>
-      {/* <Text
+     {!receipt && <Text
         style={{
           fontFamily: FONTS.semiBold,
           fontSize: SIZES.medium,
           color: COLORS.primary,
         }}
       >
-        {date}
-      </Text> */}
+        Expires On
+      </Text>
+}
+        <Text
+          style={{
+            fontFamily: FONTS.regular,
+            fontSize: SIZES.small,
+            color: COLORS.primary,
+          }}
+        >
+          {date}
+        </Text>
     </View>
   );
 };
 
-export const SubInfo = ({date}) => {
+export const SubInfo = ({date, receipt}) => {
   return (
     <View
       style={{
@@ -124,7 +126,7 @@ export const SubInfo = ({date}) => {
       }}
     >
       {/* <People /> */}
-      <EndDate date={date}/>
+      <EndDate date={date} receipt={receipt}/>
     </View>
   );
 };

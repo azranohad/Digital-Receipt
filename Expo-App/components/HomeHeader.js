@@ -187,7 +187,7 @@ const getReceiptsByStore = ()=> {
               onChangeText={val=>setSearchByName(val)}
               />
       <TouchableOpacity onPress={()=>setShow(!show)}>
-        <Image source={assets.filter}></Image>
+        <Image source={assets.search}></Image>
         </TouchableOpacity>
     </View>
       {show && <>
