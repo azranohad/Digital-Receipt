@@ -33,8 +33,8 @@ class serverLocalRepository:
 
         return path_image
 
-    def get_image(self, user_details, image_name):
-        path_image = os.path.join(self.get_user_folder_scans(user_details), image_name)
+    def get_image(self, user_key, image_name):
+        path_image = os.path.join(self.get_user_folder_scans(user_key), image_name)
         tempFileObj = NamedTemporaryFile(mode='w+b', suffix='jpg')
         pilImage = open(path_image, 'rb')
         copyfileobj(pilImage, tempFileObj)
@@ -42,4 +42,7 @@ class serverLocalRepository:
         tempFileObj.seek(0, 0)
         response = send_file(tempFileObj, as_attachment=True, attachment_filename=image_name)
         return response
+
+    def delete_image(self, user_details, image_name):
+        x=3
 

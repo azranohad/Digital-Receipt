@@ -3,6 +3,7 @@ from flask import request, Blueprint
 from Server.Features.ScanReceipt.scanReceiptManager import scanReceiptManager
 from Server.Repositories.receiptRepository import receiptRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
+from Server.Services.receiptService import receiptService
 from SystemFiles.logger.loggerService import loggerService
 
 receipt_api = Blueprint('scan_receipt_api', __name__)
@@ -10,6 +11,7 @@ receipt_api = Blueprint('scan_receipt_api', __name__)
 logger = loggerService()
 scan_receipt_manager = scanReceiptManager()
 receipt_repository = receiptRepository()
+receipt_service = receiptService()
 server_local_repository = serverLocalRepository()
 
 @receipt_api.route('/scan', methods=['POST'])
@@ -100,6 +102,13 @@ def delete_receipt():
     logger.print_api_message("receiptController | received delete_receipt request | user: " + user_key + "| _id:" + _id)
 
     return receipt_repository.delete_receipt(user_key, _id)
+
+@receipt_api.route('/get_barcode', methods=['GET'])
+def get_barcode():
+    receipt_id = request.headers['receipt_id']
+    logger.print_api_message("receiptController | received get_barcode request ")
+
+    return receipt_service.get_barcode(receipt_id)
 
 
 

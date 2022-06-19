@@ -118,8 +118,10 @@ class receiptRepository:
             self.logger.print_event("receiptRepository | receipt: " + receipt_id + " deleted from data base")
         else:
             self.logger.print_severe_message("receiptRepository | delete receipt from Data Base Failed. user key: " + user_key)
-        return "receipt deleted from data base"
+        return str(status)
 
 
     def get_distinct_values_by_key(self, key):
         return self.get_collection().distinct(key)
+
+

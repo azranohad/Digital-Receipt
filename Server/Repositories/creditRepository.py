@@ -110,4 +110,4 @@ class creditRepository:
             self.logger.print_event("creditRepository | credit: " + credit_id + " deleted from data base")
         else:
             self.logger.print_severe_message("creditRepository | delete credit from Data Base Failed. user key: " + user_key)
-        return "credit deleted from data base"
+        return str(status)
