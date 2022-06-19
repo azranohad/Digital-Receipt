@@ -48,7 +48,7 @@ class LearningRecommendations:
         RFM_score = []
         for i in tqdm(range(len(data))):
             # RFM_score.append(score(data.R[i],data.F[i],data.price[i]))
-            RFM_score.append(self.score(data.R[i], data.amount[i], data.price[i], data.age[i]))
+            RFM_score.append(self.score(data.R[i], data.amount[i], data.price[i]))
         data["RFM_score"] = RFM_score
 
         temp_main = data
@@ -144,9 +144,9 @@ class LearningRecommendations:
 
         # return sub_topitem, sub_ids_list, user_to_sub_list
 
-    def score(self, r, f, m, a):
-        # return((r*100)+(f*10)+m)
-        return (-r + 100 * f - m)
+    def score(self, r, f, m):
+        # return (-r + 100 * f - m)
+        return (r - 60 * f + 3 * m)
 
     def convert(self, df):
         gender = {"male": 0, "female": 1}
@@ -173,7 +173,7 @@ class LearningRecommendations:
         return (name, max_value)
 
 
-class Recomender:
+class Recommender:
 
     def __init__(self):
         self.users = {}
@@ -187,22 +187,22 @@ class Recomender:
 
     def rec(self, iddd, sub_topitem, user_to_sub_list, sub_ids_list2, users_first_store):
         print("**********************")
-        recomendation_list = []
+        recommendation_list = []
         try:
             sub = user_to_sub_list[iddd]
             for valOfClass in sub:
                 print(valOfClass)
                 print(sub_topitem[valOfClass])
-                recomendation_list += sub_topitem[valOfClass]
+                recommendation_list += sub_topitem[valOfClass]
         except:
-            recomendation_list = self.similar_user_or_cold_rec(iddd, sub_topitem, user_to_sub_list, sub_ids_list2,
+            recommendation_list = self.similar_user_or_cold_rec(iddd, sub_topitem, user_to_sub_list, sub_ids_list2,
                                                                users_first_store)
-        recomendation_list = list(dict.fromkeys(recomendation_list))
-        return recomendation_list
+        recommendation_list = list(dict.fromkeys(recommendation_list))
+        return recommendation_list
 
     def similar_user_or_cold_rec(self, iddd, sub_topitem, user_to_sub_list, sub_ids_list2,
                                  users_first_store):
-        recomendation_list = []
+        recommendation_list = []
         try:
             print("hiii")
 
@@ -231,16 +231,16 @@ class Recomender:
             print("Maximum value:", max_sub)
 
             print(sub_topitem[max_sub])  # נמליץ את ההמלצות של אותו סאב קלאס
-            recomendation_list += sub_topitem[max_sub]
+            recommendation_list += sub_topitem[max_sub]
         except:
             print("the enddddd")
             reccomenderItems = []
             for sub in sub_topitem:
                 reccomenderItems.append(sub_topitem[sub][0])
-                recomendation_list.append(sub_topitem[sub][0])
+                recommendation_list.append(sub_topitem[sub][0])
             print(reccomenderItems)
 
-        return recomendation_list
+        return recommendation_list
 
     def learn(self, file_of_stores, users):
         dir_path = os.path.abspath(os.getcwd())
@@ -250,17 +250,17 @@ class Recomender:
             data = pd.read_csv(file_name, encoding="ISO-8859-8")
             # data = pd.read_csv(store, encoding="ISO-8859-8")
             self.users[store] = data['user_key']
-            recomender = LearningRecommendations()
-            recomender.learn(data)
+            recommender = LearningRecommendations()
+            recommender.learn(data)
             self.sub_topitem[store], self.sub_ids_list[store], self.user_to_sub_list[
-                store] = recomender.sub_topitem, recomender.sub_ids_list, recomender.user_to_sub_list
+                store] = recommender.sub_topitem, recommender.sub_ids_list, recommender.user_to_sub_list
             # name_of_store = self.get_store_name(store)
 
         for store in name_of_stores:
-            dir_path = os.dirname(os.path.abspath(__file__))
+            dir_path = os.path.dirname(os.path.abspath(__file__))
 
 
-            file_name = store + '_recomendation.csv'
+            file_name = store + '_recommendation.csv'
             rec_path = os.path.join(dir_path, file_name)
             f = open(rec_path, 'w',newline="\n")
             writer = csv.writer(f)
@@ -289,7 +289,7 @@ class Recomender:
 
     def store_recommendation(self, user, store_name):
         dir_path = os.path.dirname(os.path.abspath(__file__))
-        file_name = store_name + '_recomendation.csv'
+        file_name = store_name + '_recommendation.csv'
         path = os.path.join(dir_path, file_name)
         print(path)
         f = open(path)
@@ -309,11 +309,11 @@ class Recomender:
 if __name__ == "__main__":
     # repository_mongo = recommendationSystemRepository()
     # repository_mongo.get_all_receipt_by_market() # [('a.csv', 'b.csv'] 12_06_2020$super_pharm$jgcjghg.csv
-    x = Recomender()
+    x = Recommender()
     # x.learn() #['a.csv', ]
     # x.rec_to_id(0, 'wolmart')
     # x.store_recommendation('fd18ed355cd74ae38799f76dc7d20609', 'liron')
 
-    data = pd.read_csv('s11.csv', encoding="ISO-8859-8")
+    data = pd.read_csv('super-pharm.csv', encoding="ISO-8859-8")
     users = list(data.user_key.unique())
-    x.learn(['1$liron$1.csv', 'f$s11$f.csv'], users)
+    x.learn(['1$walmart$1.csv', 'f$super-pharm$f.csv'], users)
