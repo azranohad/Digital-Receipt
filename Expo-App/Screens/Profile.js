@@ -31,6 +31,8 @@ const ProfileScreen = (props) => {
                 // error reading value
               }
             }
+            setuserKey(getData());
+
             const getTempData =  () => {
               try {
                 const value = "12345";
@@ -46,9 +48,10 @@ const ProfileScreen = (props) => {
             }
             useEffect(() =>
             {
-            fetch("http://192.168.0.111:5000/users_controller/update_user", {
+              
+            fetch("http://192.168.0.111:5000/users_controller/get_user_data", {
           method: 'POST',
-          body:JSON.stringify({"user_key": "userKey"}),
+          body:JSON.stringify({"user_key": userKey}),
           headers: {
               'content-type': 'aplication/json',
           },
@@ -136,8 +139,8 @@ const ProfileScreen = (props) => {
               setError(data);
           }
           else {
-               let id = data['city'];
-               console.log(id);
+               //let id = data['city'];
+               //console.log(id);
                //setTempPassword(id);
               //storeData(data.toString());
           }

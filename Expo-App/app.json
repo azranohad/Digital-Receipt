@@ -18,7 +18,17 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSLocationAlwaysAndWhenInUseUsageDescription":"Allows App to use location services in the foreground and background.",
+        "NSLocationWhenInUseUsageDescription": "text",
+        "NSFaceIDUsageDescription":"Allows App to use Face ID for a simpler sign in.",
+        "NSLocationDefaultAccuracyReduced": "vvv",
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {

@@ -106,7 +106,7 @@ const SignupScreen = () => {
         //     }
         // });
 
-        fetch("http://192.168.0.111:5000/add_user_name_and_password", {
+        fetch(`http://${props.url}/users_controller/create_user`, {
             method: 'POST',
             body:JSON.stringify({
                 "username": username,
