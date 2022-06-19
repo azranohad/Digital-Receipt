@@ -12,7 +12,7 @@ from Server.Repositories.userRepository import userRepository
 
 
 # @singleton
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 
 class userService:
@@ -25,12 +25,12 @@ class userService:
     def create_user(self, phone_number, user_data_details):
         user_data = userDataObject()
         user_data.phone_number = phone_number
-        user_from_db = self.user_repository.get_users_by_generic_value("phone_number", phone_number)
-        if len(user_from_db) > 0:
-            self.logger.print_info_message("the user is exist in system, details of user updated")
 
+        if self.user_repository.is_user_exist('phone_number', phone_number):
+            self.logger.print_info_message("the user is exist in system, details of user updated")
             # return user key from user_from_db
-            return user_from_db[0], "the user is exist in system"
+            return "the user is exist in system"
+
         user_data.user_key = uuid.uuid4().hex
         user_data_dict = {
             "user_key": user_data.user_key,
@@ -40,11 +40,14 @@ class userService:
         self.user_repository.update_user(user_data.user_key, user_data_details)
         return user_data.user_key
 
+
     # phone = str phone number to send sms
-    def log_in_phone_number(self, phone):
+    def log_in_phone_number(self, phone_number):
+        if not self.user_repository.is_user_exist('phone_number', phone_number):
+            self.create_user(phone_number, {})
         # generate random 6 digits to temp password
         temp_password = ''.join(random.choice(string.digits) for i in range(6))
-        self.login_password_cache[phone] = temp_password
+        self.login_password_cache[phone_number] = temp_password
         #self.sms_service.send_temp_password_login(phone, temp_password)
 
         # temp for test
@@ -53,15 +56,15 @@ class userService:
         # message that sms send
         # return True
 
-    def verify_sms_temp_password(self, phone, temp_pass_from_user):
-        return self.login_password_cache.get(phone) == temp_pass_from_user
+    def verify_sms_temp_password(self, phone_number, temp_pass_from_user):
+        return self.login_password_cache.get(phone_number) == temp_pass_from_user
 
-    def get_user_key_sms_login(self, phone, temp_pass_from_user):
-        if self.verify_sms_temp_password(phone, temp_pass_from_user):
-            self.logger.print_event('verify sms code for phone number: ' + str(phone))
-            return self.user_repository.get_users_by_generic_value('phone_number', phone)[0]
+    def get_user_key_sms_login(self, phone_number, temp_pass_from_user):
+        if self.verify_sms_temp_password(phone_number, temp_pass_from_user):
+            self.logger.print_event('verify sms code for phone number: ' + str(phone_number))
+            return self.user_repository.get_users_by_generic_value('phone_number', phone_number)[0]
 
-        self.logger.print_event('mismatch sms code for phone number: ' + str(phone))
+        self.logger.print_event('mismatch sms code for phone number: ' + str(phone_number))
         return 'The code is wrong'
 
     def check_the_validity_of_a_password(self, password):
@@ -103,7 +106,7 @@ class userService:
         return hashlib.sha256(string_to_hash.encode('utf-8')).hexdigest()
 
     def add_user_name_and_password(self, user_key, user_name, password):
-        if not self.user_repository.user_key_exist(user_key):
+        if not self.user_repository.is_user_exist(user_key, "user_key"):
             return 'user key is not exist'
 
         valid_password = self.check_the_validity_of_a_password(password)

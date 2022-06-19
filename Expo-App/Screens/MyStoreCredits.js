@@ -5,89 +5,62 @@ import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 
 const MyStoreCreditsScreen = ({navigation, route}) => {
-  const [single, setSingle]= useState(false);
   const [found, setFound]= useState(false);
-  const [showSearch, setShowSearch]= useState(false);
   const [searchByName, setSearchByName] = useState('');
+  const [storeName, setStoreName] = useState('');
+  const [userKey, setuserKey] = useState('');
+  const [fromDate, setfromDate] = useState('1/1/1950');
+  const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
-  const [num, setNum] = useState(0);
-  const [userId, setUserId] = useState(null);
+  const [isLoading, setisLoading] = useState(true);
+
+
  useEffect(()=> {
-   console.log("lllll");
-   setUserId(getId());
-   console.log(userId);
-   getCredits();
+    getIdandCredits();
   },[]);
  
-  // get id of user
-  const getId = async () => {
-    try {
-      const value = await AsyncStorage.getItem('userId')
-      if(value !== null) {
-        console.log("getdata: ",value);
-        return value;
-      }
-    } catch(e) {
-      // error reading value
+  const getIdandCredits = async () => {
+    // try {
+    //   const value = await AsyncStorage.getItem('userKey')
+    //   if(value !== null) {
+    //     console.log("getdata: ",value);
+    //     setuserKey(value);
+    //     getAllCredits(value);
+    //   }
+    // } catch(e) {
+    //   // error reading value
+    // }
+    setuserKey("ec2eac3508b24882bc45b09dfeee2ee3");
+    getAllCredits("ec2eac3508b24882bc45b09dfeee2ee3");
+  }
+
+   // set all variables:
+   const setAll = (data)=>{
+    let len = (Object.keys(data)).length;
+    if (len==0){
+      setFound(false);
     }
+    else {
+      setJsonData(data);
+      setFound(true);
+    }
+    setisLoading(false)
   }
 
   // default store credits view -  by date.
-  // num - represents the number of times the user asked for more credits
-  async function getCredits() {
-    let userId = getId();
-    userId = 1;
+  async function getCreditsByDate() {
     fetch(`http://${route.params.url}/scan_credit_controller/get_all_credits_user`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user_key' : userId,
+            'user_key' : userKey,
+            'from_date': fromDate,
+            'to_date': toDate,
         },
     }).then(res => res.json()).then(data => {
-      if (Object.keys(data).length == 0){
-        console.log("NONE");
-        setSingle(false);
-        setShowSearch(false);
-        setFound(false);
-      }
-      else if(Object.keys(data).length == 1){
-        setJsonData(data); 
-        setFound(true);
-        setSingle(true);
-        setShowSearch(false);
-      }
-      else {
-        setJsonData(data); 
-        setOriginal(data); 
-        setFound(true);
-        setSingle(false);
-        setShowSearch(false);
-        console.log("in else");
-        console.log(data);
-      }
+      setAll(data);
     });
-    console.log("----");
-      // data.forEach(obj => {
-      //   Object.entries(obj).forEach(([key, value]) => {
-      //     console.log(`${key} ${value}`);
-      //   });
-      //   console.log('-------------------');
-      // });
-      // console.log("data1: ", data[0]);
-      // console.log("data2: ", data[1]);
-      // let response = data[Object.keys(data)[0]];
-      // let respons = Object.keys(data)[0];
-      // console.log("res: ",response);
-      // console.log("resp: ",respons);
-      // console.log("data: ", data);
-  
-      // console.log("Object.keys(data): ",Object.keys(data));
-      // console.log("--------", Object.keys(data)[0]);
-      // console.log("--------", Object.values(data)[0]);
-      // if (Object.keys(data).length == 0){
-      //     console.log("NONE");
-      // }
   }
     
     const searchName = ()=> {
@@ -96,150 +69,196 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
-              'user_key' : userId,
+              'user_key' : userKey,
               'name_search' : searchByName,
           },
       }).then(res => res.json()).then(data => {
-        let len = (Object.keys(data)).length;
-        if (len==0){
-          setFound(false);
-          setSingle(false);
-          setShowSearch(false);
-        }
-        else if(len==1){
-          setJsonData(data);
-          setFound(true);
-          setSingle(true);
-        }
-        else {
-          setJsonData(data);
-          setFound(true);
-          setSingle(false);
-          setShowSearch(true);
-        }
+       setAll(data);
     });
   }
   const getStores = ()=> {
-    let userId=1;
+    setisLoading(true);
     fetch(`http://${route.params.url}/scan_credit_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user_key' : userId,
+            'user_key' : userKey,
         },
     }).then(res => res.json()).then(data => {
-      
+      console.log(data);
   });
 }
 
 const getCreditsByStore = ()=> {
+  setisLoading(true);
   fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
-          'user_key' : userId,
+          'user_key' : userKey,
           'market' : storeName,
       },
   }).then(res => res.json()).then(data => {
-    let len = (Object.keys(data)).length;
-    if (len==0){
-      setFound(false);
-      setSingle(false);
-      setShowSearch(false);
-    }
-    else if(len==1){
-      setJsonData(data);
-      setFound(true);
-      setSingle(true);
-      setShowSearch(false);
-    }
-    else {
-      setJsonData(data);
-      setShowSearch(true);
-      setSingle(false);
-      setFound(true);
-    }
+   setAll(data);
 });
 }
 
-const getCreditsByDate = ()=> {
-  fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_date`, {
+const getAllCredits = (val)=> {
+  setisLoading(true);
+  fetch(`http://${route.params.url}/scan_credit_controller/get_all_credits_user`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
-          'user_key' : userId,
-          'from_date' : fromDate,
-          'to_date' : toDate,
+          'user_key' : val,
       },
   }).then(res => res.json()).then(data => {
-    let len = (Object.keys(data)).length;
-    if (len==0){
-      setFound(false);
-      setSingle(false);
-      setShowSearch(false);
-    }
-    else if(len==1){
-      setJsonData(data);
-      setFound(true);
-      setSingle(true);
-      setShowSearch(false);
-    }
-    else {
-      setJsonData(data);
-      setShowSearch(true);
-      setSingle(false);
-      setFound(true);
-    }
+   setAll(data);
+   setOriginal(data);
 });
 }
 
-  return (
-      <View style={styles.container}> 
-        <TextInput value={searchByName}
-            onChangeText={(searchByName) => setSearchByName(searchByName)}
-            placeholder={'Search Store Credits'}/>   
-          <Button title='Search' onPress={()=>{searchName();}}></Button> 
-          {!found && <Text>No Store Credits Found</Text>}
-          {!found && <Button title='Go Back' onPress={()=>{setJsonData(original); setShowSearch(true);}}/>}
-          {showSearch && !single && found && <DataTable >
-        <DataTable.Header>
-          <DataTable.Title></DataTable.Title>
-          <DataTable.Title>Total Amount</DataTable.Title>
-          <DataTable.Title>Expire Date</DataTable.Title>
-          <DataTable.Title>Store</DataTable.Title>
-          <DataTable.Title>Date</DataTable.Title>
-          <DataTable.Title>Credit Name</DataTable.Title>
-        </DataTable.Header>
+const trashCredit = (val)=> {
+  fetch(`http://${route.params.url}/scan_receipt_controller/delete_credit`, {
+      method: 'DELETE',
+      body: JSON.stringify({
+        'user_key': userKey,
+          '_id' : val,
+      }),
+      headers: {
+          'content-type': 'aplication/json',
+      },
+  }).then(res => {console.log("res", res);; res.json();}).then(data => {
+    console.log(data);
+    if (data==true){
+      Object.values(JsonData).map((account)=>{
+        if (account._id==val){
+          x = JsonData[account._id]
+          console.log(x);
+      }
+        })
+    }
+    // setAll(data);
+});
+}
 
-        {single && !showSearch && found && <DataTable.Row style={{alignContent:'center', alignItems:'center'}}>
-            <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getCredits();}}>Show</DataTable.Cell>
-            <DataTable.Cell>{JsonData.Total_amount}</DataTable.Cell>
-            <DataTable.Cell>{JsonData.Expire_date}</DataTable.Cell>
-            <DataTable.Cell>{JsonData.Date}</DataTable.Cell>
-            <DataTable.Cell>{JsonData.Store_name}</DataTable.Cell>
-            <DataTable.Cell>{JsonData.Credit_name}</DataTable.Cell>
-        </DataTable.Row>}
-        {!showSearch && !single && found && JsonData.map((account, key)=>(
-        <DataTable.Row style={{alignContent:'center', alignItems:'center'}} key={key}>
-            <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getCredits();}}>Show</DataTable.Cell>
-            <DataTable.Cell>{account.Total_amount}</DataTable.Cell>
-            <DataTable.Cell>{account.Expire_date}</DataTable.Cell>
-            <DataTable.Cell>{account.Date}</DataTable.Cell>
-            <DataTable.Cell>{account.Store_name}</DataTable.Cell>
-            <DataTable.Cell>{account.Credit_name}</DataTable.Cell>
-        </DataTable.Row>
-        )
-    )}
-      </DataTable>}
-      {!showSearch && found && !single && <Button title='Show More' style={{backgroundColor:'blue'}}></Button>}
-    </View>
+
+if (!isLoading){
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <FocusedStatusBar backgroundColor={COLORS.primary} />
+      <View style={{ flex: 1 }}>
+        <View style={{ zIndex: 0 }}>
+          <FlatList
+            data={Object.values(JsonData)}
+            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} handleImage={()=>getImg(item._id)}/>}
+            keyExtractor={(item) => item._id}
+            showsVerticalScrollIndicator={false}
+            ListHeaderComponent={<HomeHeader/>}
+          />
+        </View>
+
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            right: 0,
+            left: 0,
+            zIndex: -1,
+          }}
+        >
+          <View
+            style={{ height: 300, backgroundColor: COLORS.midnightblue }} />
+          <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+        </View>
+      </View>
+    </SafeAreaView>
   )
+}
+else {
+return (
+  <View style={styles.container}> 
+  <TextInput value={searchByName}
+      onChangeText={(searchByName) => searchName(searchByName)}
+      placeholder={'Search Receipt'}/>   
+    <Button title='Search' onPress={()=>{getReceiptsByStore();}}></Button> 
+    <Text>Loading...</Text>
+    </View>
+
+)
+}
 }
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 100,
-  },
+container: {
+  paddingTop: 100,
+},
+input: {
+  width: 250,
+  height: 44,
+  padding: 10,
+  marginTop: 20,
+  marginBottom: 10,
+  backgroundColor: '#e8e8e8'
+},
 });
+
+// if (!isLoading){
+//   return (
+//     <View style={styles.container}> 
+//       <TextInput value={searchByName}
+//           onChangeText={(searchByName) => setSearchByName(searchByName)}
+//           placeholder={'Search By Name'}/>   
+//         <Button title='Search' onPress={()=>{searchName();}}></Button> 
+//         <TextInput value={storeName}
+//           onChangeText={(storeName) => setStoreName(storeName)}
+//           placeholder={'Search By Store'}/>   
+//         <Button title='Search' onPress={()=>{getCreditsByStore(); getStores();}}></Button> 
+//         {!found && <Text>Not Found</Text>}
+//         {!found && <Button title='Go Back' onPress={()=>{setJsonData(original);}}/>}
+//         {found && <DataTable >
+//       <DataTable.Header>
+//         <DataTable.Title></DataTable.Title>
+//         <DataTable.Title>Total Amount</DataTable.Title>
+//         <DataTable.Cell>Expiration Date</DataTable.Cell>
+//         <DataTable.Title>Store</DataTable.Title>
+//         <DataTable.Title>Date</DataTable.Title>
+//         <DataTable.Title>Credit Name</DataTable.Title>
+//       </DataTable.Header>
+//       {found && Object.values(JsonData).map((account)=>(
+//         <DataTable.Row style={{alignContent:'center', alignItems:'center'}} key={account._id}>
+//           <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getCreditsByDate();}}>Show</DataTable.Cell>
+//           <DataTable.Cell>{account.total_price}$</DataTable.Cell>
+//           <DataTable.Cell>{account.expiration_date}</DataTable.Cell>
+//           <DataTable.Cell>{account.market}</DataTable.Cell>
+//           <DataTable.Cell>{account.date_of_credit}</DataTable.Cell>
+//           <DataTable.Cell>{account.name_for_client}</DataTable.Cell>
+//       </DataTable.Row>
+//       )
+//       )}
+//     </DataTable>}
+//     {found && <Button title='Show More' style={{backgroundColor:'blue'}}></Button>}
+//   </View>
+// )
+// }
+// else {
+// return (
+//   <View style={styles.container}> 
+//   <TextInput value={searchByName}
+//       onChangeText={(searchByName) => searchName(searchByName)}
+//       placeholder={'Search Credit'}/>   
+//     <Button title='Search' onPress={()=>{getCreditsByStore();}}></Button> 
+//     <Text>Loading...</Text>
+//     </View>
+
+// )
+// }
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     paddingTop: 100,
+//   },
+// });
 
 export default MyStoreCreditsScreen

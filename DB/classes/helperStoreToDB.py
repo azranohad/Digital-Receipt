@@ -4,7 +4,6 @@ import string
 import random
 import uuid
 import dateutil
-import pandas as pd
 from dateutil.parser import parse
 import names
 

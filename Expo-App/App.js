@@ -15,23 +15,59 @@ import LoginScreen from './Screens/Login';
 import SignupScreen from './Screens/Signup';
 import ProfileScreen from './Screens/Profile';
 import SMSLoginScreen from './Screens/SMSLogin';
+import ProductsScreen from './Screens/Products';
+import newGpsScreen from './Screens/NewGps';
 
+import {DefaultTheme } from "@react-navigation/native";
+import { useFonts } from "expo-font";
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: "transparent",
+  },
+};
 
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.0.111:5000";
+  const url="192.168.43.254:5000";
+
+  const [loaded] = useFonts({
+    InterBold: require("./assets/fonts/Inter-Bold.ttf"),
+    InterSemiBold: require("./assets/fonts/Inter-SemiBold.ttf"),
+    InterMedium: require("./assets/fonts/Inter-Medium.ttf"),
+    InterRegular: require("./assets/fonts/Inter-Regular.ttf"),
+    InterLight: require("./assets/fonts/Inter-Light.ttf"),
+  });
+
+  if (!loaded) return null;
+
   
   
   return (
-    <NavigationContainer>
-      <Drawer.Navigator initialRouteName = "Home">
-        <Drawer.Screen name="Home" component={HomeScreen} options={{ drawerIcon: ({ tintColor }) => (
-      <Image
-        source={require('./Images/ProfilePic.jpg')}
-        style={[styles.icon, { tintColor: tintColor }]}
-      />
-    ) }}/>
+    <NavigationContainer theme={theme} >
+      <Drawer.Navigator initialRouteName = "Home" screenOptions={{headerTitle:"", headerTransparent:true}}>
+        <Drawer.Screen name="Home"  component={HomeScreen} 
+    //     options={{headerStyle: {
+    //     position: 'absolute',
+    //     backgroundColor: 'transparent',
+    //     zIndex: 100,
+    //     top: 0,
+    //     left: 0,
+    //     right: 0,
+    //     elevation: 0,
+    //     shadowOpacity: 0,
+    //     borderBottomWidth: 0,
+    //   }
+    // //   ,drawerIcon: ({ tintColor }) => (
+    // //   <Image
+    // //     source={require('./Images/ProfilePic.jpg')}
+    // //     style={[styles.icon, { tintColor: tintColor }]}
+    // //   />
+    // // )
+    //  }}
+     />
         <Drawer.Screen name="My Profile" component={ProfileScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Receipts" component={MyReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Scan Receipts" component={ScanReceiptsScreen} initialParams={{url: url}}/>
@@ -41,8 +77,9 @@ export default function App() {
         <Drawer.Screen name="Sign Up" component={SignupScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Gps" component={GpsScreen}/>
+        <Drawer.Screen name="Products" component={ProductsScreen}/>
         <Drawer.Screen name="SMSLogin" component={SMSLoginScreen} initialParams={{url: url}}/>
-
+        <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/>
       </Drawer.Navigator>
     </NavigationContainer>
   );
@@ -54,4 +91,3 @@ const styles = StyleSheet.create({
       height: 24,
     },
 });
-

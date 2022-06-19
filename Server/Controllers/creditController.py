@@ -2,7 +2,7 @@ from flask import request, Blueprint
 from Server.Features.ScanCredit.scanCreditManager import scanCreditManager
 from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 scan_credit_api = Blueprint('scan_credit_api', __name__)
 
@@ -22,16 +22,6 @@ def scan_credit():
 
     response = scan_credit_manager.action_scan_credit_manager(image_file, user_key, image_name, expiration_date)
     return response
-
-
-@scan_credit_api.route('/update_credit', methods=['PATCH'])
-def update_credit():
-    user_key = request.get_json(force=True)['user_key']
-    credit_id = request.get_json(force=True)['credit_id']
-    logger.print_api_message("received update credit post request | user: " + user_key + ", credit id: " + credit_id)
-
-    # response = scan_credit_manager.action_scan_credit_manager(image_file, user_key, image_name)
-    # return response
 
 
 @scan_credit_api.route('/get_credit_by_date', methods=['GET'])
@@ -86,7 +76,21 @@ def get_image_credit():
 
     return server_local_repository.get_image(user_details, image_id)
 
+@scan_credit_api.route('/update_credit_data', methods=['PATCH'])
+def update_credit_data():
+    _id = request.get_json(force=True)['_id']
+    user_key = request.get_json(force=True)['user_key']
+    logger.print_api_message("creditController | received update_credit_data request | user: " + user_key + "| _id:" + _id)
 
+    return credit_repository.update_credit(user_key, _id, request.get_json(force=True))
+
+@scan_credit_api.route('/delete_credit', methods=['DELETE'])
+def delete_credit():
+    _id = request.get_json(force=True)['_id']
+    user_key = request.get_json(force=True)['user_key']
+    logger.print_api_message("creditController | received delete_credit request | user: " + user_key + "| _id:" + _id)
+
+    return credit_repository.delete_credit(user_key, _id)
 
 
 

@@ -1,7 +1,6 @@
 from singleton_decorator import singleton
 from geopy.geocoders import Nominatim
 geolocator = Nominatim(user_agent="sample app")
-from sklearn.cluster import KMeans
 
 # @singleton
 class storeLocationService:

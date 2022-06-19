@@ -1,9 +1,10 @@
+from Server.Repositories.stroeRepository import storeRepository
 from Server.Services.storeLocationService import storeLocationService
 import geopy.distance
 from singleton_decorator import singleton
 from pymongo import GEO2D
 from Server.Repositories.mongoDbRepository import mongoDbRepository
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 
 def get_location_stores_from_csv(file_path):
@@ -25,6 +26,8 @@ class locationRepository:
         self.db_stores = self.mongo_db_repository.get_client()['stores']
         self.store_location_service = storeLocationService()
         self.logger = loggerService()
+        self.store_repository = storeRepository()
+
 
     # store is array [name/company, coordinates]
     def add_new_store_to_db(self, store):

@@ -1,241 +1,226 @@
-import { useState, Component, useEffect } from 'react';
-import { StyleSheet, TextInput, View, Button, Text } from 'react-native';
+import React, { useState, Component, useEffect } from 'react';
+import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-
+import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
+import { COLORS, NFTData } from "../constants";
+import { event } from 'react-native-reanimated';
 
 const MyReceiptsScreen = ({navigation, route}) => {
-  const [single, setSingle]= useState(false);
   const [found, setFound]= useState(false);
-  const [showSearch, setShowSearch]= useState(false);
   const [searchByName, setSearchByName] = useState('');
-  const [userId, setUserId] = useState('');
+  const [storeName, setStoreName] = useState('');
+  const [userKey, setuserKey] = useState('');
+  const [fromDate, setfromDate] = useState('1/1/1950');
+  const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
+  const [isLoading, setisLoading] = useState(true);
+
+
 
   useEffect(()=>{
-    getId();
-    }, []);
+      getIdandReceipts();
+ },[]);
  
-  // get id of user
-  const getId = async () => {
+  // get id of user and all his receipts
+  const getIdandReceipts = async () => {
     // try {
-    //   const value = await AsyncStorage.getItem('userId')
+    //   const value = await AsyncStorage.getItem('userKey')
     //   if(value !== null) {
     //     console.log("getdata: ",value);
-    //     getReceipts(1);
-    //     setUserId(value);
+    //     setuserKey(value);
     //   }
     // } catch(e) {
     //   // error reading value
     // }
-    setUserId(1);
-    getReceipts(1);
+    setuserKey("fd18ed355cd74ae38799f76dc7d20609");
+    // getImg("p");
+    getAllReceipts("fd18ed355cd74ae38799f76dc7d20609");
   }
 
-  // default receipts view -  by date
-  async function getReceipts(value) {
-    let user = 19;
+
+  // set all variables:
+  const setAll = (data)=>{
+    let len = (Object.keys(data)).length;
+    if (len==0){
+      setFound(false);
+    }
+    else {
+      setJsonData(data);
+      setFound(true);
+    }
+    setisLoading(false)
+  }
+
+
+  // default receipts view -  by date_of_receipt
+  async function getReceiptsByDate() {
+    setisLoading(true);
     fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_date`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user_key': user,
+            'user_key': userKey,
+            'from_date': fromDate,
+            'to_date': toDate,
         },
     }).then(res => res.json()).then(data => {
-      console.log();
-      if (Object.keys(data).length == 0){
-        console.log("NONE");
-        setSingle(false);
-        setShowSearch(false);
-        setFound(false);
-      }
-      else if(Object.keys(data).length == 1){
-        setJsonData(data); 
-        setFound(true);
-        setSingle(true);
-        setShowSearch(false);
-      }
-      else {
-        setJsonData(data); 
-        setOriginal(data); 
-        setFound(true);
-        setSingle(false);
-        setShowSearch(true);
-        console.log("in else");
-        setJsonData(JsonData);
-      }
+      setAll(data);
     });
-    // data.forEach(obj => {
-      //   Object.entries(obj).forEach(([key, value]) => {
-        //     console.log(`${key} ${value}`);
-        //console.log(JsonData[0].Receipt_name);
-        //JsonData[JsonData.keys(JsonData)[0]] = "78";
-        // JsonData[0].Receipt_name = '5';
-      //   });
-      //   console.log('-------------------');
-      // });
-      // console.log("data1: ", data[0]);
-      // console.log("data2: ", data[1]);
-      // let response = data[Object.keys(data)[0]];
-      // let respons = Object.keys(data)[0];
-      // console.log("res: ",response);
-      // console.log("resp: ",respons);
-      // console.log("data: ", data);
-  
-      // console.log("Object.keys(data): ",Object.keys(data));
-      // console.log("--------", Object.keys(data)[0]);
-      // console.log("--------", Object.values(data)[0]);
-      // if (Object.keys(data).length == 0){
-      //     console.log("NONE");
-      // }
   }
     
-    const searchName = ()=> {
-      setSearchByName('');
-      //let userId=getData();
-      let userId=1;
+    const searchName = (s)=> {
+      // setisLoading(true);
+      console.log(s);
       fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
-              'user-key': userId,
-              'name_search' : searchByName,
+              'user-key': userKey,
+              'name_search' : s,
           },
       }).then(res => res.json()).then(data => {
-        let len = (Object.keys(data)).length;
-        if (len==0){
-          setFound(false);
-          setSingle(false);
-          setShowSearch(false);
-        }
-        else if(len==1){
-          setJsonData(data);
-          setFound(true);
-          setSingle(true);
-          setShowSearch(false);
-        }
-        else {
-          setJsonData(data);
-          setShowSearch(true);
-          setSingle(false);
-          setFound(true);
-        }
+        setAll(data);
     });
   }
 
   const getStores = ()=> {
-    let userId=1;
+    setisLoading(true);
     fetch(`http://${route.params.url}/scan_receipt_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user-key': {userId},
+            'user-key': userKey,
         },
     }).then(res => res.json()).then(data => {
-      
+      console.log(data);
   });
 }
 
 const getReceiptsByStore = ()=> {
+  setisLoading(true);
   fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
-          'user-key': {userId},
+          'user-key': userKey,
           'market' : storeName
       },
   }).then(res => res.json()).then(data => {
-    let len = (Object.keys(data)).length;
-    if (len==0){
-      setFound(false);
-      setSingle(false);
-      setShowSearch(false);
-    }
-    else if(len==1){
-      setJsonData(data);
-      setFound(true);
-      setSingle(true);
-      setShowSearch(false);
-    }
-    else {
-      setJsonData(data);
-      setShowSearch(true);
-      setSingle(false);
-      setFound(true);
-    }
+    setAll(data);
 });
 }
 
-const getReceiptsByDate = ()=> {
-  fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_date`, {
+const getAllReceipts = (val)=> {
+  setisLoading(true);
+  console.log("heyyyy");
+  console.log(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`);
+  fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
-          'user-key': {userId},
-          'from_date': fromDate,
-          'to_date' : toDate,
+          'user_key' : val,
       },
   }).then(res => res.json()).then(data => {
-    let len = (Object.keys(data)).length;
-    if (len==0){
-      setFound(false);
-      setSingle(false);
-      setShowSearch(false);
-    }
-    else if(len==1){
-      setJsonData(data);
-      setFound(true);
-      setSingle(true);
-      setShowSearch(false);
-    }
-    else {
-      setJsonData(data);
-      setShowSearch(true);
-      setSingle(false);
-      setFound(true);
-    }
+    // console.log(data);
+    setOriginal(data);
+    setAll(data);
 });
 }
 
-  return (
-      <View style={styles.container}> 
-        <TextInput value={searchByName}
-            onChangeText={(searchByName) => setSearchByName(searchByName)}
-            placeholder={'Search Receipt'}/>   
-          <Button title='Search' onPress={()=>{searchName();}}></Button> 
-          {!found && <Text>Not Found</Text>}
-          {!found && <Button title='Go Back' onPress={()=>{setJsonData(original); setShowSearch(true);}}/>}
-          {found && <DataTable >
-        <DataTable.Header>
-          <DataTable.Title></DataTable.Title>
-          <DataTable.Title>Total Amount</DataTable.Title>
-          <DataTable.Title>Store</DataTable.Title>
-          <DataTable.Title>Date</DataTable.Title>
-          <DataTable.Title>Receipt Name</DataTable.Title>
-        </DataTable.Header>
+const getImg =  (e)=> {
+  console.log(e);
+//   setisLoading(true);
+//   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts`, {
+//       method: 'GET',
+//       headers: {
+//           'content-type': 'aplication/json',
+//           'user_key' : 'b661e90ea0fe4cb5bb6c53b68ad5d555',
+//           'image_name' : 'ef2561389f2b4322b40d9c0c6e18240e',
+//       },
+//   }).then(res => res.json()).then(res => {
+//     console.log("res:",res);
+//     const imageBlob = res.blob();
+//     const imageObjectURL = URL.createObjectURL(imageBlob);
+//     //setImg(imageObjectURL);
+//     console.log(imageBlob);
+// });
+}
 
-        {single && !showSearch && found && <DataTable.Row style={{alignContent:'center', alignItems:'center'}}>
-            <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getReceipts();}}>Show</DataTable.Cell>
-            <DataTable.Cell>{JsonData[0].Total_amount}</DataTable.Cell>
-            <DataTable.Cell>{JsonData[0].Store_name}</DataTable.Cell>
-            <DataTable.Cell>{JsonData[0].Date}</DataTable.Cell>
-            <DataTable.Cell>{JsonData[0].Receipt_name}</DataTable.Cell>
-        </DataTable.Row>}
-        {showSearch && !single && found && JsonData.map((account, key)=>(
-        <DataTable.Row style={{alignContent:'center', alignItems:'center'}} key={key}>
-            <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{getReceipts();}}>Show</DataTable.Cell>
-            <DataTable.Cell>{account.Total_amount}</DataTable.Cell>
-            <DataTable.Cell>{account.Store_name}</DataTable.Cell>
-            <DataTable.Cell>{account.Date}</DataTable.Cell>
-            <DataTable.Cell>{account.Receipt_name}</DataTable.Cell>
-        </DataTable.Row>
-        )
-    )}
-      </DataTable>}
-      {!showSearch && found && !single && <Button title='Show More' style={{backgroundColor:'blue'}}></Button>}
-    </View>
+const trashReceipt = (val)=> {
+  fetch(`http://${route.params.url}/scan_receipt_controller/delete_receipt`, {
+      method: 'DELETE',
+      body: JSON.stringify({
+        'user_key': userKey,
+          '_id' : val,
+      }),
+      headers: {
+          'content-type': 'aplication/json',
+      },
+  }).then(res => {console.log("res", res);; res.json();}).then(data => {
+    console.log(data);
+    if (data==true){
+      Object.values(JsonData).map((account)=>{
+        if (account._id==val){
+          x = JsonData[account._id]
+          console.log(x);
+      }
+        })
+    }
+    // setAll(data);
+});
+}
+
+
+
+
+
+  if (!isLoading){
+    return (
+      <SafeAreaView style={{ flex: 1 }}>
+        <FocusedStatusBar backgroundColor={COLORS.primary} />
+        <View style={{ flex: 1 }}>
+          <View style={{ zIndex: 0 }}>
+            <FlatList
+              data={Object.values(JsonData)}
+              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} handleImage={()=>getImg(item._id)}/>}
+              keyExtractor={(item) => item._id}
+              showsVerticalScrollIndicator={false}
+              ListHeaderComponent={<HomeHeader/>}
+            />
+          </View>
+  
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              right: 0,
+              left: 0,
+              zIndex: -1,
+            }}
+          >
+            <View
+              style={{ height: 300, backgroundColor: COLORS.midnightblue }} />
+            <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+          </View>
+        </View>
+      </SafeAreaView>
+    )
+}
+else {
+  return (
+    <View style={styles.container}> 
+    <TextInput value={searchByName}
+        onChangeText={(searchByName) => searchName(searchByName)}
+        placeholder={'Search Receipt'}/>   
+      <Button title='Search' onPress={()=>{getReceiptsByStore();}}></Button> 
+      <Text>Loading...</Text>
+      </View>
+
   )
+}
 }
 
 const styles = StyleSheet.create({
@@ -253,3 +238,62 @@ const styles = StyleSheet.create({
 });
 
 export default MyReceiptsScreen
+
+
+
+
+
+
+// const Home = () => {
+//   const [nftData, setNftData] = useState(NFTData);
+
+  // const handleSearch = (value) => {
+  //   if (value.length === 0) {
+  //     setNftData(NFTData);
+  //   }
+
+  //   const filteredData = NFTData.filter((item) =>
+  //     item.name.toLowerCase().includes(value.toLowerCase())
+  //   );
+
+  //   if (filteredData.length === 0) {
+  //     setNftData(NFTData);
+  //   } else {
+  //     setNftData(filteredData);
+  //   }
+  // };
+
+  // return (
+  //   <SafeAreaView style={{ flex: 1 }}>
+  //     <FocusedStatusBar backgroundColor={COLORS.primary} />
+  //     <View style={{ flex: 1 }}>
+  //       <View style={{ zIndex: 0 }}>
+  //         <FlatList
+  //           data={nftData}
+  //           renderItem={({ item }) => <NFTCard data={item} />}
+  //           keyExtractor={(item) => item.id}
+  //           showsVerticalScrollIndicator={false}
+  //           ListHeaderComponent={<HomeHeader onSearch={handleSearch} />}
+  //         />
+  //       </View>
+
+  //       <View
+  //         style={{
+  //           position: "absolute",
+  //           top: 0,
+  //           bottom: 0,
+  //           right: 0,
+  //           left: 0,
+  //           zIndex: -1,
+  //         }}
+  //       >
+  //         <View
+  //           style={{ height: 300, backgroundColor: COLORS.primary }} />
+  //         <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+  //       </View>
+  //     </View>
+  //   </SafeAreaView>
+  // );
+// };
+
+// export default Home;

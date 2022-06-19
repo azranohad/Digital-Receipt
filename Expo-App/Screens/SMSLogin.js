@@ -53,7 +53,7 @@ const SMSLoginScreen = ( props) => {
     }
     async function sendTempPassword() {
         setTempPasswordsent(true)
-        fetch("http://192.168.0.111:5000//users_controller/verify_sms_code", {
+        fetch(`http://${props.url}/users_controller/verify_sms_code`, {
             method: 'POST',
             body:JSON.stringify({"phone_number": phoneNumber, "temp_password": tempPassword}),
             headers: {

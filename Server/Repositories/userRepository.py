@@ -2,7 +2,7 @@ from Server.Repositories.mongoDbRepository import mongoDbRepository
 
 
 # @singleton
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 
 class userRepository:
@@ -77,8 +77,8 @@ class userRepository:
             return True
         return False
 
-    def user_key_exist(self, user_key):
-        cursor = self.get_collection().find({'user_key': user_key})
+    def is_user_exist(self, key, value):
+        cursor = self.get_collection().find({key: value})
         if cursor.count() > 0:
             return True
         return False
@@ -109,3 +109,6 @@ class userRepository:
             if list_of_keys.__contains__(unwanted_key):
                 del user_data_dict[unwanted_key]
         return user_data_dict
+
+    def get_all_user_distinct(self):
+        return self.get_collection().distinct("user_key")
