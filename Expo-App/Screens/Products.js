@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { View, SafeAreaView, FlatList } from "react-native";
 
-import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
-import SimpleSearch from "../components/SimpleSearch";
-import { COLORS, NFTData } from "../constants";
+import { ProductCard, HomeHeader, SimpleSearch, FocusedStatusBar } from "../components";
+// import SimpleSearch from "../components/SimpleSearch";
+import { COLORS } from "../constants";
 
 const Products = () => {
   const [JsonData, setJsonData] = useState([]);
   const [userKey, setuserKey] = useState('');
   const [isLoading, setisLoading] = useState(true);
+  const [found, setFound]= useState(false);
+
 
   useEffect(()=>{
     getIdandProducts();
@@ -28,6 +30,18 @@ const getIdandProducts = async () => {
   setuserKey("fd18ed355cd74ae38799f76dc7d20609");
   // getImg("p");
   //getProducts("fd18ed355cd74ae38799f76dc7d20609");
+}
+ // set all variables:
+ const setAll = (data)=>{
+  let len = (Object.keys(data)).length;
+  if (len==0){
+    setFound(false);
+  }
+  else {
+    setJsonData(data);
+    setFound(true);
+  }
+  setisLoading(false)
 }
 
 
@@ -55,7 +69,7 @@ if (!isLoading){
         <View style={{ zIndex: 0 }}>
           <FlatList
             data={Object.values(JsonData)}
-            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} handleImage={()=>getImg(item._id)}/>}
+            renderItem={({ item }) => <ProductCard data={item}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={<HomeHeader/>}
@@ -83,10 +97,7 @@ if (!isLoading){
 else {
 return (
   <View style={styles.container}> 
-  <TextInput value={searchByName}
-      onChangeText={(searchByName) => searchName(searchByName)}
-      placeholder={'Search Receipt'}/>   
-    <Button title='Search' onPress={()=>{getReceiptsByStore();}}></Button> 
+ 
     <Text>Loading...</Text>
     </View>
 

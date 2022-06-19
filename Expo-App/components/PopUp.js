@@ -1,31 +1,31 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Image } from "react-native";
+import { View, Image , Text, ImageBackgroundBase} from "react-native";
 
 import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
-const NFTCard = ({ data,handlePress, date, price, receipt}) => {
-  const navigation = useNavigation();
+//{ data,handlePress, date, price, receipt}
+export const PopUp = () =>{
 
   return (
-    <View
-      style={{
-        backgroundColor: COLORS.white,
-        borderRadius: SIZES.font,
-        marginBottom: SIZES.extraLarge,
-        margin: SIZES.base,
-        ...SHADOWS.dark,
-      }}
-    >
       <View
         style={{
-          width: "100%",
-          height: 30,
+          backgroundColor: COLORS.gray,
+          borderRadius: SIZES.base,
+          borderTopLeftRadius: SIZES.font,
+          borderTopRightRadius: SIZES.font,
+          width: "50%",
+          height: "50%",
         }}
       >
-        <Image
+                 {/* alignItems: "center",
+          borderTopLeftRadius: SIZES.font,
+         borderTopRightRadius: SIZES.font,
+         alignItems:"center",
+         justifyContent: "center", */}
+        {/* <Image
           source={assets.nft01}
           resizeMode="cover"
           style={{
@@ -36,7 +36,6 @@ const NFTCard = ({ data,handlePress, date, price, receipt}) => {
           }}
         />
 
-        <CircleButton imgUrl={assets.trash} right={10} top={10} handlePress={handlePress}/>
       </View>
 
       <SubInfo date={date} receipt={receipt}/>
@@ -64,10 +63,8 @@ const NFTCard = ({ data,handlePress, date, price, receipt}) => {
             handlePress={() => navigation.navigate("DigitalReceipt", { data })}
             buttonText={"Show"}
           />
-        </View>
+        </View> */}
       </View>
-    </View>
   );
 };
 
-export default NFTCard;

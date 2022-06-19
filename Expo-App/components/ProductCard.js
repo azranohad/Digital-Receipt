@@ -6,7 +6,7 @@ import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
-const NFTCard = ({ data,handlePress, date, price, receipt}) => {
+const ProductCard = ({ data}) => {
   const navigation = useNavigation();
 
   return (
@@ -26,7 +26,8 @@ const NFTCard = ({ data,handlePress, date, price, receipt}) => {
         }}
       >
         <Image
-          source={assets.nft01}
+        source = {data.image}
+         // source={assets.nft01}
           resizeMode="cover"
           style={{
             width: "100%",
@@ -36,14 +37,14 @@ const NFTCard = ({ data,handlePress, date, price, receipt}) => {
           }}
         />
 
-        <CircleButton imgUrl={assets.trash} right={10} top={10} handlePress={handlePress}/>
+        {/* <CircleButton imgUrl={assets.trash} right={10} top={10} handlePress={handlePress}/> */}
       </View>
 
-      <SubInfo date={date} receipt={receipt}/>
+      {/* <SubInfo date={data.date_of_receipt}/> */}
 
       <View style={{ width: "100%", padding: SIZES.font }}>
         <NFTTitle
-          title={data.name_for_client}
+          title={data.name}
           subTitle={data.market}
           titleSize={SIZES.large}
           subTitleSize={SIZES.small}
@@ -57,12 +58,12 @@ const NFTCard = ({ data,handlePress, date, price, receipt}) => {
             alignItems: "center",
           }}
         >
-          <EthPrice price={price.toFixed(2)} />
+          <EthPrice price={data.total_price.toFixed(2)} />
           <RectButton
-            minWidth={80}
+            minWidth={120}
             fontSize={SIZES.font}
-            handlePress={() => navigation.navigate("DigitalReceipt", { data })}
-            buttonText={"Show"}
+            handlePress={data.reference}
+            buttonText={"Shop"}
           />
         </View>
       </View>
@@ -70,4 +71,4 @@ const NFTCard = ({ data,handlePress, date, price, receipt}) => {
   );
 };
 
-export default NFTCard;
+export default ProductCard;

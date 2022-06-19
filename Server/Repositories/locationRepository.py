@@ -4,7 +4,7 @@ import geopy.distance
 from singleton_decorator import singleton
 from pymongo import GEO2D
 from Server.Repositories.mongoDbRepository import mongoDbRepository
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 
 def get_location_stores_from_csv(file_path):

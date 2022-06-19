@@ -2,7 +2,7 @@ from flask import Blueprint, request
 
 from Server.Repositories.userRepository import userRepository
 from Server.Services.userService import userService
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 logger = loggerService()
 users_api = Blueprint('users_api', __name__)
