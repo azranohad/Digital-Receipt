@@ -47,3 +47,15 @@ class receiptService:
         response = send_file(tempFileObj, as_attachment=True, attachment_filename=tempFileObj.name)
         os.remove(path_temp_barcode)
         return response
+
+    def get_logo(self, store_name):
+        logo_name = store_name + '.png'
+        path = os.path.join(self.general_service.get_project_folder(), 'Digital-Receipt', 'DB', 'logo', logo_name)
+
+        tempFileObj = NamedTemporaryFile(mode='w+b', suffix='.png')
+        pilImage = open(path, 'rb')
+        copyfileobj(pilImage, tempFileObj)
+        pilImage.close()
+        tempFileObj.seek(0, 0)
+        response = send_file(tempFileObj, as_attachment=True, attachment_filename=tempFileObj.name)
+        return response

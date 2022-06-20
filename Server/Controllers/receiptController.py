@@ -110,6 +110,13 @@ def get_barcode():
 
     return receipt_service.get_barcode(receipt_id)
 
+@receipt_api.route('/get_logo', methods=['GET'])
+def get_logo():
+    store_name = request.headers['store_name']
+    logger.print_api_message("receiptController | received get_logo request ")
+
+    return receipt_service.get_logo(store_name)
+
 
 
 
