@@ -1,6 +1,6 @@
 from Server.Repositories.receiptRepository import receiptRepository
 # from SystemFiles.logger.loggerService import loggerService
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 from RecommendationSystem.rec import Recomender
 
 
@@ -24,5 +24,5 @@ class recommendationSystemService:
         return list_of_recommendation_items
 
 
-r = recommendationSystemService()
-print(r.get_general_recommendation('893fc2e900d94cf084f8186f1486e9ce'))
+# r = recommendationSystemService()
+# print(r.get_store_recommendations('893fc2e900d94cf084f8186f1486e9ce', 'liron'))
