@@ -31,33 +31,41 @@ const DetailsHeader = ({navigation }) => (
 
 const DigitalCredit= ({ route, navigation }) => {
   const { data } = route.params;
-  const [img , setImg] = useState(null)
-  const [img2 , setImg2] = useState(null)
+  const [logo , setLogo] = useState(null)
 
 
   // useEffect(()=> {getBarcode(data.filename);})
-  useEffect(()=> {getBarcode('/barcode.png');
-getBarcode2('/סופר-פארם-שירות-לקוחות-לוגו.jpg');
+  useEffect(()=> {
+    getBarcode(data._id);
+    setLogo(data.url_scan_image);
 // getBarcode2('/Walmart.png');
 },[])
 
 
-  const getBarcode = async (filename)=>{
-      var ref = firebase.storage().ref().child(filename)
-      await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
-        setImg(x);
+  const getBarcode = (filename)=>{
+      fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
+          method: 'DELETE',
+          body: JSON.stringify({
+            'user_key': userKey,
+              '_id' : val,
+          }),
+          headers: {
+              'content-type': 'aplication/json',
+          },
+      }).then(res => res.text()).then(data => {
+        console.log(data);
+        setBarcode(filename);
       })
+
+      // var ref = firebase.storage().ref().child(filename)
+      // await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
+      //   setImg(x);
+      // })
   }
-  const getBarcode2 = async (filename)=>{
-    var ref = firebase.storage().ref().child(filename)
-    await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
-      setImg2(x);
-    })
-}
 
   return (
     
-    img2 && img ? <SafeAreaView style={{  flex: 1}}>
+    logo && barcode ? <SafeAreaView style={{  flex: 1}}>
       <DetailsHeader data={data} navigation={navigation} />
 
       <FocusedStatusBar
@@ -134,9 +142,9 @@ getBarcode2('/סופר-פארם-שירות-לקוחות-לוגו.jpg');
           >
           Expiration Date: {data.date_of_receipt.slice(4,-13)}
         </Text>
-            <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: img}}/>
+            <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
             
-            <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: img2}}/>
+            <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: logo}}/>
             <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} />
             
             </View>

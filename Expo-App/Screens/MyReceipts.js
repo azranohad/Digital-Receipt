@@ -95,6 +95,8 @@ const MyReceiptsScreen = ({navigation, route}) => {
               'name_search' : s,
           },
       }).then(res => res.json()).then(data => {
+        console.log(data);
+        setSearchByName('');
         setAll(data);
     });
   }
@@ -129,6 +131,7 @@ const getReceiptsByStore = (val)=> {
 }
 
 const getAllReceipts = (val)=> {
+  console.log(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`);
   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`, {
       method: 'GET',
       headers: {
@@ -143,20 +146,21 @@ const getAllReceipts = (val)=> {
 }
 
 const getImg =  async (uri)=> {
-  // setisLoading(true);
-  const res = await fetch(uri)
-  const blob = await res.blob();
-  const filename = uri.substring(uri.lastIndexOf('/')+1);
-  var ref = firebase.storage().ref().child(filename).put(blob);
-  try {
-    await ref;
-  } catch (e){
-    console.log(e);
-  }
-  Alert.alert('Photo uploaded');
-  await firebase.storage().ref().child(filename).getDownloadURL(ref).then( img => {
-    setImage(img);
-  })
+  setImage(uri);
+  // // setisLoading(true);
+  // const res = await fetch(uri)
+  // const blob = await res.blob();
+  // const filename = uri.substring(uri.lastIndexOf('/')+1);
+  // var ref = firebase.storage().ref().child(filename).put(blob);
+  // try {
+  //   await ref;
+  // } catch (e){
+  //   console.log(e);
+  // }
+  // Alert.alert('Photo uploaded');
+  // await firebase.storage().ref().child(filename).getDownloadURL(ref).then( img => {
+  //   setImage(img);
+  // })
 //   fetch(`http://${route.params.url}/scan_receipt_controller/get_image_receipt`, {
 //       method: 'GET',
 //       headers: {
@@ -207,10 +211,10 @@ const trashReceipt = (val)=> {
           <View style={{ zIndex: 0 }}>
             <FlatList
               data={Object.values(JsonData)}
-              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,-13)} price={item.total_price} receipt={true} handleGetImg={getImg}/>}
+              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,-13)} price={item.total_price} receipt={true} handleGetImg={getImg(item.url_scan_image)}/>}
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
-              ListHeaderComponent={<HomeHeader data={stores} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={()=>setFilter()} Type={"Receipt"}/>}
+              ListHeaderComponent={<HomeHeader data={stores} onSearch={(val)=>searchName(val)} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={()=>setFilter()} Type={"Receipt"}/>}
             />
           </View>
   
@@ -225,7 +229,7 @@ const trashReceipt = (val)=> {
             }}
           >
             <View
-              style={{ height: 300, backgroundColor: COLORS.midnightblue }} />
+              style={{ height: 300, backgroundColor: COLORS.primary }} />
             <View style={{ flex: 1, backgroundColor: COLORS.white }} />
           </View>
         </View>

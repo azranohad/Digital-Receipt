@@ -30,33 +30,51 @@ const DetailsHeader = ({navigation }) => (
 
 const DigitalShow= ({ route, navigation }) => {
   const { data } = route.params;
-  const [img2 , setImg2] = useState(null)
-  const [img , setImg] = useState(null)
+  const [barcode , setBarcode] = useState(null)
+  const [logo , setLogo] = useState(null)
 
 
   // useEffect(()=> {getBarcode(data.filename);})
-  useEffect(()=> {getBarcode('/barcode.png');
-getBarcode2('/סופר-פארם-שירות-לקוחות-לוגו.jpg');
+  useEffect(()=> {
+    // getBarcode(data._id);
+    // setLogo(data.url_scan_image);
+    setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
+    if (data.market=='super-pharm') {
+      setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
+    }
+    else {
+      setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/Walmart.png?alt=media&token=48f0d6f0-fb49-4cde-80be-d6838ede4613')
+
+    }
 // getBarcode2('/Walmart.png');
-},[])
+})
 
 
-  const getBarcode = async (filename)=>{
-      var ref = firebase.storage().ref().child(filename)
-      await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
-        setImg(x);
+  const getBarcode = (filename)=>{
+      fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
+          method: 'DELETE',
+          body: JSON.stringify({
+            'user_key': userKey,
+              '_id' : val,
+          }),
+          headers: {
+              'content-type': 'aplication/json',
+          },
+      }).then(res => res.text()).then(data => {
+        console.log(data);
+        setBarcode(filename);
       })
+
+      // var ref = firebase.storage().ref().child(filename)
+      // await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
+      //   setImg(x);
+      // })
   }
-  const getBarcode2 = async (filename)=>{
-    var ref = firebase.storage().ref().child(filename)
-    await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
-      setImg2(x);
-    })
-}
+
 
   return (
     
-    img&& img2 ?<SafeAreaView style={{ flex: 1 }}>
+    logo&& barcode ?<SafeAreaView style={{ flex: 1 }}>
       <DetailsHeader data={data} navigation={navigation} />
 
       <FocusedStatusBar
@@ -101,7 +119,7 @@ getBarcode2('/סופר-פארם-שירות-לקוחות-לוגו.jpg');
           >
           Total: {data.total_price.toFixed(2)}$
         </Text>
-            <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: img}}/>
+            <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
             
             <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} />
             
@@ -122,7 +140,7 @@ getBarcode2('/סופר-פארם-שירות-לקוחות-לוגו.jpg');
         marginVertical: SIZES.base,
         paddingHorizontal: SIZES.base,
       }}>
-        <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: img2}}/>
+        <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: logo}}/>
     <Text
           style={{
             fontFamily: FONTS.semiBold,

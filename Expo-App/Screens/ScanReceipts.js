@@ -211,7 +211,7 @@ const ScanReceipts = ({navigation, route}) => {
       setDate(data.date);
       setMarket(data.market);
       setisUpLoading(false);
-     setPopUp(true);
+      setPopUp(true);
 
       // setisUpLoading(false);
       // setImageId(data._id);
