@@ -9,7 +9,7 @@ from singleton_decorator import singleton
 from SystemFiles.logger.loggerService import loggerService
 
 
-@singleton
+# @singleton
 class serverLocalRepository:
 
     def __init__(self):
@@ -31,9 +31,9 @@ class serverLocalRepository:
         path_image = os.path.join(self.get_user_folder_scans(user_details), image_key)
         image_file.save(path_image)
 
-        return path_image
+        return image_key
 
-    def get_image(self, user_key, image_name):
+    def get_scan_image(self, user_key, image_name):
         path_image = os.path.join(self.get_user_folder_scans(user_key), image_name)
         tempFileObj = NamedTemporaryFile(mode='w+b', suffix='jpg')
         pilImage = open(path_image, 'rb')
@@ -43,6 +43,10 @@ class serverLocalRepository:
         response = send_file(tempFileObj, as_attachment=True, attachment_filename=image_name)
         return response
 
-    def delete_image(self, user_details, image_name):
-        x=3
+    def delete_scan_image(self, user_key, image_name):
+        path_image = os.path.join(self.get_user_folder_scans(user_key), image_name)
+        os.remove(path_image)
+        self.logger.print_event("serverLocalRepository | delete scan image for user:" + user_key)
+        return True
+
 

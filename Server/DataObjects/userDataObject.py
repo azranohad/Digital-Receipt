@@ -1,6 +1,6 @@
 
 
-class userDataObject():
+class userDataObject:
     def __init__(self):
         self.private_name = None
         self.family_name = None
