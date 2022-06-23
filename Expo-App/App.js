@@ -17,6 +17,7 @@ import ProfileScreen from './Screens/Profile';
 import SMSLoginScreen from './Screens/SMSLogin';
 import ProductsScreen from './Screens/Products';
 import DigitalReceipt from './components/DigitalReceipt';
+import DigitalCredit from './components/DigitalCredit';
 import newGpsScreen from './Screens/NewGps';
 
 import {DefaultTheme } from "@react-navigation/native";
@@ -81,6 +82,7 @@ export default function App() {
         <Drawer.Screen name="Products" component={ProductsScreen}/>
         <Drawer.Screen name="SMSLogin" component={SMSLoginScreen} initialParams={{url: url}}/>
       <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt}/>
+      <Drawer.Screen name="DigitalCredit" component={DigitalCredit}/>
         <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/>
       </Drawer.Navigator>
     </NavigationContainer>

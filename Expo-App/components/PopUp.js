@@ -1,6 +1,6 @@
 import React, {useState, useContext} from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Image , Text, TextInput, StyleSheet, TouchableOpacity} from "react-native";
+import { View, Image , Text, TextInput, StyleSheet, TouchableOpacity, ImageBackground} from "react-native";
 
 import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
@@ -8,14 +8,32 @@ import { RectButton, CircleButton } from "./Button";
 
 //{ data,handlePress, date, price, receipt}
 export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, setExpireDate, setMarket, setName, isReceipt}) =>{
-  
-  const [specUrl, setSpecUrl] = useState('')
-  const [isUpLoading, setisUpLoading] = useState(false);
+  const [name, setname] = useState('')
+  const [date, setdate] = useState(data.date)
+  const [store, setstore] = useState(data.market)
+  const [amount, setamount] = useState('')
+  const [expdate, setexpdate] = useState('')
   return (
     <>
     {/* <View style={{alignItems: 'center', backgroundColor: COLORS.white}}>
           </View> */}
-    <View style={{alignItems: 'center', backgroundColor: COLORS.white, borderRadius:SIZES.large}}>
+
+
+    <View style={{alignItems: 'center', backgroundColor: "transparent", borderRadius:SIZES.large}}>
+    <ImageBackground
+       source={assets.nft01}
+       resizeMode="cover"
+       style={{
+        width: "100%",
+        borderTopLeftRadius: SIZES.font,
+        borderTopRightRadius: SIZES.font,
+        alignItems:"center",
+        justifyContent: "center",
+        paddingBottom:SIZES.small
+       }}
+       imageStyle={{ borderRadius: SIZES.large}}
+        >
+
       <View style={styles.header}>
         <TouchableOpacity onPress={()=>handleClose(false)}>
            <Image source={require('../Images/x.png')}
@@ -26,37 +44,46 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
         source={require('../Images/success.png')}
         style={{height: 150, width: 150, marginVertical: 10}}
       /> */}
-      {isUpLoading ? <Text>Uplaoding...</Text>:<>
       <TextInput
-          value=""
-          onChangeText={(name) => setName(name)}
+          value={name}
+          // onEndEditing={(val)=>setName(val)}
+          onChangeText={(name) => {setname(name); setName(name);}}
           placeholder={'Name'}
           style={styles.input}
+          
+          // placeholderTextColor={COLORS.primary}
           />
-      <Text>Store: </Text>
-      <Text>Date: </Text>
-      {isReceipt && <>
-      <Text>Total Amount is: 90$</Text>
-      </>}
-      {!isReceipt && <>
-        <Text>Please Enter:</Text>
-        <TextInput
-          value="{expireDate}"
-          onChangeText={(lname) => setExpireDate(lname)}
-          placeholder={'Expiration Date'}
+      <TextInput
+          value={store}
+          onChangeText={(name) => {setMarket(name); setstore(name)}}
+          placeholder={'Store'}
           style={styles.input}
-        />
+          />
+          <TextInput
+          value={date}
+          onChangeText={(name) => {setDate(name); setdate(name)}}
+          placeholder={'Date'}
+          style={styles.input}
+          
+          />
         <TextInput
-          value={data.total_price}
-          onChangeText={(name) => setAmount(name)}
+          value={amount}
+          onChangeText={(name) => {setAmount(name); setamount(name)}}
           placeholder={'Total Amount'}
           style={styles.input}
           />
+      {!isReceipt && <>
+        <TextInput
+          value={expdate}
+          onChangeText={(lname) => {setExpireDate(lname); setexpdate(lname);}}
+          placeholder={'Expiration Date'}
+          style={styles.input}
+        />
       </>}
-      <RectButton minWidth={120} fontSize={SIZES.medium} {...SHADOWS.dark} buttonText={"Confirm"}/>
+      <RectButton  minWidth={120} fontSize={SIZES.medium} {...SHADOWS.dark} buttonText={"Confirm"} handlePress={()=>handleConfirm()}/>
       {/* <Button title="Confirm" onPress={()=>{sendUpdates();}}></Button>
       <Button title="Edit" onPress={()=>{}}></Button> */}
-    </>}
+</ImageBackground>
     </View>
 </>
 
@@ -104,6 +131,14 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'flex-end',
     justifyContent: 'center',
+  },
+  input: {
+    width: 250,
+    height: 44,
+    padding: 10,
+    marginTop: 20,
+    marginBottom: 10,
+    backgroundColor: '#e8e8e8'
   },
 });
 

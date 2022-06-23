@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {StyleSheet,Text,View,StatusBar, ImageBackground, Image, Pressable} from 'react-native'
+import {StyleSheet,Text,View,StatusBar, ImageBackground, Image, Pressable, Alert, KeyboardAvoidingView} from 'react-native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
 import { CircleButton, RectButton, PopUp } from "../components";
 import Modal from "react-native-modal";
+import  {firebase} from '../firebase';
 
 
 const ScanReceipts = ({navigation, route}) => {
   const [modalVisible, setModalVisible] = useState(true);
-
   const [hasCameraPermission, setHasCameraPermission] = useState(null)
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null)
   const [image, setImage] = useState(null)
@@ -27,8 +27,8 @@ const ScanReceipts = ({navigation, route}) => {
   const [expireDate, setExpireDate] = useState('')
   const [specUrl, setSpecUrl] = useState('')
   const [isReceipt, setisReceipt] = useState(true)
-  const [isUpLoading, setisUpLoading] = useState(true);
-  const [imageId, setImageId] = useState('');
+  const [isUpLoading, setisUpLoading] = useState(false);
+  const [filename, setFilename] = useState('');
   const [JsonData, setJsonData] = useState([]);
 
 
@@ -160,43 +160,63 @@ const ScanReceipts = ({navigation, route}) => {
   //   // });
   // }
 
+  // const uploadImg = async (uri) => {
+  //   const res = await fetch(uri)
+  //   const blob = await res.blob();
+  //   const filename = uri.substring(uri.lastIndexOf('/')+1);
+  //   console.log(filename2);
+  //   var ref = firebase.storage().ref().child(filename).put(blob);
+  //   try {
+  //     await ref;
+  //   } catch (e){
+  //     console.log(e);
+  //   }
+  //   Alert.alert('Photo uploaded');
+  //   await firebase.storage().ref().child(filename).getDownloadURL(ref).then( x => {
+  //     console.log(x);
+  //     setImage(x);
+  //     setTimeout(()=>console.log("hi"), 3000)
+  //     setisUpLoading(false);
+  //     setChooseAction(false);
+  //     console.log("here");
+  //   })
+  // }
 
   const sendImage= async (local_uri) =>{
     setImage(local_uri);
-    setImgBackground(local_uri);
     setisUpLoading(true);
     setModalVisible(true);
-    setPopUp(true);
-
+    // uploadImg(local_uri);
     
     // ImagePicker saves the taken photo to disk and returns a local URI to it
     let filename = local_uri.split('/').pop();
     const formData = new FormData();
      // Infer the type of the image
-  let match = /\.(\w+)$/.exec(filename);
-  let type = match ? `image/${match[1]}` : `image`;
-  console.log(match);
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
     let img = { uri: local_uri, name: filename, type }
     // let img = { uri: local_uri, name: filename, type: 'image/jpeg' }
 
     formData.append('image', img);
     formData.append('user_key', userKey);
-    console.log(`http://${route.params.url}/${specUrl}/scan`);
-    // fetch(`http://${route.params.url}/${specUrl}/scan`, {
-    //   method: 'POST',
-    //   body:formData,
-    //   headers: {
-    //     'content-type': 'multipart/form-data',
-    //   },
-    // }).then(res => res.json()).then(data => {
-    //   console.log(data);
-    //   setJsonData(data);
-    //   setImageId(data._id);
-    //   setDate(data.date);
-    //   setMarket(data.market);
-    //   setisUpLoading(false);
-    //   setPopUp(true);
-    // });
+    fetch(`http://${route.params.url}/${specUrl}/scan`, {
+      method: 'POST',
+      body:formData,
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    }).then(res => res.json()).then(data => {
+      console.log(data);
+      setJsonData(data);
+      setDate(data.date);
+      setMarket(data.market);
+      setisUpLoading(false);
+     setPopUp(true);
+
+      // setisUpLoading(false);
+      // setImageId(data._id);
+      // setPopUp(true);
+    });
   }
 
   async function takeAndUploadPhotoAsync() {
@@ -208,6 +228,7 @@ const ScanReceipts = ({navigation, route}) => {
     if (result.cancelled) {
       return;
     }
+    setChooseAction(false)
     sendImage(result.uri);
   }
 
@@ -216,46 +237,63 @@ const ScanReceipts = ({navigation, route}) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
     })
-
+    
     if (result.cancelled) {
       return;
     }
+    setChooseAction(false)
     sendImage(result.uri);
   }
+
+
 
   const sendUpdates = async () => {
     setImage(null);
     setPopUp(false);
-    const myHeaders = new Headers();
-    myHeaders.append('content-type', 'aplication/json');
+    setModalVisible(false);
+    Alert.alert("Uploaded successfully!                       ");
+
+    // setImage(null);
+    // setPopUp(false);
+    // setModalVisible(false);
+  
+
+    // setImage(image);
+    var full_url='';
+    // setPopUp(false);
     if (!isReceipt){
       JsonData.expire_date = expireDate;
+      full_url = `http://${route.params.url}/${specUrl}/update_credit_data`;
     }
-    console.log(myHeaders);
+    else {
+      full_url = `http://${route.params.url}/${specUrl}/update_receipt_data`
+    }
     //const obj = JSON.parse(JsonData)
-    console.log("lll");
     JsonData.name = name;
     JsonData.total_price = amount;
+    JsonData.user_key = userKey;
+    //JsonData.filename = filename
+    //JsonData.uri = uri
     //const newS = JSON.stringify(obj)
     console.log("news: ", JsonData)
 
 
-    fetch(`http://${route.params.url}/${specUrl}/update`, {
-      method: 'PATCH',
-      body:JSON.stringify(JsonData),
-      headers: {
-        'content-type': 'aplication/json',
-        'user_key' : userKey,
-    },
-    }).then(()=>{
-      setImage(null);
-      setVisible(false); 
-      setFirst(true); 
-    });
+    // fetch(full_url, {
+    //   method: 'PATCH',
+    //   body:JSON.stringify(JsonData),
+    //   headers: {
+    //     'content-type': 'aplication/json',
+    // },
+    // }).then(()=>{
+
+    //   // setVisible(false); 
+    //   // setFirst(true); 
+    // });
   }
 
   const setType = (val)=>{
     setisReceipt(val);
+    setisReceiptData(val);
     setChooseAction(true);
   }
 
@@ -274,11 +312,10 @@ const ScanReceipts = ({navigation, route}) => {
     style={{
       width: "100%",
       height: "100%",
-      
     }}
   >
      
-      {!image &&<ImageBackground
+      {!image && <ImageBackground
        source={assets.nft01}
        resizeMode="cover"
        style={{
@@ -290,7 +327,7 @@ const ScanReceipts = ({navigation, route}) => {
          justifyContent: "center",
         }}
      >
-      {!chooseAction && <> 
+      {!chooseAction  && !image &&<> 
         <View style={{padding: SIZES.base}}>
                 <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Receipt"} handlePress={()=>setType(true)}/>
         </View>
@@ -314,22 +351,65 @@ const ScanReceipts = ({navigation, route}) => {
       </>}
 
      </ImageBackground>}
-     {image && <Image source={{ uri: image }} style={{ flex: 1}}/>}
-     {popUp && 
+     {/* {isUpLoading ? <View><Text>Uploading details....</Text></View>:  */}
+     {/* <View style={{ width: "100%",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "center",}}> */}
+{/* 
+          <ImageBackground source={{ uri: image }} resizeMode="contain" KeyboardAvoidingView={false}
+       style={{
+          width: "100%",
+          height: "100%",
+          borderTopLeftRadius: SIZES.font,
+          borderTopRightRadius: SIZES.font,
+          alignItems:"center",
+          justifyContent: "center",
+         display: "flex",
+         paddingBottom: "15%",
+         paddingTop: SIZES.font,
+        }}> */}
+
+        <View style={{flexDirection: "column-reverse", height:"110%", width:"45%"} }>
+
+{/* {!popUp && <RectButton inWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Submit"} handlePress={()=>{setPopUp(true); setModalVisible(true);}}/>}  */}
+       </View>
+        {/* </ImageBackground> */}
+       {/* <Image style={{height:'100%', width:'100%'}} resizeMode='contain' source={{ uri: image }}/> */}
+     {/* </View> */}
+     {/* } */}
+    {isUpLoading && <Text>Uploading...</Text>}
+
+     {popUp && !isUpLoading &&
     //  <Modal animationType="slide"></Modal>
      <Modal
      animationType="slide"
      transparent={true}
+     modalBackGround="blue"
      onBackdropPress={() => setModalVisible(false)}
     //  backgroundColor={COLORS.gray}
     backdropColor="black"
-    backdropOpacity="0.4"
+    // backdropOpacity=0.4
      visible={modalVisible}
      onRequestClose={() => {
        Alert.alert("Modal has been closed.");
        setModalVisible(!modalVisible);
      }}
    >
+    {/* <ImageBackground
+       source={assets.nft01}
+       resizeMode="cover"
+       style={{
+         width: "100%",
+         height: "100%",
+         borderTopLeftRadius: SIZES.font,
+         borderTopRightRadius: SIZES.font,
+         alignItems:"center",
+         justifyContent: "center",
+        }}>
+
+        </ImageBackground> */}
+        <PopUp data={JsonData} handleClose={()=>{setPopUp(false); setModalVisible(false); setChooseAction(true);}} handleConfirm={sendUpdates} setAmount={(v)=>setAmount(v)} setExpireDate={setExpireDate} setDate={setDate} setMarket={setMarket} setName={setName} isReceipt={isReceipt} />
      {/* <View style={{backgroundColor: COLORS.white,
           borderRadius: SIZES.base,
           width: "50%",
@@ -342,9 +422,8 @@ const ScanReceipts = ({navigation, route}) => {
            <Text>Hide Modal</Text>
          </Pressable>
      </View> */}
-     <PopUp data={JsonData} handleClose={()=>setPopUp(false)} handleConfirm={sendUpdates} setAmount={setAmount} setExpireDate={setExpireDate} setDate={setDate} setMarket={setMarket} setName={setName} isReceipt={isReceipt}/>
    </Modal>
-     }
+}
       {/* {popUp && 
       <PopUp />
       } */}

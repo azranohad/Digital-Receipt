@@ -1,5 +1,6 @@
-import { View, Text, SafeAreaView, Image, StatusBar, FlatList , StyleSheet} from "react-native";
-import React, {useState, useEffect} from "react";
+import React, { useEffect, useState } from "react";
+import { View, Text, SafeAreaView, Image, StatusBar, FlatList, StyleSheet } from "react-native";
+
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
 import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar } from ".";
 import {firebase} from '../firebase'
@@ -14,7 +15,7 @@ const DetailsHeader = ({navigation }) => (
 
     <CircleButton
       imgUrl={assets.left}
-      handlePress={() => navigation.navigate("Receipts")}
+      handlePress={() => navigation.navigate("Store Credits")}
       right={15}
       top={StatusBar.currentHeight + 10}
     />
@@ -28,10 +29,10 @@ const DetailsHeader = ({navigation }) => (
   
 );
 
-const DigitalShow= ({ route, navigation }) => {
+const DigitalCredit= ({ route, navigation }) => {
   const { data } = route.params;
-  const [img2 , setImg2] = useState(null)
   const [img , setImg] = useState(null)
+  const [img2 , setImg2] = useState(null)
 
 
   // useEffect(()=> {getBarcode(data.filename);})
@@ -56,31 +57,53 @@ getBarcode2('/סופר-פארם-שירות-לקוחות-לוגו.jpg');
 
   return (
     
-    img&& img2 ?<SafeAreaView style={{ flex: 1 }}>
+    img2 && img ? <SafeAreaView style={{  flex: 1}}>
       <DetailsHeader data={data} navigation={navigation} />
 
       <FocusedStatusBar
         barStyle="dark-content"
         backgroundColor="transparent"
         translucent={true}
+        style={{flex:1,
+          flexDirection:'row',
+          alignItems:'center',
+          justifyContent:'center'}}
       />
-
-     
-      
-      {/* <Image style={{height:'40%', width:'100%'}} resizeMode='contain' source={{uri: img}}/> */}
-      <FlatList
-        data={data.items}
-        renderItem={({ item }) => <DetailsBid bid={item} />}
-        keyExtractor={( item ) =>item.itemID}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingBottom: SIZES.extraLarge * 3,
-          paddingLeft: SIZES.large*1.5,
-          paddingRight: SIZES.large*1.5,
-        }}
-
-        ListFooterComponent={()=>(
           <React.Fragment>
+            {/* <SubInfo /> */}
+            <View
+      style={{
+        width: "100%",
+        // flexDirection: "row",
+        // justifyContent: "space-between",
+        alignItems: "center",
+        marginVertical: SIZES.base,
+        paddingHorizontal: SIZES.base,
+      }}>
+
+    <Text
+          style={{
+            fontFamily: FONTS.semiBold,
+            fontSize: SIZES.extraLarge+5,
+            color: COLORS.primary,
+            alignContent: "center"
+          }}
+        >
+          {data.market}
+        </Text>
+        <Text style={styles.text_header_date}>
+          {data.date_of_receipt.slice(0,-13)}
+        </Text>
+        <Text
+          style={styles.text_header_date}>
+          {data.date_of_receipt.slice(-13,-7)}
+        </Text>
+        <Text
+          style={styles.text_header}
+          >
+          Credit Number: {data.receiptID}
+        </Text>
+            </View>
             <View
       style={{
         width: "100%",
@@ -101,82 +124,37 @@ getBarcode2('/סופר-פארם-שירות-לקוחות-לוגו.jpg');
           >
           Total: {data.total_price.toFixed(2)}$
         </Text>
+        <Text
+          style={{
+            fontFamily: FONTS.semiBold,
+            fontSize: SIZES.large,
+            color: COLORS.primary,
+            alignContent: "center",
+          }}
+          >
+          Expiration Date: {data.date_of_receipt.slice(4,-13)}
+        </Text>
             <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: img}}/>
             
+            <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: img2}}/>
             <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} />
             
             </View>
           </React.Fragment>
-        )
-        
-      }
-        ListHeaderComponent={() => (
-          <React.Fragment>
-            {/* <SubInfo /> */}
-            <View
+          
+          
+      
+    </SafeAreaView>: <View
       style={{
         width: "100%",
         // flexDirection: "row",
-        justifyContent: "space-between",
+        // justifyContent: "space-between",
         alignItems: "center",
         marginVertical: SIZES.base,
-        paddingHorizontal: SIZES.base,
+        padding: SIZES.base,
       }}>
-        <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: img2}}/>
-    <Text
-          style={{
-            fontFamily: FONTS.semiBold,
-            fontSize: SIZES.extraLarge+5,
-            color: COLORS.primary,
-            alignContent: "center"
-          }}
-        >
-          {data.market}
-        </Text>
-        <Text style={styles.text_header_date}>
-          {data.date_of_receipt.slice(0,-13)}
-        </Text>
-        <Text
-          style={styles.text_header_date}>
-          {data.date_of_receipt.slice(-13,-7)}
-        </Text>
-        <Text
-          style={{
-            fontFamily: FONTS.semiBold,
-            fontSize: SIZES.medium,
-            color: COLORS.primary,
-            alignContent: "center",
-            paddingBottom: SIZES.extraLarge,
-          }}
-        >
-          Receipt Number: {data.receiptID}
-        </Text>
-
+        <Text>Loading...</Text>
       </View>
-        
-            {/* <View style={{ padding: SIZES.font }}>
-              <DetailsDesc data={data} />
-              
-              
-            </View> */}
-            
-          </React.Fragment>
-          
-          )}
-      />
-      
-    </SafeAreaView>:
-     <View
-     style={{
-       width: "100%",
-       // flexDirection: "row",
-       // justifyContent: "space-between",
-       alignItems: "center",
-       marginVertical: SIZES.base,
-       padding: SIZES.base,
-     }}>
-       <Text>Loading...</Text>
-     </View>
   );
 };
 
@@ -194,7 +172,11 @@ const styles = StyleSheet.create({
     fontSize: SIZES.large,
     color: COLORS.primary,
     alignContent: "center"
+  },
+  image : {
+    width: '100%',
+    height: 'auto',
   }
 });
 
-export default DigitalShow;
+export default DigitalCredit;
