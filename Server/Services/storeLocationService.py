@@ -1,4 +1,4 @@
-from singleton_decorator import singleton
+# from singleton_decorator import singleton
 from geopy.geocoders import Nominatim
 geolocator = Nominatim(user_agent="sample app")
 
