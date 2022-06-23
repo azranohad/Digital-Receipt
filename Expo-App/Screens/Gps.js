@@ -1,157 +1,98 @@
-// import React from 'react'
-// import { View, Text } from 'react-native'
+import React from 'react';
+import { StyleSheet, Text, View, Button } from 'react-native';
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
 
-// const GpssScreen = () => {
-//     return (
-//         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-//             <Text>This is Gps Screen</Text>
-//         </View>
-//     )
-// }
+const BACKGROUND_FETCH_TASK = 'background-fetch';
 
-// export default GpssScreen
+// 1. Define the task by providing a name and the function that should be executed
+// Note: This needs to be called in the global scope (e.g outside of your React components)
+TaskManager.defineTask(BACKGROUND_FETCH_TASK, async () => {
+  const now = Date.now();
 
-import React, { useState, useEffect } from 'react';
-import { Platform, Text, View, StyleSheet } from 'react-native';
-import * as Location from 'expo-location';
-import * as Notifications from 'expo-notifications';
-import * as Permissions from 'expo-permissions';
+  console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
 
-export default function Gps({navigation, route}) {
-  const pressHandler = () => {
-    navigation.goBack();
-  }
+  // Be sure to return the successful result type!
+  return BackgroundFetch.BackgroundFetchResult.NewData;
+});
 
-  useEffect(() => {
-    registerForPushNotification().then(token=>console.log(token)).catch(err => console.log(Err))
-    // notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-    //   console.log(notification);
-    // });
-    // responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-    //   console.log(response);
-    // });
-    // return () => {
-    //   cleanup
-    // }
-  }, [])
+// 2. Register the task at some point in your app by providing the same name, and some configuration options for how the background fetch should behave
+// Note: This does NOT need to be in the global scope and CAN be used in your React components!
+async function registerBackgroundFetchAsync() {
+  return BackgroundFetch.registerTaskAsync(BACKGROUND_FETCH_TASK, {
+    minimumInterval: 1, // 15 minutes
+    stopOnTerminate: false, // android only,
+    startOnBoot: true, // android only
+  });
+}
 
-  async function registerForPushNotification(){
-    const {status} = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-    if (status != 'granted') {
-      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-      // finalStatus = status;
-    }
-    if (status !== 'granted') {
-      alert('Failed to get push token for push notification!');
-      return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    return token
-  }
+// 3. (Optional) Unregister tasks by specifying the task name
+// This will cancel any future background fetch calls that match the given name
+// Note: This does NOT need to be in the global scope and CAN be used in your React components!
+async function unregisterBackgroundFetchAsync() {
+  return BackgroundFetch.unregisterTaskAsync(BACKGROUND_FETCH_TASK);
+}
 
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+export default function BackgroundFetchScreen() {
+  const [isRegistered, setIsRegistered] = React.useState(false);
+  const [status, setStatus] = React.useState(null);
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      
-      setLocation(location);
-    })();
+  React.useEffect(() => {
+    checkStatusAsync();
   }, []);
 
-  let text = 'Waiting..';
-  let latitude = 'connecting ..'
-  let longitude = 'connecting ..'
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    console.log("----------------------------------")
-    text = JSON.stringify(location);
-    let myObj = JSON.parse(text);
-    let coords = myObj.coords;
-    latitude = coords.latitude
-    longitude = coords.longitude
-    const myJSON = '{"latitude":latitude,"longitude":longitude}'
-    console.log("myJSON ")
-    console.log(myJSON)
-  }
+  const checkStatusAsync = async () => {
+    const status = await BackgroundFetch.getStatusAsync();
+    const isRegistered = await TaskManager.isTaskRegisteredAsync(BACKGROUND_FETCH_TASK);
+    setStatus(status);
+    setIsRegistered(isRegistered);
+  };
 
-  var closestStores = calcdistance(longitude, latitude)
+  const toggleFetchTask = async () => {
+    if (isRegistered) {
+      await unregisterBackgroundFetchAsync();
+    } else {
+      await registerBackgroundFetchAsync();
+    }
 
-
-
-
+    checkStatusAsync();
+  };
 
   return (
-    <View style={styles.container}>
-      <Text>longitude is:</Text>
-      <Text>{longitude}</Text>
-      <Text>latitude is:</Text>
-      <Text>{latitude}</Text>
-      <Text>{closestStores}</Text>
-
+    <View style={styles.screen}>
+      <View style={styles.textContainer}>
+        <Text>
+          Background fetch status:{' '}
+          <Text style={styles.boldText}>
+            {status && BackgroundFetch.BackgroundFetchStatus[status]}
+          </Text>
+        </Text>
+        <Text>
+          Background fetch task name:{' '}
+          <Text style={styles.boldText}>
+            {isRegistered ? BACKGROUND_FETCH_TASK : 'Not registered yet!'}
+          </Text>
+        </Text>
+      </View>
+      <View style={styles.textContainer}></View>
+      <Button
+        title={isRegistered ? 'Unregister BackgroundFetch task' : 'Register BackgroundFetch task'}
+        onPress={toggleFetchTask}
+      />
     </View>
   );
 }
-
-
-
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  textContainer: {
+    margin: 10,
+  },
+  boldText: {
+    fontWeight: 'bold',
   },
 });
-
-
-
-class Store {
-  constructor(name, store_longitude, store_latitude, city) {
-    this.name = name;
-    this.store_latitude = store_latitude;
-    this.store_longitude = store_longitude;
-    this.city = city;
-  }
-}
-
-function calcdistance(currentLongitude, currentLatitude){
-  var stores = []
-  var coffee_time = new Store("coffee time", 34.84361, 32.06853, "רמת גן");
-  console.log("coffee_time")
-  console.log(coffee_time)
-  var b605 = new Store("605 building", 34.84340, 32.07044, "רמת גן");
-  var b504 = new Store("504 building", 34.84437, 32.06974, "רמת גן");
-  var Aroma = new Store("Aroma", 34.84554, 32.06811, "רמת גן");
-  var superPharm = new Store("Super Pharm", 34.8545, 32.07734, "גבעת שמואל");
-  stores.push(coffee_time)
-  stores.push(b605)
-  stores.push(b504)
-  stores.push(Aroma)
-  stores.push(superPharm)
-
-  var cities_to_print = "I am close to:\n"
-  var currentCity = "רמת גן"
-  for (let s of stores){
-    if (s.city == (currentCity)){
-      if ((Math.abs(currentLongitude - s.store_longitude) < 0.001) &&
-              (Math.abs(currentLatitude - s.store_latitude) < 0.001)){
-        cities_to_print+=s.name;
-        cities_to_print+="\n";
-      }
-    }
-  }
-  console.log("cities_to_print")
-  console.log(cities_to_print)
-  if(cities_to_print == ""){
-    cities_to_print = "I am not close to any store"
-  }
-  return cities_to_print
-}

@@ -18,6 +18,7 @@ import SMSLoginScreen from './Screens/SMSLogin';
 import ProductsScreen from './Screens/Products';
 import DigitalReceipt from './components/DigitalReceipt';
 import newGpsScreen from './Screens/NewGps';
+import UserLocationScreen from './Screens/UserLocation';
 
 import {DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -32,7 +33,7 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.43.254:5000";
+  const url="192.168.0.111:5000";
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
@@ -82,8 +83,11 @@ export default function App() {
         <Drawer.Screen name="SMSLogin" component={SMSLoginScreen} initialParams={{url: url}}/>
       <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt}/>
         <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/>
+        <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/>
+
       </Drawer.Navigator>
     </NavigationContainer>
+    
   );
 }
 
