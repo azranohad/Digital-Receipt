@@ -1,16 +1,18 @@
 import React, {useState} from 'react';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { View, Text,Button, ImageBackground, TextInput, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Text,Button, ImageBackground, Image,TextInput, SafeAreaView, StyleSheet } from 'react-native';
 import GpsScreen from './Gps';
 import {useNavigation, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
+import { NFTCard, HomeHeader, FocusedStatusBar ,RectButton} from "../components";
 
 const SMSLoginScreen = ( props) => {
     const [phoneNumber, setUsername] = useState('');
     const [isPhoneNumsent, setPhoneNum] = useState(false);
     const [isTempPasswordsent, setTempPasswordsent] = useState(false);
-    const [isPasswordVerified, setPasswordVerified] = useState();
+    const [isPasswordVerified, setPasswordVerified] = useState(true);
+    const [isPassword, setPassword] = useState(false);
     const [tempPassword, setTempPassword] = useState('');
     const [error, setError] = useState('');
     const navigation = useNavigation();
@@ -30,11 +32,12 @@ const SMSLoginScreen = ( props) => {
      
     async function sendDetails() {
         setPhoneNum(true)
-        fetch(`http://${props.url}/users_controller/send_smsCode_to_verify`, {
+        fetch(`http://192.168.0.111:5000/users_controller/send_smsCode_to_verify`, {
             method: 'POST',
             body:JSON.stringify({"phone_number": phoneNumber}),
             headers: {
                 'content-type': 'aplication/json',
+            //    "phone_number": phoneNumber,
             },
         }).then(res => res.text()).then(data => {
             console.log("data: ", data);
@@ -52,8 +55,8 @@ const SMSLoginScreen = ( props) => {
         });
     }
     async function sendTempPassword() {
-        setTempPasswordsent(true)
-        fetch(`http://${props.url}/users_controller/verify_sms_code`, {
+        //setTempPasswordsent(true)
+        fetch(`http://192.168.0.111:5000/users_controller/verify_sms_code`, {
             method: 'POST',
             body:JSON.stringify({"phone_number": phoneNumber, "temp_password": tempPassword}),
             headers: {
@@ -66,22 +69,24 @@ const SMSLoginScreen = ( props) => {
             if (data=="The code is wrong"){
                 console.log("Incorrect password");
                 setPasswordVerified(false);
-                setError(data);
+                //setError(data);
             }
             else {
                 // let id = Object.values(data)[0];
                 storeData(data.toString());
-                setPasswordVerified(true);
+                //setPasswordVerified(true);
+                setPhoneNum(false);
+                navigation.navigate('Receipts');
             }
             console.log("end");
         });
     }
 
     return (
-        isPhoneNumsent ? isTempPasswordsent? <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        isPhoneNumsent ? isPassword? <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:100}}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View >
-                {isPasswordVerified ?<Text>Verified!!!</Text> : <Text>Incorrect username or password</Text>} 
+                {isPassword ?<Text>Verified!!!</Text> : <Text>Incorrect username or password</Text>} 
                     
                     {/* <TextInput 
                     value={tempPassword}
@@ -93,31 +98,42 @@ const SMSLoginScreen = ( props) => {
 
                 </View>
             </SafeAreaView>
-        </View> : <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        </View> : <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:100}}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View >
-                <Text>SMS send to: {phoneNumber}</Text>
+                <View style={styles.imagecontainer}>
+                <Image style={{width:100,height: 100}} source={require('../assets/icon.png')} />
+                </View >
+                <Text style={styles.textcontainer2}>✔ SMS sent </Text>
+                {isPasswordVerified ?<Text></Text> : <Text>Password Worng!!! Please try again</Text>} 
                     <TextInput 
                     value={tempPassword}
                     onChangeText={(tempPassword) => setTempPassword(tempPassword)}
                     placeholder={'Temp Password'}
+                    secureTextEntry={true}
                     style={styles.input}
+
                     />
-                     <Button title="Send" onPress={()=>sendTempPassword() }/>
+                     {/* <Button title="Send" onPress={()=>sendTempPassword() }/> */}
+                     <RectButton marginTop={10} minWidth={170} fontSize={SIZES.large} {...SHADOWS.light} buttonText={"Send"} handlePress={()=>sendTempPassword()}/>
 
                 </View>
             </SafeAreaView>
-        </View> : <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        </View> : <View style={{flex:1, alignItems:'center', justifyContent:'center', marginTop:100}}>
             <SafeAreaView style={{ flex: 1 }}>
                 <View >
-
+                <View style={styles.imagecontainer}>
+                <Image style={{width:100,height: 100}} source={require('../assets/icon.png')} />
+                </View >
                     <TextInput 
                     value={phoneNumber}
                     onChangeText={(phoneNumber) => setUsername(phoneNumber)}
                     placeholder={'Phone Number'}
                     style={styles.input}
+                    keyboardType={'number-pad'}
                     />
-                     <Button title="Send" onPress={()=>sendDetails() }/>
+                     {/* <Button title="Send" onPress={()=>sendDetails() }/> */}
+                     <RectButton marginTop={10} minWidth={170} fontSize={SIZES.large} {...SHADOWS.light} buttonText={"Send"} handlePress={()=>sendDetails() }/>
 
                 </View>
             </SafeAreaView>
@@ -151,13 +167,102 @@ container: {
     marginTop: 20,
     backgroundColor: '#ffffff',
   },
+//   input: {
+//     width: 250,
+//     height: 44,
+//     padding: 10,
+//     marginTop: 20,
+//     marginBottom: 10,
+//     backgroundColor: '#e8e8e8'
+//   },
+  imagecontainer: {
+    
+    //flex: 1,
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'center',
+
+    marginTop: 0,
+    //backgroundColor: '#ffffff',
+  },
   input: {
-    width: 250,
+    width: 350,
+    fontStyle: 'normal',
+
     height: 44,
     padding: 10,
-    marginTop: 20,
-    marginBottom: 10,
-    backgroundColor: '#e8e8e8'
+    borderRadius: 10,
+    borderWidth:1,
+    borderColor:'#dcdcdc',
+    marginTop: 70,
+    marginBottom: 20,
+    //backgroundColor: '#e8e8e8'
+  },
+  input2: {
+    width: 350,
+    borderRadius: 10,
+    height: 44,
+    padding: 10,
+    borderWidth:1,
+    borderColor:'#dcdcdc',
+    marginTop: 0,
+    marginBottom: 50,
+    //backgroundColor: '#e8e8e8'
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    elevation: 3,
+    marginBottom: 20,
+    shadowColor:'white',
+    backgroundColor: 'white',
+  },
+  button1: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 10,
+    elevation: 3,
+    marginBottom: 15,
+    shadowColor:'white',
+    backgroundColor: COLORS.midnightblue,
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'black',
+  },
+  text1: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
+  },
+  textcontainer2: {
+    fontWeight: 'bold',
+    width: 350,
+    fontStyle: 'normal',
+    textAlign: 'center',
+    alignItems:'center',
+    height: 50,
+    padding: 0,
+    borderRadius: 1,
+    //borderWidth:1,
+    borderColor:'#dcdcdc',
+    marginTop: 50,
+    marginBottom: 0,
+    backgroundColor: COLORS.white,
+    color: 'black',
+    fontSize: 24,
+
+
   },
 });
 

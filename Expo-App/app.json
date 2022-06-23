@@ -20,15 +20,17 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription":"Allows App to use location services in the foreground and background.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Allows App to use location services in the foreground and background.",
         "NSLocationWhenInUseUsageDescription": "text",
-        "NSFaceIDUsageDescription":"Allows App to use Face ID for a simpler sign in.",
+        "NSLocationAlwaysUsageDescription": "The Beep App will use your location to provide ETA's to yourself and others",
+        "NSFaceIDUsageDescription": "Allows App to use Face ID for a simpler sign in.",
         "NSLocationDefaultAccuracyReduced": "vvv",
         "UIBackgroundModes": [
           "location",
           "fetch"
         ]
-      }
+      },
+      "bundleIdentifier": "com.amitil7.Expo-App"
     },
     "android": {
       "adaptiveIcon": {

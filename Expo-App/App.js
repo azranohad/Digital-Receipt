@@ -19,6 +19,7 @@ import ProductsScreen from './Screens/Products';
 import DigitalReceipt from './components/DigitalReceipt';
 import DigitalCredit from './components/DigitalCredit';
 import newGpsScreen from './Screens/NewGps';
+import UserLocationScreen from './Screens/UserLocation';
 
 import {DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -84,8 +85,11 @@ export default function App() {
       <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt}/>
       <Drawer.Screen name="DigitalCredit" component={DigitalCredit}/>
         <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/>
+        <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/>
+
       </Drawer.Navigator>
     </NavigationContainer>
+    
   );
 }
 

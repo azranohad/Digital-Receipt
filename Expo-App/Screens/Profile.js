@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import { View, Text, Button, TextInput, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, Button,Image, TextInput, StyleSheet, ScrollView } from 'react-native'
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native';
 import { Value } from 'react-native-reanimated';
-
+import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
+import { NFTCard, HomeHeader, FocusedStatusBar ,RectButton} from "../components";
 
 const ProfileScreen = (props) => {
             const [userKey, setuserKey] = useState('');
@@ -31,8 +32,6 @@ const ProfileScreen = (props) => {
                 // error reading value
               }
             }
-            setuserKey(getData());
-
             const getTempData =  () => {
               try {
                 const value = "12345";
@@ -46,16 +45,18 @@ const ProfileScreen = (props) => {
                 // error reading value
               }
             }
+            
             useEffect(() =>
             {
-              
-            fetch("http://192.168.0.111:5000/users_controller/get_user_data", {
-          method: 'POST',
-          body:JSON.stringify({"user_key": userKey}),
+              let x = getData().value;
+               getData().then(res => setuserKey(res)).then(res => fetch("http://192.168.0.111:5000/users_controller/get_user_data", {
+          method: 'GET',
+          //body:JSON.stringify({"user_key": x}),
           headers: {
               'content-type': 'aplication/json',
+              "user_key": userKey,
           },
-      }).then(res => res.json()).then(data => {
+      })).then(res => res.json()).then(data => {
           //console.log("data: ", data);
           // let response = Object.values(data)[0];
           // console.log("res: ",response);
@@ -77,7 +78,7 @@ const ProfileScreen = (props) => {
               setLastName(data['lastname']);
             }
             if(data['phonenumber'] !== 'undefined') {
-              setPhonenumber(data['phonenumber']);
+              setPhonenumber(data['phone_number']);
             }
             if(data['email'] !== 'undefined') {
               setEmail(data['email']);
@@ -139,8 +140,8 @@ const ProfileScreen = (props) => {
               setError(data);
           }
           else {
-               //let id = data['city'];
-               //console.log(id);
+               let id = data['city'];
+               console.log(id);
                //setTempPassword(id);
               //storeData(data.toString());
           }
@@ -148,10 +149,19 @@ const ProfileScreen = (props) => {
       });
       }
     return (
+      <ScrollView>
+
         <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
-            <ScrollView>
+                          <View style={styles.imagecontainer}>
+                              <Image style={{width:100,height: 100}} source={require('../assets/icon.png')} />
+                          </View >
+                          <Text style={styles.textcontainer2}>
+                              <Text>My Account</Text>
+                          </Text>
+                          <Text style={styles.textcontainer}>
+                              <Text>Name:</Text>
+                          </Text>
                       <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                      <Text>Name: </Text>
                       <TextInput
                           value={name}
                           onChangeText={(lname) => setName(lname)}
@@ -159,8 +169,10 @@ const ProfileScreen = (props) => {
                           style={styles.input}
                           />
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>Last Name:</Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>Last Name: </Text>
                           <TextInput
                           value={lastname}
                           onChangeText={(name) => setLastName(name)}
@@ -168,8 +180,10 @@ const ProfileScreen = (props) => {
                           style={styles.input}
                           />
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>Username: </Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>Username: </Text>
                           <TextInput
                           value={username}
                           onChangeText={(username) => setUsername(username)}
@@ -177,8 +191,10 @@ const ProfileScreen = (props) => {
                           style={styles.input}
                           />
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>Age:  </Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>Age: </Text>
                           <TextInput
                           value={age}
                           onChangeText={(lname) => setAge(lname)}
@@ -187,8 +203,10 @@ const ProfileScreen = (props) => {
                           keyboardType={'number-pad'}
                           />
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>City: </Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>City: </Text>
                           <TextInput 
                           value={city}
                           onChangeText={(name) => setCity(name)}
@@ -196,17 +214,22 @@ const ProfileScreen = (props) => {
                           style={styles.input}
                           />
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>Country: </Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>Country: </Text>
                           <TextInput
                           value={country}
                           onChangeText={(name) => setCountry(name)}
                           placeholder={country}
                           style={styles.input}
                           />
+
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>Email: </Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>Email: </Text>
                           <TextInput
                           value={email}
                           onChangeText={(pass) => setEmail(pass)}
@@ -215,8 +238,11 @@ const ProfileScreen = (props) => {
                           keyboardType={'email-address'}
                           />
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>Phone Number:*</Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>Phone Number:</Text>
+                          {/* <Text>Phone Number:</Text> */}
                           <TextInput
                           value={phonenumber}
                           onChangeText={(pass) => setPhonenumber(pass)}
@@ -225,8 +251,11 @@ const ProfileScreen = (props) => {
                           keyboardType={'number-pad'}
                           />
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>ID:</Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>ID: </Text>
+                          {/* <Text>ID: </Text> */}
                           <TextInput
                           value={id}
                           onChangeText={(lname) => setId(lname)}
@@ -235,8 +264,11 @@ const ProfileScreen = (props) => {
                           keyboardType={'number-pad'}
                           />
                           </View>
+                          <Text style={styles.textcontainer}>
+                              <Text>Day Of Birth:</Text>
+                          </Text>
                           <View style={{flexDirection:'row',flex:1,alignItems:'center', justifyContent:'center'}}>
-                          <Text>Day Of Birth: </Text>
+                          {/* <Text >Day Of Birth: </Text> */}
                           <TextInput 
                           value={birthday}
                           onChangeText={(name) => setBirthday(name)}
@@ -244,9 +276,13 @@ const ProfileScreen = (props) => {
                           style={styles.input}
                           />
                           </View>
-                        <Button title="Submit" onPress={()=>sendUpdateReq() }/>
-            </ScrollView>
+                        
+                        <View>
+                            <RectButton marginTop={10} minWidth={170} fontSize={SIZES.large} {...SHADOWS.light} buttonText={"Update"} handlePress={()=>sendUpdateReq() }/>
+                         </View>
+            
         </View>
+        </ScrollView>
     )
 }
 const styles = StyleSheet.create({
@@ -256,13 +292,73 @@ const styles = StyleSheet.create({
       marginTop: 20,
       backgroundColor: '#ffffff',
     },
-    input: {
+    imagecontainer: {
+    
+      //flex: 1,
+      alignItems: 'center',
+      alignContent: 'center',
+      justifyContent: 'center',
+  
+      marginTop: 50,
+      //backgroundColor: '#ffffff',
+    },
+    input1: {
       width: 250,
       height: 44,
       padding: 10,
       marginTop: 20,
       marginBottom: 10,
       backgroundColor: '#e8e8e8'
+    },
+    input: {
+      width: 350,
+      fontStyle: 'normal',
+      textAlign: 'left',
+      height: 44,
+      padding: 10,
+      borderRadius: 10,
+      borderWidth:1,
+      borderColor:'#dcdcdc',
+      marginTop: 10,
+      marginBottom: 10,
+      //backgroundColor: '#e8e8e8'
+    },
+    textcontainer: {
+      fontWeight: 'bold',
+      width: 350,
+      fontStyle: 'normal',
+      textAlign: 'right',
+      alignItems:'center',
+      padding: 0,
+      borderRadius: 1,
+      //borderWidth:1,
+      borderColor:'#dcdcdc',
+      marginTop: 10,
+      marginBottom: 0,
+      backgroundColor: COLORS.white,
+      color: 'black',
+      fontSize: 16,
+
+
+    },
+    textcontainer2: {
+      fontWeight: 'bold',
+      width: 350,
+      fontStyle: 'normal',
+      textAlign: 'right',
+      alignItems:'center',
+      height: 70,
+      padding: 0,
+      borderRadius: 1,
+      //borderWidth:1,
+      borderColor:'#dcdcdc',
+      marginTop: 40,
+      marginBottom: 10,
+      backgroundColor: COLORS.white,
+      color: 'black',
+      fontSize: 32,
+
+
     },
   });
 
