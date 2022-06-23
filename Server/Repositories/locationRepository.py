@@ -1,5 +1,4 @@
 from Server.Repositories.stroeRepository import storeRepository
-from Server.Services.storeLocationService import storeLocationService
 import geopy.distance
 from singleton_decorator import singleton
 from pymongo import GEO2D
@@ -19,14 +18,14 @@ def get_location_stores_from_csv(file_path):
     return stores
 
 
-@singleton
+# @singleton
 class locationRepository:
     def __init__(self):
         self.mongo_db_repository = mongoDbRepository()
         self.db_stores = self.mongo_db_repository.get_client()['stores']
-        self.store_location_service = storeLocationService()
         self.logger = loggerService()
         self.store_repository = storeRepository()
+        self.DISTANCE = 0.01
 
 
     # store is array [name/company, coordinates]
@@ -44,11 +43,11 @@ class locationRepository:
             self.add_new_store_to_db(store)
 
     # distance units 1 == 100 km
-    def find_nearest_store_to_point(self, point, distance=0.01):
+    def find_nearest_store_to_point(self, point):
         nearest_stores = []
         for coll in self.db_stores.collection_names():
             for doc in self.db_stores[coll].find(
-                    {"loc": {"$near": point, "$maxDistance": distance}}):
+                    {"loc": {"$near": point, "$maxDistance": self.DISTANCE}}):
                 str_info_find = coll + ': ' + doc['address'] + '| distance: ' + str(
                     geopy.distance.distance(point, doc['loc']).km) + ' km'
                 self.logger.print_info_message(str_info_find)
@@ -56,15 +55,8 @@ class locationRepository:
                 break
         str_info = 'nearest stores from location: ' + str(point) + ' stores: ' + str(nearest_stores)
         self.logger.print_info_message(str_info)
-        return self.list_to_dict(nearest_stores)
+        return nearest_stores
 
-    def list_to_dict(self, _list):
-        ret_dict = {}
-        i = 1
-        for l in _list:
-            ret_dict[i] = l
-            i+=1
-        return ret_dict
 
     def get_location_stores_from_csv(file_path):
         file = open(file_path)
