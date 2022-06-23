@@ -1,7 +1,7 @@
 from flask import request, Blueprint
 
 from Server.Services.recommendationSystemService import recommendationSystemService
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 recommendation_system_api = Blueprint('recommendation_system_api', __name__)
 
@@ -20,7 +20,7 @@ def get_general_recommendation():
 
 
 # return dict of items from store
-@recommendation_system_api.route('/get_recommendation_for_store', methods=['GET','POST'])
+@recommendation_system_api.route('/get_recommendation_for_store', methods=['GET'])
 def get_recommendation_for_store():
     user_key = request.headers['user_key']
     store_name = request.headers['store_name']

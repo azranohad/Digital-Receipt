@@ -42,6 +42,8 @@ def insert_items_from_csv(file_name, store_name):
     i = 0
     for row in csv_reader:
         temp_item = store_service.create_item(row[0], row[1], row[3], row[2], row[4], store_name)
+        if row[5] == "":
+            temp_item['url_image'] = row[5]
         store_service.store_repository.insert_item_to_db(temp_item)
         print(str(i) + ' - ' + str(row))
         i += 1

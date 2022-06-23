@@ -1,4 +1,5 @@
 from Server.Repositories.receiptRepository import receiptRepository
+from Server.Repositories.stroeRepository import storeRepository
 from SystemFiles.logger.loggerService import loggerService
 from RecommendationSystem.rec import Recommender
 
@@ -6,6 +7,7 @@ from RecommendationSystem.rec import Recommender
 class recommendationSystemService:
     def __init__(self):
         self.receipt_repository = receiptRepository()
+        self.store_repository = storeRepository()
         self.logger = loggerService()
 
     # return list of items from favorite stores
@@ -20,8 +22,18 @@ class recommendationSystemService:
     def get_store_recommendations(self, user_key, store_name):
         rec = Recommender()
         list_of_recommendation_items = rec.store_recommendation(user_key, store_name)
-        return list_of_recommendation_items
 
+        items_data = {}
+        for itemID in list_of_recommendation_items:
+            item_data = self.store_repository.get_item_data_by_itemID(itemID)
+            items_data[item_data.get('_id')] = item_data
+        return items_data
 
-r = recommendationSystemService()
-print(r.get_store_recommendations('893fc2e900d94cf084f8186f1486e9ce', 'super-pharm'))
+# items = ['359742', '571688', '618901', '576417']
+# repo_store = storeRepository()
+# for item in items:
+#     item_temp = repo_store.get_item_data_by_itemID(item)
+#     x = 3
+
+# r = recommendationSystemService()
+# print(r.get_store_recommendations('c590e1226f184638bb3753188e37917a', 'super-pharm'))

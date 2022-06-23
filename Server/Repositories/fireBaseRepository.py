@@ -47,7 +47,7 @@ class fireBaseRepository:
             "receiptRepository | push new scan " + type.value + " to user: " + str(user_key))
         path_details = [user_key, type.value, file_name]
         storage_path = "/".join(path_details)
-        self.get_storage().child(storage_path).put(file_name)
+        self.get_storage().child(storage_path).put(file_path)
         return self.get_storage().child(storage_path).get_url("image")
 
     # return url
@@ -67,8 +67,8 @@ class fireBaseRepository:
 
 
 
-
+#
 # fbRepository = fireBaseRepository()
 # url = fbRepository.push_image("b661e90ea0fe4cb5bb6c53b68ad5d555", typeImage.RECEIPT,
-#                               "3f464c6dd5c44be4a191fc0daeaa1d2d.jpg", "C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\scanStorage\b661e90ea0fe4cb5bb6c53b68ad5d555\\bad7f857b56849fb9e8797cfbc1d0695.jpg")
+#                               "3f464c6dd5c44be4a191fc0daeaa1d2d.jpg", "C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\scanStorage\\b661e90ea0fe4cb5bb6c53b68ad5d555\\bad7f857b56849fb9e8797cfbc1d0695.jpg")
 # x = 3

@@ -254,7 +254,7 @@ class Recommender:
         for store in name_of_stores:
             dir_path = os.path.dirname(os.path.abspath(__file__))
 
-            file_name = store + '_recommendation222.csv'
+            file_name = store + '_recommendation.csv'
             rec_path = os.path.join(dir_path, file_name)
             f = open(rec_path, 'w',newline="\n")
             writer = csv.writer(f)
@@ -283,7 +283,7 @@ class Recommender:
 
     def store_recommendation(self, user, store_name):
         dir_path = os.path.dirname(os.path.abspath(__file__))
-        file_name = store_name + '_recommendation222.csv'
+        file_name = store_name + '_recommendation.csv'
         path = os.path.join(dir_path, file_name)
         print(path)
         f = open(path)
