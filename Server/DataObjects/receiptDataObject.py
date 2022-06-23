@@ -10,6 +10,7 @@ class receiptData():
         self.total_price = None
         self.CreditCardID = None
         self.receiptID = None
+        self.url_scan_image = None
         self.isDigitalReceipt = None
 
 class creditData():
@@ -20,6 +21,7 @@ class creditData():
         self.date_of_credit = None
         self.expiration_date = None
         self.total_price = None
+        self.url_scan_image = None
         self.creditID = None
 
 class itemObject():

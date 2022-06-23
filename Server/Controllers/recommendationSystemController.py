@@ -21,7 +21,7 @@ def get_general_recommendation():
 
 # return dict of items from store
 @recommendation_system_api.route('/get_recommendation_for_store', methods=['GET'])
-def get_store_recommendations():
+def get_recommendation_for_store():
     user_key = request.headers['user_key']
     store_name = request.headers['store_name']
     logger.print_api_message("recommendationSystemController | received get_store_recommendations GET request | user: " + user_key)
