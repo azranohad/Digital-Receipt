@@ -3,6 +3,108 @@ import * as Notifications from 'expo-notifications';
 import * as Location from 'expo-location';
 import React, { useState, useEffect, useRef, createRef } from 'react';
 import { Text, View, Button, Platform } from 'react-native';
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
+const LOCATION_TASK_NAME = "LOCATION_TASK"
+
+TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+  //const [expoPushToken, setExpoPushToken] = useState('');
+  //let token;
+  if (error) {
+    console.error(error)
+    return
+  }
+  if (data) {
+    // Extract location coordinates from data
+    let isNotification = false;
+    const { locations } = data
+    const location = locations[0]
+    let latitude = locations[0].coords.latitude;
+    let longitude = locations[0].coords.longitude;
+    if (location) {
+
+      (async () => {  fetch(`http://192.168.0.111:5000/location_controller/get_nearest_store`, {
+        method: 'POST',
+        body:JSON.stringify({latitude,longitude}),
+        headers: {
+            'content-type': 'aplication/json',
+            //'loaction':{latitude,longitude},
+        },
+    }).then(res => res.text()).then(async (data) => {
+        //console.log("data: ", data);
+        // let response = Object.values(data)[0];
+        // console.log("res: ",response);
+        if (data=="Incorrect"){
+            console.log("Incorrect");
+            //setError(data);
+        }
+        else {
+            //console.log(data['1']);
+            //console.log({expoPush});
+            let storeName = JSON.parse(data)["1"]
+            //let today = new Date().getDate();
+            //console.log(today);
+            isNotification = true;
+            console.log("send notification");
+
+            console.log(JSON.parse(data)["1"]);
+
+            console.log("Location in background", location.coords);
+        let token;
+      if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      //console.log(token);
+      } else {
+        alert('Must use physical device for Push Notifications');
+      }
+
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+        console.log(token);
+      // console.log({expoPushToken})
+        let message = {
+          to: token,
+          sound: 'default',
+          title: 'Digital-receipt',
+          body: 'Watch all '+ storeName +' sales',
+          data: { someData: 'goes here' },
+        };
+      
+        await fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(message),
+        });
+            //console.log(data);
+
+        }
+        console.log("end");
+    });
+  })();
+    }
+    //registerForPushNotificationsAsync().then(token => {console.log(token)});
+  }
+})
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -31,10 +133,54 @@ export default function NewGps({navigation, route}, props) {
           setErrorMsg('Permission to access location was denied');
           return;
         }
-  
-        let location = await Location.getCurrentPositionAsync({});
+        let { Backgroundstatus } = await Location.requestBackgroundPermissionsAsync();
+        if (Backgroundstatus !== 'granted') {
+          setErrorMsg('Permission to access location was denied');
+          return;
+        }
+        //let location = await Location.getCurrentPositionAsync({});
         
-        setLocation(location);
+        //setLocation(location);
+      })();
+      (async () => {
+        // Don't track position if permission is not granted
+        const { granted } = await Location.getBackgroundPermissionsAsync()
+        if (!granted) {
+          console.log("location tracking denied")
+          return
+        } else {
+            console.log("location tracking succsess")
+            
+        }
+    
+        // Make sure the task is defined otherwise do not start tracking
+        const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME)
+        if (!isTaskDefined) {
+          console.log("Task is not defined")
+          return
+        }
+    
+        // Don't track if it is already running in background
+        const hasStarted = await Location.hasStartedLocationUpdatesAsync(
+          LOCATION_TASK_NAME
+        )
+        if (hasStarted) {
+          console.log("Already started")
+          return
+        }
+    
+        await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+          // For better logs, we set the accuracy to the most sensitive option
+          accuracy: Location.Accuracy.BestForNavigation,
+          // Make sure to enable this notification if you want to consistently track in the background
+          deferredUpdatesInterval: 1000000,
+          showsBackgroundLocationIndicator: true,
+          foregroundService: {
+            notificationTitle: "Location",
+            notificationBody: "Location tracking in background",
+            notificationColor: "#fff",
+          },
+        })
       })();
     let temptoken;
     registerForPushNotificationsAsync().then(token => {setExpoPushToken(token)});
@@ -48,8 +194,8 @@ export default function NewGps({navigation, route}, props) {
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-      navigation.navigate('Sign Up');
+      //console.log(response);
+      navigation.navigate('Products');
     });
 
     return () => {
@@ -58,16 +204,6 @@ export default function NewGps({navigation, route}, props) {
     };
   }, []);
 
-  // (async() => {
-  //   const interval = setInterval(() => {
-  //     if(!isInterval){
-  //     sendNavData(expoPushToken, timeOfLastPush);} }, 20000);
-  //   return () => {
-  //     clearInterval(interval);
-      
-  //   };
-  // })();
-  // setisInterval(true);
   // useEffect(() => {
   //   const interval = setInterval(() => 
   //     sendNavData(expoPushToken, timeOfLastPush), 20000);
@@ -75,15 +211,7 @@ export default function NewGps({navigation, route}, props) {
   //     clearInterval(interval);
       
   //   };
-  // },[]);
-  useEffect(() => {
-    const interval = setInterval(() => 
-      sendNavData(expoPushToken, timeOfLastPush), 20000);
-    return () => {
-      clearInterval(interval);
-      
-    };
-  },[expoPushToken,timeOfLastPush]);
+  // },[expoPushToken,timeOfLastPush]);
   // () => {
   //   const interval = setInterval(() => sendNavData(expoPushToken, timeOfLastPush), 20000);
   //   return () => {
