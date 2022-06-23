@@ -1,5 +1,6 @@
 import csv
 import os
+import re
 
 from Server.Repositories.stroeRepository import storeRepository
 from SystemFiles.logger.loggerService import loggerService
@@ -58,10 +59,10 @@ def init_header_dict(header):
 
 header_dict = {}
 store_service = storeService()
-dir_path = os.path.dirname(os.path.abspath(__file__))
-superpharm_file = '\..\..\DB\Items\superpharm1.csv'
-path_superpharm = dir_path + superpharm_file
-walmart_file = '\..\..\DB\Items\walmart.csv'
-path_walmart = dir_path + walmart_file
-insert_items_from_csv(path_walmart, 'walmart')
+project_folder = re.split(r'.(?=Digital-Receipt)', os.getcwd())[0]
+base_path = os.path.join(project_folder, 'Digital-Receipt', 'DB', 'Items')
+superpharm_path = os.path.join(base_path, 'superpharm1.csv')
+insert_items_from_csv(superpharm_path, 'super-pharm')
+walmart_path = os.path.join(base_path, 'walmart.csv')
+insert_items_from_csv(walmart_path, 'walmart')
 # insert_items_from_csv('C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\Items\\superpharm1.csv', 'super-pharm')
