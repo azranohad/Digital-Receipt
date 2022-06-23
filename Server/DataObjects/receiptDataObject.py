@@ -13,7 +13,7 @@ class receiptData():
         self.url_scan_image = None
         self.isDigitalReceipt = None
 
-class creditData():
+class creditData:
     def __init__(self):
         self.buyerName = None
         self.user_key = None
@@ -24,7 +24,7 @@ class creditData():
         self.url_scan_image = None
         self.creditID = None
 
-class itemObject():
+class itemObject:
     def __init__(self, itemDescription, price, amount=None, itemID=None):
         self.itemID = itemID
         self.itemDescription = itemDescription
