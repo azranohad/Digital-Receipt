@@ -283,7 +283,7 @@ class Recommender:
 
     def store_recommendation(self, user, store_name):
         dir_path = os.path.dirname(os.path.abspath(__file__))
-        file_name = store_name + '_recommendation.csv'
+        file_name = store_name + '_recommendation33.csv'
         path = os.path.join(dir_path, file_name)
         print(path)
         f = open(path)
@@ -310,4 +310,4 @@ if __name__ == "__main__":
 
     data = pd.read_csv('super-pharm.csv', encoding="ISO-8859-8")
     users = list(data.user_key.unique())
-    x.learn(['1$walmart_liron$1.csv', 'f$super-pharm_liron$f.csv'], users)
+    x.learn(['1$walmart$1.csv', 'f$super-pharm$f.csv'], users)

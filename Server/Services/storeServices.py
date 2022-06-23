@@ -1,4 +1,5 @@
 import csv
+import os
 
 from Server.Repositories.stroeRepository import storeRepository
 from SystemFiles.logger.loggerService import loggerService
@@ -57,4 +58,10 @@ def init_header_dict(header):
 
 header_dict = {}
 store_service = storeService()
-insert_items_from_csv('C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\Items\\superpharm1.csv', 'super-pharm')
+dir_path = os.path.dirname(os.path.abspath(__file__))
+superpharm_file = '\..\..\DB\Items\superpharm1.csv'
+path_superpharm = dir_path + superpharm_file
+walmart_file = '\..\..\DB\Items\walmart.csv'
+path_walmart = dir_path + walmart_file
+insert_items_from_csv(path_walmart, 'walmart')
+# insert_items_from_csv('C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\Items\\superpharm1.csv', 'super-pharm')
