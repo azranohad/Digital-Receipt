@@ -34,7 +34,7 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.1.10:5000";
+  const url="192.168.0.111:5000";
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),

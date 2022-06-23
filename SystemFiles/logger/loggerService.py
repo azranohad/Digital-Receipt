@@ -1,6 +1,6 @@
 import inspect
 from datetime import datetime
-from singleton_decorator import singleton
+# from singleton_decorator import singleton
 
 stack = inspect.stack()
 

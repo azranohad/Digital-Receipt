@@ -76,7 +76,7 @@ def get_image_receipt():
     _id = request.headers['_id']
     logger.print_api_message("receiptController | received get_image_receipt request | user: " + user_key + "| _id:" + _id)
 
-    return server_local_repository.get_image(user_key, _id)
+    return server_local_repository.get_scan_image(user_key, _id)
 
 
 @receipt_api.route('/get_digital_receipt', methods=['GET'])
@@ -101,7 +101,7 @@ def delete_receipt():
     user_key = request.get_json(force=True)['user_key']
     logger.print_api_message("receiptController | received delete_receipt request | user: " + user_key + "| _id:" + _id)
 
-    return receipt_repository.delete_receipt(user_key, _id)
+    return receipt_service.delete_receipt(user_key, _id)
 
 @receipt_api.route('/get_barcode', methods=['GET'])
 def get_barcode():
@@ -109,6 +109,13 @@ def get_barcode():
     logger.print_api_message("receiptController | received get_barcode request ")
 
     return receipt_service.get_barcode(receipt_id)
+
+@receipt_api.route('/get_logo', methods=['GET'])
+def get_logo():
+    store_name = request.headers['store_name']
+    logger.print_api_message("receiptController | received get_logo request ")
+
+    return receipt_service.get_logo(store_name)
 
 
 

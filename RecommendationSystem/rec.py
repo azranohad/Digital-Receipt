@@ -11,8 +11,6 @@ import os
 import csv
 
 
-# from Server.Repositories.recommendationSystemRepository import recommendationSystemRepository
-
 
 class LearningRecommendations:
 
@@ -47,7 +45,6 @@ class LearningRecommendations:
 
         RFM_score = []
         for i in tqdm(range(len(data))):
-            # RFM_score.append(score(data.R[i],data.F[i],data.price[i]))
             RFM_score.append(self.score(data.R[i], data.amount[i], data.price[i]))
         data["RFM_score"] = RFM_score
 
@@ -112,8 +109,6 @@ class LearningRecommendations:
             self.sub_topitem[sub_cluster[i]] = item
             hold.append(count)
 
-        # the top most sold item within each cluster
-        # sub_topitem
 
         x = data.user_key.unique()
         ids_0a = sub_0a.user_key.unique()
@@ -166,11 +161,11 @@ class LearningRecommendations:
         max_value = max(store.values()) * 0.9
         # top_item = [key for key in store.keys() if store[key]==max_value]
         top_item = [key for key in store.keys() if store[key] >= max_value]
-        name = []
-        for p in top_item:
-            name.append(df[df['itemID'] == p].itemDescription.values[0])
-        # return (top_item, max_value)
-        return (name, max_value)
+        # name = []
+        # for p in top_item:
+        #     name.append(df[df['itemID'] == p].itemDescription.values[0])
+        return (top_item, max_value)
+        # return (name, max_value)
 
 
 class Recommender:
@@ -204,25 +199,26 @@ class Recommender:
                                  users_first_store):
         recommendation_list = []
         try:
-            print("hiii")
-
-            similar_users = []  # לחפש בטבלה השניה באיזה סאב קלאסים היוזר שלי מנמצא ולקחת את שאר היוזרים שנמצאים איתו בתיי קבוצות האלה
+            # get the similar user (same sub-class with this user) from other store
+            similar_users = []
             for sub_id in sub_ids_list2:
                 if iddd in sub_id:
                     f = sub_id.tolist()
                     similar_users += f
-
             similar_users = list(dict.fromkeys(similar_users))
 
-            for user in similar_users:  # להשאיר רק את אלה שנמצאים גם בחנות הראשונה (עליב צריך להמליץ)
+            # only those in the first store
+            for user in similar_users:
                 if user not in users_first_store:
                     similar_users.remove(user)
 
+            # add the sub-classes that the similar users are in
             sub_list_similsr_users = []
-            for user in similar_users:  # נוסיף את הסאב קלאסים שהיוזרים הדומים נמצאים בהם
+            for user in similar_users:
                 sub_list_similsr_users += user_to_sub_list[user]
 
-            res = {}  # נחפש את הסאב קלאס שנמצאים בו הכי הרבה יוזרים דומים
+            # search for the sub-class that has the most similar users
+            res = {}
             for i in sub_list_similsr_users:
                 res[i] = sub_list_similsr_users.count(i)
             print(res)
@@ -230,10 +226,10 @@ class Recommender:
             max_sub = max(res, key=res.get)
             print("Maximum value:", max_sub)
 
-            print(sub_topitem[max_sub])  # נמליץ את ההמלצות של אותו סאב קלאס
+            # recommend the recommendations of that sub-class
+            print(sub_topitem[max_sub])
             recommendation_list += sub_topitem[max_sub]
         except:
-            print("the enddddd")
             reccomenderItems = []
             for sub in sub_topitem:
                 reccomenderItems.append(sub_topitem[sub][0])
@@ -254,11 +250,9 @@ class Recommender:
             recommender.learn(data)
             self.sub_topitem[store], self.sub_ids_list[store], self.user_to_sub_list[
                 store] = recommender.sub_topitem, recommender.sub_ids_list, recommender.user_to_sub_list
-            # name_of_store = self.get_store_name(store)
 
         for store in name_of_stores:
             dir_path = os.path.dirname(os.path.abspath(__file__))
-
 
             file_name = store + '_recommendation.csv'
             rec_path = os.path.join(dir_path, file_name)
@@ -297,13 +291,22 @@ class Recommender:
         for row in reader:
             if (row[0] == user):
                 print(row[1])
-                return row[1]
+                return self.clear_items(row[1])
 
     def general_recommendation(self, user, stores_list):
         rec = []
         for store in stores_list:
             rec += self.store_recommendation(user, store)
         return rec
+
+    def clear_items(self, row):
+        tmp = list(row.split(","))
+        tmp2 = [i.replace("\'", "") for i in tmp]
+        tmp3 = [i.replace("[", "") for i in tmp2]
+        tmp4 = [i.replace("]", "") for i in tmp3]
+        tmp_list = [i.replace(" ", "") for i in tmp4]
+        return tmp_list
+
 
 
 if __name__ == "__main__":
@@ -312,8 +315,9 @@ if __name__ == "__main__":
     x = Recommender()
     # x.learn() #['a.csv', ]
     # x.rec_to_id(0, 'wolmart')
-    # x.store_recommendation('fd18ed355cd74ae38799f76dc7d20609', 'liron')
+    x.store_recommendation('fd18ed355cd74ae38799f76dc7d20609', 'super-pharm')
 
-    data = pd.read_csv('super-pharm.csv', encoding="ISO-8859-8")
-    users = list(data.user_key.unique())
-    x.learn(['1$walmart$1.csv', 'f$super-pharm$f.csv'], users)
+    # data = pd.read_csv('super-pharm.csv', encoding="ISO-8859-8")
+    # users = list(data.user_key.unique())
+    # x.learn(['1$walmart$1.csv', 'f$super-pharm$f.csv'], users)
+

@@ -23,6 +23,7 @@ def insert_receipt_store():
     phone_number = request.get_json(force=True)['phone_number']
     receipt_data = request.get_json(force=True)['receipt_data']
     logger.print_api_message("storeController | received insert receipt post request | user: " + phone_number)
+    receipt_data['is_digital_receipt'] = True
     return receipt_service.insert_receipt(phone_number, receipt_data)
 
 

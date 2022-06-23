@@ -74,7 +74,7 @@ def get_image_credit():
     image_id = request.get_json(force=True)['image_id']
     logger.print_api_message("received get_image_credit request | user: " + user_details + "| image name:" + image_id)
 
-    return server_local_repository.get_image(user_details, image_id)
+    return server_local_repository.get_scan_image(user_details, image_id)
 
 @scan_credit_api.route('/update_credit_data', methods=['PATCH'])
 def update_credit_data():
