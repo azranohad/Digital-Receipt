@@ -23,5 +23,5 @@ class recommendationSystemService:
         return list_of_recommendation_items
 
 
-# r = recommendationSystemService()
-# print(r.get_store_recommendations('893fc2e900d94cf084f8186f1486e9ce', 'liron'))
+r = recommendationSystemService()
+print(r.get_store_recommendations('893fc2e900d94cf084f8186f1486e9ce', 'super-pharm'))

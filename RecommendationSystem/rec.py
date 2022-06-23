@@ -283,7 +283,7 @@ class Recommender:
 
     def store_recommendation(self, user, store_name):
         dir_path = os.path.dirname(os.path.abspath(__file__))
-        file_name = store_name + '_recommendation33.csv'
+        file_name = store_name + '_recommendation222.csv'
         path = os.path.join(dir_path, file_name)
         print(path)
         f = open(path)
@@ -291,13 +291,22 @@ class Recommender:
         for row in reader:
             if (row[0] == user):
                 print(row[1])
-                return row[1]
+                return self.clear_items(row[1])
 
     def general_recommendation(self, user, stores_list):
         rec = []
         for store in stores_list:
             rec += self.store_recommendation(user, store)
         return rec
+
+    def clear_items(self, row):
+        tmp = list(row.split(","))
+        tmp2 = [i.replace("\'", "") for i in tmp]
+        tmp3 = [i.replace("[", "") for i in tmp2]
+        tmp4 = [i.replace("]", "") for i in tmp3]
+        tmp_list = [i.replace(" ", "") for i in tmp4]
+        return tmp_list
+
 
 
 if __name__ == "__main__":
@@ -306,8 +315,9 @@ if __name__ == "__main__":
     x = Recommender()
     # x.learn() #['a.csv', ]
     # x.rec_to_id(0, 'wolmart')
-    # x.store_recommendation('fd18ed355cd74ae38799f76dc7d20609', 'liron')
+    x.store_recommendation('fd18ed355cd74ae38799f76dc7d20609', 'super-pharm')
 
-    data = pd.read_csv('super-pharm.csv', encoding="ISO-8859-8")
-    users = list(data.user_key.unique())
-    x.learn(['1$walmart$1.csv', 'f$super-pharm$f.csv'], users)
+    # data = pd.read_csv('super-pharm.csv', encoding="ISO-8859-8")
+    # users = list(data.user_key.unique())
+    # x.learn(['1$walmart$1.csv', 'f$super-pharm$f.csv'], users)
+
