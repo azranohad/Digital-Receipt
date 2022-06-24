@@ -23,12 +23,12 @@ class storeRepository:
             self.logger.print_severe_message("storeRepository | failed insert new item")
         return str(status)
 
-    def get_itemsID_by_generic_value(self, field, value):
+    def get_items_by_generic_value(self, field, value):
         users_collection = self.get_collection()
-        cursor = users_collection.find({field: value})
+        cursor = users_collection.find({field: {"$regex": value}})
         items_list = []
         for record in cursor:
-            items_list.append(record['itemID'])
+            items_list.append(record)
         return items_list
 
     def get_item_data_by_itemID(self, itemID):

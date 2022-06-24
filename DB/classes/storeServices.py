@@ -68,5 +68,33 @@ store_service = storeService()
 # superpharm_path = os.path.join(base_path, 'superpharm1.csv')
 # insert_items_from_csv(superpharm_path, 'super-pharm')
 # walmart_path = os.path.join(base_path, 'walmart.csv')
-insert_items_from_csv("C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\Items\\walmart.csv", 'walmart')
+# insert_items_from_csv("C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\Items\\walmart.csv", 'walmart')
 # insert_items_from_csv('C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\Items\\superpharm1.csv', 'super-pharm')
+
+repo = storeRepository()
+
+# file_name = 'C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\classes\\urlAndLinks.csv'
+# file = open(file_name, encoding = "UTF- 8", errors="ignore")
+# csv_reader = csv.reader(file)
+# next(csv_reader)
+# for row in csv_reader:
+#     update_dict = {
+#         'url_image': row[1],
+#         'link_to_item' : row[2]
+#     }
+#     item_from_db = repo.get_item_data_by_itemID(row[0])
+#     repo.update_item_data(item_from_db.get('itemID'), update_dict)
+#     x = 3
+#
+
+# file_name = 'C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\classes\\urlAndLinks.csv'
+# file = open(file_name, encoding = "UTF- 8", errors="ignore")
+# csv_reader = csv.reader(file)
+# next(csv_reader)
+# for row in csv_reader:
+#     if row[0] == '':
+#         break
+#     items_from_db = repo.get_items_by_generic_value('itemID', row[0])
+#     if len(items_from_db) > 1:
+#         x = 3
+# x = 3
