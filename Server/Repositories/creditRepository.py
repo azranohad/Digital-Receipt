@@ -1,8 +1,13 @@
+import random
+import string
+
 from Server.Repositories.mongoDbRepository import mongoDbRepository
 from datetime import datetime
 
 # @singleton
 from SystemFiles.logger.loggerService import loggerService
+from datetime import timedelta
+from datetime import datetime
 
 
 class creditRepository:
@@ -29,7 +34,7 @@ class creditRepository:
         start = datetime.strptime(from_date, '%d/%m/%Y')
         end = datetime.strptime(to_date, '%d/%m/%Y')
         cursor = collection.find({
-        "date_of_credit": {
+        "expiration_date": {
             "$gte": start,
             "$lt": end
         }, "user_key": user_key})
@@ -111,3 +116,18 @@ class creditRepository:
         else:
             self.logger.print_severe_message("creditRepository | delete credit from Data Base Failed. user key: " + user_key)
         return str(status)
+
+
+# repo = creditRepository()
+# users = ["33310727751848c19a8877140d3ce3ac", "c590e1226f184638bb3753188e37917a", "a02b5a3e82ba4235a23381d4586bd60c", "a32b34ee98ed4b5e88f022a4cd683ba5"]
+#
+# for user in users:
+#     repo.insert_credit(user, {
+#         "user_key": user,
+#         "market": "super-pharm",
+#         "date_of_credit": datetime.today() + timedelta(days=-600),
+#         "expiration_date":  datetime.today() + timedelta(days=30),
+#         "total_price": 200,
+#         "creditID": ''.join(random.choice(string.digits) for i in range(13)),
+#         "isDigitalCredit": True
+#     })

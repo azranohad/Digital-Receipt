@@ -26,7 +26,7 @@ class recommendationSystemService:
         items_data = {}
         for itemID in list_of_recommendation_items:
             item_data = self.store_repository.get_item_data_by_itemID(itemID)
-            items_data[item_data.get('_id')] = item_data
+            items_data[str(item_data.get('_id'))] = item_data
         return items_data
 
 # items = ['359742', '571688', '618901', '576417']

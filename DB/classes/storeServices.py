@@ -39,6 +39,8 @@ def insert_items_from_csv(file_name, store_name):
     file = open(file_name, encoding = "UTF- 8", errors="ignore")
     csv_reader = csv.reader(file)
     init_header_dict(next(csv_reader))
+
+
     i = 0
     for row in csv_reader:
         temp_item = store_service.create_item(row[0], row[1], row[3], row[2], row[4], store_name)
@@ -61,10 +63,10 @@ def init_header_dict(header):
 
 header_dict = {}
 store_service = storeService()
-project_folder = re.split(r'.(?=Digital-Receipt)', os.getcwd())[0]
-base_path = os.path.join(project_folder, 'Digital-Receipt', 'DB', 'Items')
-superpharm_path = os.path.join(base_path, 'superpharm1.csv')
-insert_items_from_csv(superpharm_path, 'super-pharm')
-walmart_path = os.path.join(base_path, 'walmart.csv')
-insert_items_from_csv(walmart_path, 'walmart')
+# project_folder = re.split(r'.(?=Digital-Receipt)', os.getcwd())[0]
+# base_path = os.path.join(project_folder, 'Digital-Receipt', 'DB', 'Items')
+# superpharm_path = os.path.join(base_path, 'superpharm1.csv')
+# insert_items_from_csv(superpharm_path, 'super-pharm')
+# walmart_path = os.path.join(base_path, 'walmart.csv')
+insert_items_from_csv("C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\Items\\walmart.csv", 'walmart')
 # insert_items_from_csv('C:\\Users\\azran\\PycharmProjects\\Digital-Receipt\\DB\\Items\\superpharm1.csv', 'super-pharm')

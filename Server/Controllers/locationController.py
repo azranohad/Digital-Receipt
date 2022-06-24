@@ -18,3 +18,11 @@ def get_nearest_store():
     logger.print_api_message("received get_nearest_store post request | location: " + str_location)
 
     return store_location_service.find_nearest_store_to_point(user_key, str_location)
+
+@location_api.route('/get_store_credit_nearest_to_location', methods=['GET'])
+def get_store_credit_nearest_to_location():
+    str_location = request.get_json(force=True)['location']
+    user_key = request.get_json(force=True)['user_key']
+    logger.print_api_message("received get_nearest_store post request | location: " + str_location)
+
+    return store_location_service.find_nearest_store_to_point(user_key, str_location)

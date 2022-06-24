@@ -29,7 +29,8 @@ class userService:
         if self.user_repository.is_user_exist('phone_number', phone_number):
             self.logger.print_info_message("the user is exist in system, details of user updated")
             # return user key from user_from_db
-            return "the user is exist in system"
+
+            return self.user_repository.get_users_by_generic_value('phone_number', phone_number)[0]
 
         user_data.user_key = uuid.uuid4().hex
         user_data_dict = {
@@ -106,7 +107,7 @@ class userService:
         return hashlib.sha256(string_to_hash.encode('utf-8')).hexdigest()
 
     def add_user_name_and_password(self, user_key, user_name, password):
-        if not self.user_repository.is_user_exist(user_key, "user_key"):
+        if not self.user_repository.is_user_exist("user_key", user_key):
             return 'user key is not exist'
 
         valid_password = self.check_the_validity_of_a_password(password)
