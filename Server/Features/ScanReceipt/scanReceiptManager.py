@@ -28,7 +28,7 @@ class scanReceiptManager:
     def action_scan_receipt_manager(self, image_file, user_key):
 
         #save receipt in local server
-        image_key = uuid.uuid4().hex
+        image_key = uuid.uuid4().hex + '.jpg'
         path_image = self.server_local_repository.save_scan_image(image_file, image_key, user_key)
         url_image = self.fire_base_repository.push_image(user_key, typeImage.RECEIPT, image_key, path_image)
 

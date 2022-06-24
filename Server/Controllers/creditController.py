@@ -2,6 +2,7 @@ from flask import request, Blueprint
 from Server.Features.ScanCredit.scanCreditManager import scanCreditManager
 from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
+from Server.Services.creditService import creditService
 from SystemFiles.logger.loggerService import loggerService
 
 scan_credit_api = Blueprint('scan_credit_api', __name__)
@@ -9,6 +10,7 @@ scan_credit_api = Blueprint('scan_credit_api', __name__)
 logger = loggerService()
 scan_credit_manager = scanCreditManager()
 credit_repository = creditRepository()
+credit_service = creditService()
 server_local_repository = serverLocalRepository()
 
 @scan_credit_api.route('/scan_credit', methods=['POST'])
@@ -33,8 +35,7 @@ def get_credit_by_date():
     from_date = request.get_json(force=True)['from_date']
     to_date = request.get_json(force=True)['to_date']
 
-    scan_credit_repository = creditRepository()
-    return scan_credit_repository.get_by_date(user_details, from_date, to_date)
+    return credit_repository.get_by_date(user_details, from_date, to_date)
 
 @scan_credit_api.route('/get_markets', methods=['GET'])
 def get_markets_credit():
@@ -91,6 +92,14 @@ def delete_credit():
     logger.print_api_message("creditController | received delete_credit request | user: " + user_key + "| _id:" + _id)
 
     return credit_repository.delete_credit(user_key, _id)
+
+#return boolean
+@scan_credit_api.route('/exist_expired_credit', methods=['GET'])
+def exist_expired_credit():
+    user_key = request.get_json(force=True)['user_key']
+    logger.print_api_message("creditController | received exist_expired_credit request | user: " + user_key)
+
+    return credit_service.exist_expired_credit(user_key)
 
 
 
