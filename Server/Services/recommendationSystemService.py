@@ -15,7 +15,12 @@ class recommendationSystemService:
         rec = Recommender()
         list_of_favorite_stores = self.receipt_repository.get_most_common_store_for_user(user_key)
         list_of_recommendation_items = rec.general_recommendation(user_key, list_of_favorite_stores)
-        return list_of_recommendation_items
+        items_data = {}
+        for itemID in list_of_recommendation_items:
+            item_data = self.store_repository.get_item_data_by_itemID(itemID)
+            item_data.pop('_id')
+            items_data[str(item_data.get('itemID'))] = item_data
+        return items_data
 
 
     # return list of items from store

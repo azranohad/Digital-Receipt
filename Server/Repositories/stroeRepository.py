@@ -36,14 +36,15 @@ class storeRepository:
         return items_collection.find_one({'itemID':{"$regex" : itemID}})
 
 
-    # def get_item_data_by_itemID(self, user_key, name_search):
-    #     list_of_names = self.get_values_by_key(user_key, "name_for_client")
-    #     receipt_list = {}
-    #     for name in list_of_names.values():
-    #         if name.__contains__(name_search):
-    #             #add all receipt that contains this name
-    #             receipt_list.update(self.get_receipt_by_value(user_key, "name_for_client", name))
-    #     return receipt_list
+    def update_item_data(self, itemID, dict_update_item):
+        result = self.get_collection().update({'itemID': itemID}, {'$set': dict_update_item})
+        if result['updatedExisting']:
+            self.logger.print_info_message(
+                "storeRepository | details (" + str(dict_update_item.keys()) + ") of item: " + str(
+                    itemID) + " updated in data base")
+        else:
+            self.logger.print_severe_message(
+                "storeRepository | failed update data of item: " + itemID)
 
     def delete_item(self, itemID):
         result = self.get_collection().delete_one({'itemID': itemID})

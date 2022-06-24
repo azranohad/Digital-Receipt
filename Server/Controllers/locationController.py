@@ -29,6 +29,6 @@ def exist_credit_to_nearest_store():
     str_longitude = request.get_json(force=True)['longitude']
     location = [float(str_latitude), float(str_longitude)]
     user_key = request.get_json(force=True)['user_key']
-    logger.print_api_message("received get_nearest_store post request | location: " + str(location))
+    logger.print_api_message("received exist_credit_to_nearest_store post request | location: " + str(location))
 
-    return store_location_service.find_nearest_store_to_point(user_key, location)
+    return store_location_service.get_credit_to_nearest_stores(user_key, location)

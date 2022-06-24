@@ -2,6 +2,7 @@
 from geopy.geocoders import Nominatim
 from datetime import date
 
+from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.locationRepository import locationRepository
 from Server.Repositories.userRepository import userRepository
 from SystemFiles.logger.loggerService import loggerService
@@ -14,6 +15,7 @@ class storeLocationService:
         self.user_repository = userRepository()
         self.logger = loggerService()
         self.location_repository = locationRepository()
+        self.credit_repository = creditRepository()
 
     def get_address_from_coordinates(self, coordinates):
         coordinates_str = str(coordinates[0]) + ', ' + (str(coordinates[1]))
@@ -35,9 +37,7 @@ class storeLocationService:
         return False
 
 
-    def get_nearest_store(self, str_location):
-        location_xy = str_location.split(',')
-        location = [float(location_xy[0]), float(location_xy[1])]
+    def get_nearest_store(self, location):
         nearest_stores = self.location_repository.find_nearest_store_to_point(location)
         for store in nearest_stores:
             nearest_stores.remove(store)
@@ -45,15 +45,23 @@ class storeLocationService:
         return nearest_stores
 
 
-    def get_credit_to_nearest_stores(self, str_location):
-        nearest_stores = self.get_nearest_store(str_location)
-        for store in nearest_stores:
-            x = 3
+    def get_credit_to_nearest_stores(self, user_key, location):
+        nearest_stores = self.get_nearest_store(location)
+        credits = self.credit_repository.get_all_credits_user(user_key)
+        credits_to_return = {}
+        if nearest_stores:
+            for store in nearest_stores:
+                for credit in credits.values():
+                    credit['_id'] = str(credit.get('_id'))
+                    credits_to_return[credit.get('_id')] = credit
+
+        return credits_to_return
+
 
     # distance units 1 == 100 km
-    def find_nearest_store_to_point(self, user_key, str_location):
+    def find_nearest_store_to_point(self, user_key, location):
 
-        nearest_stores = self.get_nearest_store(str_location)
+        nearest_stores = self.get_nearest_store(location)
         if nearest_stores:
             if self.possible_send_recommended(user_key):
                 return self.list_to_dict(nearest_stores)
