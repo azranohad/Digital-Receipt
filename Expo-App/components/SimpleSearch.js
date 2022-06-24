@@ -7,7 +7,6 @@ import { DataTable } from 'react-native-paper';
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 
 const SimpleSearch = ({ handleSearch }) => {
-  const [search, setSearch] = useState('');
 
 
   return (
@@ -21,7 +20,7 @@ const SimpleSearch = ({ handleSearch }) => {
         paddingBottom:20,
       }}
     >
-
+{/* 
       <View style={{ marginTop: SIZES.font }}>
         <View
           style={{
@@ -34,7 +33,7 @@ const SimpleSearch = ({ handleSearch }) => {
             paddingVertical: SIZES.small - 2,
           }}
         >
-          <TouchableOpacity onPress={()=>{handleSearch(search)}} >
+          <TouchableOpacity >
             <Image
               source={assets.search}
               resizeMode="contain"
@@ -44,12 +43,13 @@ const SimpleSearch = ({ handleSearch }) => {
             <TextInput
               placeholder="Search Store"
               style={{ flex: 1 }}
-              onChangeText={val=>setSearch(val)}
+              onEndEditing={val=>{console.log(val);}}
+              // onChangeText={val=>setSearch(val)}
               // onSubmitEditing
               />
       
     </View>
-      </View>
+      </View> */}
         </View>
   );
 };

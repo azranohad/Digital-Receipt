@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { View, SafeAreaView, FlatList } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, SafeAreaView, FlatList, StyleSheet, Text } from "react-native";
 
 import { ProductCard, HomeHeader, SimpleSearch, FocusedStatusBar } from "../components";
-// import SimpleSearch from "../components/SimpleSearch";
+// import {SimpleSearch} from "../components/SimpleSearch";
 import { COLORS } from "../constants";
 
 const Products = () => {
@@ -61,19 +61,20 @@ const getIdandProducts = async () => {
 
 
 
-if (!isLoading){
+if (isLoading){
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <View style={{ flex: 1 }}>
         <View style={{ zIndex: 0 }}>
-          <FlatList
+          {/* <FlatList
             data={Object.values(JsonData)}
             renderItem={({ item }) => <ProductCard data={item}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<HomeHeader/>}
-          />
+            ListHeaderComponent={<SimpleSearch/>}
+          /> */}
+          {/* <SimpleSearch handleSearch={()=>console.log("jk")}/> */}
         </View>
 
         <View
@@ -105,4 +106,13 @@ return (
 }
 }
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    padding: 10,
+  },});
 export default Products;

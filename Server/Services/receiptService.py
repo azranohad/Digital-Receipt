@@ -51,9 +51,8 @@ class receiptService:
 
     def get_barcode(self, receipt_id):
         barcode_image = EAN13(receipt_id, writer=ImageWriter())
-        temp_barcode_name = uuid.uuid4().hex + '.jpg'
-        path_folder = os.path.join(self.general_service.get_project_folder(), 'Digital-Receipt', 'DB', 'temp', temp_barcode_name)
-        path_temp_barcode = barcode_image.save(path_folder)
+        temp_barcode_name = uuid.uuid4().hex
+        path_temp_barcode = barcode_image.save('temp_image_barcode')
 
         url_image = self.fire_base_repository.push_temp_image(temp_barcode_name, path_temp_barcode)
 

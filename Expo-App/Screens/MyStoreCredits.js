@@ -17,10 +17,15 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
   const [isLoading, setisLoading] = useState(true);
+  const [image, setImage] = useState(null)
+  const [stores, setStores] = useState([]);
+
+
 
 
  useEffect(()=> {
     getIdandCredits();
+
   },[]);
  
   const getIdandCredits = async () => {
@@ -34,8 +39,9 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
     // } catch(e) {
     //   // error reading value
     // }
-    setuserKey("ec2eac3508b24882bc45b09dfeee2ee3");
-    getAllCredits("ec2eac3508b24882bc45b09dfeee2ee3");
+    setuserKey("fd18ed355cd74ae38799f76dc7d20609");
+    getAllCredits("fd18ed355cd74ae38799f76dc7d20609");
+    getStores("fd18ed355cd74ae38799f76dc7d20609");
   }
 
    // set all variables:
@@ -89,6 +95,8 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
         },
     }).then(res => res.json()).then(data => {
       console.log(data);
+      setStores(data);
+
   });
 }
 
@@ -108,6 +116,7 @@ const getCreditsByStore = ()=> {
 
 const getAllCredits = (val)=> {
   setisLoading(true);
+  console.log(`http://${route.params.url}/scan_credit_controller/get_all_credits_user`);
   fetch(`http://${route.params.url}/scan_credit_controller/get_all_credits_user`, {
       method: 'GET',
       headers: {
@@ -131,38 +140,52 @@ const trashCredit = (val)=> {
       headers: {
           'content-type': 'aplication/json',
       },
-  }).then(res => {console.log("res", res);; res.json();}).then(data => {
-    console.log(data);
-    if (data==true){
-      Object.values(JsonData).map((account)=>{
-        if (account._id==val){
-          x = JsonData[account._id]
-          console.log(x);
+    }).then(res => res.text()).then(data => {
+      console.log(data);
+      if (data=='True'){
+        Object.values(JsonData).map((account)=>{
+          if (account._id==val){
+            let x = JsonData[account._id]
+            console.log(x);
+            console.log(JsonData[val]);
+            delete JsonData[val]
+        }
+          })
       }
-        })
-    }
-    // setAll(data);
-});
-}
+    setAll(JsonData);
+  });
+  }
 
-const getImg =  (e)=> {
-  console.log(e);
-//   setisLoading(true);
-//   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts`, {
-//       method: 'GET',
-//       headers: {
-//           'content-type': 'aplication/json',
-//           'user_key' : 'b661e90ea0fe4cb5bb6c53b68ad5d555',
-//           'image_name' : 'ef2561389f2b4322b40d9c0c6e18240e',
-//       },
-//   }).then(res => res.json()).then(res => {
-//     console.log("res:",res);
-//     const imageBlob = res.blob();
-//     const imageObjectURL = URL.createObjectURL(imageBlob);
-//     //setImg(imageObjectURL);
-//     console.log(imageBlob);
-// });
-}
+  const getImg =  async (uri)=> {
+    setImage(uri);
+    // // setisLoading(true);
+    // const res = await fetch(uri)
+    // const blob = await res.blob();
+    // const filename = uri.substring(uri.lastIndexOf('/')+1);
+    // var ref = firebase.storage().ref().child(filename).put(blob);
+    // try {
+    //   await ref;
+    // } catch (e){
+    //   console.log(e);
+    // }
+    // Alert.alert('Photo uploaded');
+    // await firebase.storage().ref().child(filename).getDownloadURL(ref).then( img => {
+    //   setImage(img);
+    // })
+  //   fetch(`http://${route.params.url}/scan_receipt_controller/get_image_receipt`, {
+  //       method: 'GET',
+  //       headers: {
+  //           'content-type': 'multipart/form-data',
+  //           'user_key' : userKey,
+  //           '_id' : val,
+  //       },
+  //   }).then(res => 
+  //     res.json()).then(res => {
+  //     const imageBlob = res.blob();
+  //     const imageObjectURL = URL.createObjectURL(imageBlob);
+  // });
+  }
+
 
 
 
@@ -172,13 +195,13 @@ if (!isLoading){
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <View style={{ flex: 1 }}>
         <View style={{ zIndex: 0 }}>
-          <FlatList
+          {JsonData?<FlatList
             data={Object.values(JsonData)}
-            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,-13)} price={90}  receipt={false}/>}
+            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,-13)} price={90}  receipt={false} handleGetImg={getImg}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<HomeHeader/>}
-          />
+            ListHeaderComponent={<HomeHeader data={stores}/>}
+          />:<></>}
         </View>
 
         <View
@@ -192,7 +215,7 @@ if (!isLoading){
           }}
         >
           <View
-            style={{ height: 300, backgroundColor: COLORS.midnightblue }} />
+            style={{ height: 300, backgroundColor: COLORS.primary }} />
           <View style={{ flex: 1, backgroundColor: COLORS.white }} />
         </View>
       </View>

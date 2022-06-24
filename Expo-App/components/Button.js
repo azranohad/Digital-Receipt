@@ -38,7 +38,7 @@ export const RectButton = ({ minWidth, fontSize, handlePress, buttonText, ...pro
         minWidth: minWidth,
         ...props,
       }}
-      onPress={handlePress}
+      onPress={()=>handlePress()}
     >
       <Text
         style={{
