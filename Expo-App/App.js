@@ -50,7 +50,7 @@ export default function App() {
   
   return (
     <NavigationContainer theme={theme} >
-      <Drawer.Navigator initialRouteName = "Home" screenOptions={{headerTitle:"", headerTransparent:true}}>
+      <Drawer.Navigator initialRouteName = "Login" screenOptions={{headerTitle:"", headerTransparent:true}}>
         <Drawer.Screen name="Home"  component={HomeScreen} 
     //     options={{headerStyle: {
     //     position: 'absolute',
@@ -76,16 +76,16 @@ export default function App() {
         <Drawer.Screen name="Scan Receipts" component={ScanReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Store Credits" component={MyStoreCreditsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Settings" component={SettingScreen} initialParams={{url: url}}/>
+        {/* <Drawer.Screen name="Settings" component={SettingScreen} initialParams={{url: url}}/> */}
         <Drawer.Screen name="Sign Up" component={SignupScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Gps" component={GpsScreen}/>
+        {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
         <Drawer.Screen name="Products" component={ProductsScreen}/>
         <Drawer.Screen name="SMSLogin" component={SMSLoginScreen} initialParams={{url: url}}/>
       <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt}/>
       <Drawer.Screen name="DigitalCredit" component={DigitalCredit}/>
-        <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/>
+        {/* <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/> */}
+        {/* <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/> */}
 
       </Drawer.Navigator>
     </NavigationContainer>
