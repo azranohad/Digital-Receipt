@@ -1,167 +1,90 @@
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { View, Text, Image, TextInput } from "react-native";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet,
+  TextInput,
+  View,
+  Text,
+  SectionList,
+  SafeAreaView,
+  Image,
+  Button,
+  FlatList,} from "react-native";
 import { Colors } from "react-native-paper";
 import { DataTable } from 'react-native-paper';
 
 import { COLORS, FONTS, SIZES, assets } from "../constants";
+import { RectButton } from "react-native-gesture-handler";
+import { CircleButton } from "./Button";
+import { useNavigation } from "@react-navigation/native";
 
-const HomeHeader = ({  }) => {
+const HomeHeader = ({ data, onSelect, onSearch, filter, setFilter, Type, date, name, store, setStore, setName, setDate }) => {
   const [show, setShow] = useState(false);
   const [placeholder, setPlaceHolder] = useState('Search By Name..');
-
-  const [found, setFound]= useState(false);
   const [searchByName, setSearchByName] = useState('');
-  const [storeName, setStoreName] = useState('');
-  const [userKey, setuserKey] = useState('');
-  const [fromDate, setfromDate] = useState('1/1/1950');
-  const [toDate, settoDate] = useState('1/1/2023');
-  const [JsonData, setJsonData] = useState([]);
-  const [original, setOriginal] = useState([]);
-  const [isLoading, setisLoading] = useState(true);
+const navigation = useNavigation();
 
-  const setAll = (data)=>{
-    let len = (Object.keys(data)).length;
-    if (len==0){
-      setFound(false);
-    }
-    else {
-      setJsonData(data);
-      setFound(true);
-    }
-    setisLoading(false)
-  }
-
-
-  // default receipts view -  by date_of_receipt
-  async function getReceiptsByDate() {
-    // setisLoading(true);
-    fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_date`, {
-        method: 'GET',
-        headers: {
-            'content-type': 'aplication/json',
-            'user_key': userKey,
-            'from_date': fromDate,
-            'to_date': toDate,
-        },
-    }).then(res => res.json()).then(data => {
-      setAll(data);
-    });
-  }
-    
-    const searchName = (s)=> {
-      // setisLoading(true);
-      console.log(s);
-      fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_name`, {
-          method: 'GET',
-          headers: {
-              'content-type': 'aplication/json',
-              'user-key': userKey,
-              'name_search' : s,
-          },
-      }).then(res => res.json()).then(data => {
-        setAll(data);
-    });
-  }
-
-  const getStores = ()=> {
-    // setisLoading(true);
-    fetch(`http://${route.params.url}/scan_receipt_controller/get_markets`, {
-        method: 'GET',
-        headers: {
-            'content-type': 'aplication/json',
-            'user-key': userKey,
-        },
-    }).then(res => res.json()).then(data => {
-      console.log(data);
-  });
-}
-
-const getReceiptsByStore = ()=> {
-  // setisLoading(true);
-  fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_market`, {
-      method: 'GET',
-      headers: {
-          'content-type': 'aplication/json',
-          'user-key': userKey,
-          'market' : storeName
-      },
-  }).then(res => res.json()).then(data => {
-    setAll(data);
-});
-}
-
-
-
-
-
+const ListItem = ({ item, onSelect, setFilter }) => {
+  const [isPressed, setIsPressed] = useState(false);
   return (
-    <View
+    <View style={styles.item}>
+      <TouchableOpacity
       style={{
-        backgroundColor: COLORS.midnightblue, //primary
-        padding: SIZES.font,
-        paddingTop: 20,
-        paddingLeft:50,
-        paddingRight:50,
-        paddingBottom:20,
+        backgroundColor: isPressed? COLORS.primary: COLORS.gray,
+        padding: SIZES.small,
+        borderRadius: SIZES.extraLarge,
+        minWidth: 100,
       }}
+      onPress={()=>{setIsPressed(true); onSelect(item);setFilter(true);}}
     >
-      {/* <View
+      <Text
         style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
+          fontFamily: FONTS.semiBold,
+          fontSize: SIZES.large,
+          color: COLORS.white,
+          textAlign: "center",
         }}
       >
-        <Image
-          source={assets.logo}
-          resizeMode="contain"
-          style={{ width: 90, height: 25 }}
-        />
+        {item}
+      </Text>
+    </TouchableOpacity>
+    </View>
+  );
+};
 
-        <View style={{ width: 45, height: 45 }}>
-          <Image
-            source={assets.person01}
-            resizeMode="contain"
-            style={{ width: "100%", height: "100%" }}
-          />
-          <Image
-            source={assets.badge}
-            resizeMode="contain"
-            style={{
-              position: "absolute",
-              width: 15,
-              height: 15,
-              bottom: 0,
-              right: 0,
-            }}
-          />
-        </View>
-      </View> */}
+  return (
+//   <View
+//   style={{
+//     backgroundColor: COLORS.midnightblue, //primary
+//     width: "100%",
+//       height: "30%",
+//     // padding: SIZES.font,
+//     // paddingTop: 20,
+//     // paddingLeft:50,
+//     // paddingRight:50,
+//     // paddingBottom:20,
+//   }}
+//   >
 
-      {/* <View style={{ marginVertical: SIZES.font }}>
-        <Text
-          style={{
-            fontFamily: FONTS.regular,
-            fontSize: SIZES.small,
-            color: COLORS.white,
-          }}
-        >
-          Hello Victoria 👋
-        </Text>
+//     <CircleButton
+//   imgUrl={assets.left}
+//   handlePress={() => navigation.navigate({Type}, { data })}
+//   right={25}
+//   top={StatusBar.currentHeight}
+//   padding={10}
+// />
+//   </View> 
 
-        <Text
-          style={{
-            fontFamily: FONTS.bold,
-            fontSize: SIZES.large,
-            color: COLORS.white,
-            marginTop: SIZES.base / 2,
-          }}
-        >
-          Let’s find masterpiece Art
-        </Text>
-      </View> */}
-
+  <View
+  style={{
+    backgroundColor: COLORS.primary, //primary
+    padding: SIZES.font,
+    paddingTop: 20,
+    paddingLeft:50,
+    paddingRight:50,
+    paddingBottom:20,
+  }}
+  >
       <View style={{ marginTop: SIZES.font }}>
         <View
           style={{
@@ -174,7 +97,7 @@ const getReceiptsByStore = ()=> {
             paddingVertical: SIZES.small - 2,
           }}
         >
-          <TouchableOpacity onPress={()=>{searchName(searchByName)}} >
+          <TouchableOpacity >
             <Image
               source={assets.search}
               resizeMode="contain"
@@ -184,31 +107,52 @@ const getReceiptsByStore = ()=> {
             <TextInput
               placeholder={placeholder}
               style={{ flex: 1 }}
-              onChangeText={val=>setSearchByName(val)}
+              onEndEditing={()=>{onSearch(searchByName); setSearchByName('');}}
+              // onEndEditing={val=>setSearchByName(val)}
+              onChangeText={(val)=>setSearchByName(val)}
               />
-      <TouchableOpacity onPress={()=>setShow(!show)}>
+      {/* <TouchableOpacity onPress={()=>setShow(!show)}>
         <Image source={assets.search}></Image>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+        
     </View>
-      {show && <>
-      <DataTable.Header>
-        <DataTable.Title></DataTable.Title>
-      </DataTable.Header>
-      <DataTable.Row style={{alignContent:'center', alignItems:'center'}}>
-          <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{
-            setPlaceHolder('Search By Store'); 
-            setShow(false);}}>Search By Store</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row style={{alignContent:'center', alignItems:'center'}}>
-          <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{setPlaceHolder('Search By '); setShow(false);}}>Search By Store</DataTable.Cell>
-        </DataTable.Row>
-        <DataTable.Row style={{alignContent:'center', alignItems:'center'}}>
-          <DataTable.Cell style={{backgroundColor: 'aqua'}} onPress={()=>{setPlaceHolder('Search By OOO'); setShow(false);}}>Search By Store</DataTable.Cell>
-        </DataTable.Row>
-        </>}
       </View>
-        </View>
+      {<FlatList
+      horizontal
+      data={Object.keys(data)}
+      renderItem={({ item }) => <ListItem item={data[item]} onSelect={onSelect} setFilter={setFilter}  />}
+      keyExtractor={( item ) =>item}
+      showsHorizontalScrollIndicator={false}
+      />}
+      </View>
   );
 };
 
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#121212',
+  },
+  sectionHeader: {
+    fontWeight: '800',
+    fontSize: 18,
+    color: '#f4f4f4',
+    marginTop: 20,
+    marginBottom: 5,
+  },
+  item: {
+    marginLeft: 5,
+    marginTop: 15,
+  },
+  itemPhoto: {
+    width: 200,
+    height: 200,
+  },
+  itemText: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    marginTop: 5,
+  },
+});
 export default HomeHeader;

@@ -1,9 +1,11 @@
-import React from 'react'
-import { View, Text } from 'react-native'
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, StyleSheet, ImageBackground } from 'react-native'
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 
 
+
 const HomeScreen = () => {
+
     const getData = async () => {
         try {
           const value = await AsyncStorage.getItem('userId')
@@ -15,10 +17,21 @@ const HomeScreen = () => {
         }
       }
     return (
-        <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+        <View style={{
+          flex: 1,
+          alignContent: 'center',
+          justifyContent: 'center',
+        }}>
             <Text>Home Screen</Text>
         </View>
     )
 }
-
+const styles = StyleSheet.create({
+  backgroundImage: {
+    height: '100%',
+    width: '100%',
+    aspectRatio: 1,
+    zIndex: 1,
+  }
+});
 export default HomeScreen
