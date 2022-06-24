@@ -35,16 +35,25 @@ class storeLocationService:
         return False
 
 
-
-    # distance units 1 == 100 km
-    def find_nearest_store_to_point(self, user_key, str_location):
-
+    def get_nearest_store(self, str_location):
         location_xy = str_location.split(',')
         location = [float(location_xy[0]), float(location_xy[1])]
         nearest_stores = self.location_repository.find_nearest_store_to_point(location)
         for store in nearest_stores:
             nearest_stores.remove(store)
             nearest_stores.append(store.lower())
+        return nearest_stores
+
+
+    def get_credit_to_nearest_stores(self, str_location):
+        nearest_stores = self.get_nearest_store(str_location)
+        for store in nearest_stores:
+            x = 3
+
+    # distance units 1 == 100 km
+    def find_nearest_store_to_point(self, user_key, str_location):
+
+        nearest_stores = self.get_nearest_store(str_location)
         if nearest_stores:
             if self.possible_send_recommended(user_key):
                 return self.list_to_dict(nearest_stores)

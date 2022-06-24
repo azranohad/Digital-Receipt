@@ -17,7 +17,7 @@ class creditService:
         exist_credit_future_expiration_date = (len(credits_future_expiration_date) > 0)
         return str(exist_credit_future_expiration_date)
 
-user_key = '33310727751848c19a8877140d3ce3ac'
-
-repo = creditService()
-repo.exist_expired_credit(user_key)
+# user_key = '33310727751848c19a8877140d3ce3ac'
+#
+# repo = creditService()
+# repo.exist_expired_credit(user_key)
