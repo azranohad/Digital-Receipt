@@ -30,3 +30,13 @@ def get_recommendation_for_store():
     return response
 
 
+@recommendation_system_api.route('/get_recommendation_for_store_phone_number', methods=['GET'])
+def get_recommendation_for_store_phone_number():
+    phone_number = request.headers['phone_number']
+    store_name = request.headers['store_name']
+    logger.print_api_message("recommendationSystemController | received get_recommendation_for_store_phone_number GET request | phone_number: " + phone_number)
+
+    response = recommendation_system_service.get_store_recommendations_by_phone_number(phone_number, store_name)
+    return response
+
+
