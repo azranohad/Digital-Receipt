@@ -18,9 +18,9 @@ import SMSLoginScreen from './Screens/SMSLogin';
 import ProductsScreen from './Screens/Products';
 import DigitalReceipt from './components/DigitalReceipt';
 import DigitalCredit from './components/DigitalCredit';
-import ScanedImage from './Screens/ScanedImage';
 import newGpsScreen from './Screens/NewGps';
 import UserLocationScreen from './Screens/UserLocation';
+import ScanedImage from './Screens/ScanedImage';
 
 import {DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -41,8 +41,7 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.43.254:5000";
-
+  const url="192.168.0.111:5000";
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
@@ -58,7 +57,8 @@ export default function App() {
   
   return (
     <NavigationContainer theme={theme} >
-      <Drawer.Navigator initialRouteName = "Home" screenOptions={{headerTitle:"", headerTransparent:false}}>
+      <Drawer.Navigator initialRouteName = "Login" screenOptions={{headerTitle:"", headerTransparent:true}}>
+      <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Home"  component={HomeScreen} 
     //     options={{headerStyle: {
     //     position: 'absolute',
@@ -87,7 +87,7 @@ export default function App() {
         {/* <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="Settings" component={SettingScreen} initialParams={{url: url}}/> */}
         <Drawer.Screen name="Sign Up" component={SignupScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/>
+        {/* <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
         {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
         <Drawer.Screen name="SMSLogin" component={SMSLoginScreen} initialParams={{url: url}}/>

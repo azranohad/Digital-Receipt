@@ -19,5 +19,6 @@ app.register_blueprint(recommendation_system_api, url_prefix='/recommendation_sy
 
 
 app.debug = True
-app.run(host="127.0.0.1", threaded=True)
+app.run(host="192.168.0.111", threaded=True)
+
 

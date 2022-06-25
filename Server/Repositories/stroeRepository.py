@@ -1,8 +1,10 @@
 from Server.Repositories.mongoDbRepository import mongoDbRepository
-from SystemFiles.logger.loggerService import loggerService
 
 
 # @singleton
+from systemFiles.logger.loggerService import loggerService
+
+
 class storeRepository:
     def __init__(self):
         self.mongoDb_repository = mongoDbRepository()

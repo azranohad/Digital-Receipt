@@ -2,7 +2,7 @@ from flask import Blueprint, request
 
 from Server.Repositories.userRepository import userRepository
 from Server.Services.userService import userService
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 logger = loggerService()
 users_api = Blueprint('users_api', __name__)
@@ -71,7 +71,7 @@ def change_password():
     return user_service.change_password(user_name, last_password, password)
 
 
-@users_api.route('/login_user_name_and_password', methods=['GET'])
+@users_api.route('/login_user_name_and_password', methods=['GET','POST'])
 def login_user_name_and_password():
     user_name = request.get_json(force=True)['user_name']
     password = request.get_json(force=True)['password']

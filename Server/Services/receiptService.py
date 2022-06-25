@@ -6,16 +6,18 @@ from Server.Repositories.serverLocalRepository import serverLocalRepository
 from Server.Repositories.userRepository import userRepository
 from Server.Services.generalService import generalService
 from Server.Services.userService import userService
-from SystemFiles.logger.loggerService import loggerService
 import uuid
-from barcode import EAN13
-from barcode.writer import ImageWriter
+#from barcode import EAN13
+#from barcode.writer import ImageWriter
 from tempfile import NamedTemporaryFile
 from shutil import copyfileobj
 from flask import send_file
 
 
 # @singleton
+from systemFiles.logger.loggerService import loggerService
+
+
 class receiptService:
     def __init__(self):
         self.receipt_repository = receiptRepository()

@@ -6,10 +6,12 @@ from tempfile import NamedTemporaryFile
 from flask import send_file
 from singleton_decorator import singleton
 
-from SystemFiles.logger.loggerService import loggerService
 
 
 # @singleton
+from systemFiles.logger.loggerService import loggerService
+
+
 class serverLocalRepository:
 
     def __init__(self):

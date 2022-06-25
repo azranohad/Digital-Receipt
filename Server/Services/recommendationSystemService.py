@@ -1,8 +1,8 @@
 from Server.Repositories.receiptRepository import receiptRepository
 from Server.Repositories.stroeRepository import storeRepository
 from Server.Repositories.userRepository import userRepository
-from SystemFiles.logger.loggerService import loggerService
 from RecommendationSystem.rec import Recommender
+from systemFiles.logger.loggerService import loggerService
 
 
 class recommendationSystemService:

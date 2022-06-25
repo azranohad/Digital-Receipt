@@ -5,7 +5,7 @@ from datetime import date
 from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.locationRepository import locationRepository
 from Server.Repositories.userRepository import userRepository
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 geolocator = Nominatim(user_agent="sample app")
 

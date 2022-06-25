@@ -16,6 +16,7 @@ const SMSLoginScreen = ( props) => {
     const [tempPassword, setTempPassword] = useState('');
     const [error, setError] = useState('');
     const navigation = useNavigation();
+    const url = "192.168.0.111";
 
     const storeData = async (value) => {
         try {
@@ -32,7 +33,7 @@ const SMSLoginScreen = ( props) => {
      
     async function sendDetails() {
         setPhoneNum(true)
-        fetch(`http://192.168.0.111:5000/users_controller/send_smsCode_to_verify`, {
+        fetch(`http://${url}:5000/users_controller/send_smsCode_to_verify`, {
             method: 'POST',
             body:JSON.stringify({"phone_number": phoneNumber}),
             headers: {
@@ -56,7 +57,7 @@ const SMSLoginScreen = ( props) => {
     }
     async function sendTempPassword() {
         //setTempPasswordsent(true)
-        fetch(`http://192.168.0.111:5000/users_controller/verify_sms_code`, {
+        fetch(`http://${url}:5000/users_controller/verify_sms_code`, {
             method: 'POST',
             body:JSON.stringify({"phone_number": phoneNumber, "temp_password": tempPassword}),
             headers: {

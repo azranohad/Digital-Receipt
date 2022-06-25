@@ -1,7 +1,7 @@
 from flask import request, Blueprint
 
 from Server.Services.recommendationSystemService import recommendationSystemService
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 recommendation_system_api = Blueprint('recommendation_system_api', __name__)
 
@@ -30,13 +30,21 @@ def get_recommendation_for_store():
     return response
 
 
-@recommendation_system_api.route('/get_recommendation_for_store_phone_number', methods=['GET'])
+@recommendation_system_api.route('/get_recommendation_for_store_phone_number', methods=['GET','POST'])
 def get_recommendation_for_store_phone_number():
-    phone_number = request.headers['phone_number']
-    store_name = request.headers['store_name']
+    phone_number = request.get_json(force=True)['phone_number']
+    store_name = request.get_json(force=True)['store_name']
     logger.print_api_message("recommendationSystemController | received get_recommendation_for_store_phone_number GET request | phone_number: " + phone_number)
 
     response = recommendation_system_service.get_store_recommendations_by_phone_number(phone_number, store_name)
     return response
+# @recommendation_system_api.route('/get_recommendation_for_store_phone_number', methods=['GET'])
+# def get_recommendation_for_store_phone_number():
+#     phone_number = request.headers['phone_number']
+#     store_name = request.headers['store_name']
+#     logger.print_api_message("recommendationSystemController | received get_recommendation_for_store_phone_number GET request | phone_number: " + phone_number)
+#
+#     response = recommendation_system_service.get_store_recommendations_by_phone_number(phone_number, store_name)
+#     return response
 
 
