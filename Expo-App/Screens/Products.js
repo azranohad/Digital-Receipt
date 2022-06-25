@@ -22,15 +22,17 @@ const Products = ({route, navigation}) => {
 
 
   useEffect(()=>{
-    getAllProducts("a32b34ee98ed4b5e88f022a4cd683ba5");
-    setuserKey("a32b34ee98ed4b5e88f022a4cd683ba5");
+    //getAllProducts(userKey);
+    // setuserKey(userKey);
     // getByStore()
     if (userKey==''){
-      getAllProducts("a32b34ee98ed4b5e88f022a4cd683ba5");
+      getAllProducts(userKey);
       // getIdandReceipts();
-      console.log("here");
+      // console.log("here");
     }
-    else {
+    else {    
+        getAllProducts(userKey);
+
       //getStores("fd18ed355cd74ae38799f76dc7d20609");
 
       // getAllProducts(userKey);
@@ -93,7 +95,6 @@ const Products = ({route, navigation}) => {
 
 const getByStore = (val)=> {
   // setisLoading(true);
-  console.log(val);
   fetch(`http://${route.params.url}/recommendation_system_controller/get_recommendation_for_store`, {
       method: 'GET',
       headers: {
@@ -102,7 +103,6 @@ const getByStore = (val)=> {
           'store_name' : val
       },
   }).then(res => res.json()).then(data => {
-    console.log(data);
     setAll(data);
     setFilter(true);
 });
@@ -117,7 +117,6 @@ const getAllProducts = (val)=> {
           'user_key' : val,
       },}).then(res=>res.json()).then(data => 
       {
-        console.log(data);
     setOriginal(data);
     setAll(data);
 
