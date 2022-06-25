@@ -236,6 +236,7 @@ const LoginScreen = ({ route}) => {
     const [timeOfLastPush, setTimeOfLastPush] = useState(0);
     const notificationListener = useRef();
     const responseListener = useRef();
+    const url = "192.168.0.111";
 
     const storeData = async (value) => {
         try {
@@ -359,9 +360,9 @@ const LoginScreen = ({ route}) => {
       // },[])
 
     async function sendDetails() {
-        fetch(`http://192.168.0.111:5000/users_controller/login_user_name_and_password`, {
+        fetch(`http://${url}:5000/users_controller/login_user_name_and_password`, {
             method: 'POST',
-            body:JSON.stringify({"username": username, "password": password}),
+            body:JSON.stringify({"user_name": username, "password": password}),
             headers: {
                 'content-type': 'aplication/json',
             },
@@ -376,11 +377,14 @@ const LoginScreen = ({ route}) => {
             else {
                 // let id = Object.values(data)[0];
                 storeData(data.toString());
-                fetch(`http://192.168.0.111:5000/users_controller/login_user_name_and_password`, {
+                fetch(`http://${url}:5000/users_controller/login_user_name_and_password`, {
                   method: 'POST',
-                  body:JSON.stringify({"user_key": data.toString()}),
+                  //body:JSON.stringify({"user_key": data.toString()}),
                   headers: {
                       'content-type': 'aplication/json',
+                      "user_key": data.toString()
+                      //"user_key": "33310727751848c19a8877140d3ce3ac"
+                      //"user_key": "33310727751848c19a8877140d3ce3ac"
                   },
               }).then(res => res.text()).then(data1 => {
                   console.log("data: ", data1);
@@ -389,6 +393,7 @@ const LoginScreen = ({ route}) => {
                   if (data1=="false"){
                       console.log("false");
                       setModalVisible(false)
+                      navigation.navigate('Receipts');
                       //setError(data);
                   }
                   else {
@@ -450,14 +455,14 @@ const LoginScreen = ({ route}) => {
               <Text style={styles.modalText}>You have a store credit that is about to expire!</Text>
               <Pressable
                 style={[styles.button3, styles.buttonClose]}
-                onPress={() => navigation.navigate('Sign Up')}
+                onPress={() => navigation.navigate('Store Credits')}
               >
                 
                 <Text style={styles.textStyle}>Go To Credits</Text>
               </Pressable>
               <Pressable
                 style={[styles.button3, styles.buttonClose]}
-                onPress={() => setModalVisible(!isModalVisible)}
+                onPress={() => {setModalVisible(!isModalVisible);  navigation.navigate('Receipts')}}
               >
                 
                 <Text style={styles.textStyle}>No Thanks</Text>

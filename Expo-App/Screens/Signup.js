@@ -112,7 +112,7 @@ const SignupScreen = ({navigation, route}) => {
         fetch(`http://192.168.0.111:5000/users_controller/create_user`, {
             method: 'POST',
             body:JSON.stringify({
-                "username": username,
+                "user_name": username,
                 "password": password,
                 "name": name,
                 "lastname": lastname,
@@ -120,7 +120,7 @@ const SignupScreen = ({navigation, route}) => {
                 "city": city,
                 "country": country,
                 "email": email,
-                "phonenumber": phonenumber,
+                "phone_number": phonenumber,
                 "id": id,
                 "birthdate": birthday}),
             headers: {
@@ -143,6 +143,7 @@ const SignupScreen = ({navigation, route}) => {
             else {
                 // let id = Object.values(data)[0];
                 //id = data
+                console.log(data.toString())
                 storeData(data.toString());
             }
         }).catch(function(error) {
