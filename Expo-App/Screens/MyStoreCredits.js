@@ -11,7 +11,7 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
   const [found, setFound]= useState(false);
   const [searchByName, setSearchByName] = useState('');
   const [storeName, setStoreName] = useState('');
-  const [userKey, setuserKey] = useState('');
+  const [userKey, setuserKey] = useState('33310727751848c19a8877140d3ce3ac');
   const [fromDate, setfromDate] = useState('1/1/1950');
   const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
@@ -133,6 +133,7 @@ const getAllCredits = (val)=> {
   }).then(res => res.json()).then(data => {
    setAll(data);
    setOriginal(data);
+   setisLoading(false);
 });
 }
 
@@ -200,7 +201,7 @@ if (!isLoading){
         <View style={{ zIndex: 0 }}>
           {JsonData?<FlatList
             data={Object.values(JsonData)}
-            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,10)} price={data.total_price}  receipt={false} handleGetImg={getImg}/>}
+            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,10)} price={item.total_price}  receipt={false} handleGetImg={getImg}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={<HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getCreditsByStore(val)} filter={filter} setFilter={setFilter} Type={"Credit"} setAll={setAll} original={original}/>}

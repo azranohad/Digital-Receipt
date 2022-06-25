@@ -67,10 +67,13 @@ const NFTCard = ({ data,handlePress, date, price, receipt, handleGetImg}) => {
             fontSize={SIZES.font}
             handlePress={() => {
               if (receipt){
+                console.log(data);
                 data.is_digital_receipt ? navigation.navigate("DigitalReceipt", { data }): navigation.navigate("ScanedImage", {uri});
               }
               else {
-                data.is_digital_credit ? navigation.navigate("DigitalCredit", { data }): navigation.navigate("ScanedImage", {uri});
+                console.log(data.isDigitalCredit);
+
+                data.isDigitalCredit ? navigation.navigate("DigitalCredit", { data }): navigation.navigate("ScanedImage", {uri});
               }
             }}
             buttonText={"Show"}

@@ -61,7 +61,7 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
       </Text>
       <TextInput
           value={store}
-          onChangeText={(name) => {setMarket(name); setstore(name)}}
+          onChangeText={(store) => {setMarket(store); setstore(store)}}
           placeholder={'Store'}
           style={styles.input}
           />
@@ -70,7 +70,7 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
       </Text>
           <TextInput
           value={date}
-          onChangeText={(name) => {setDate(name); setdate(name)}}
+          onChangeText={(date) => {setDate(date); setdate(date)}}
           placeholder={'Date'}
           style={styles.input}
           
@@ -80,7 +80,7 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
       </Text>
         <TextInput
           value={amount}
-          onChangeText={(name) => {setAmount(name); setamount(name)}}
+          onChangeText={(amount) => {setAmount(amount); setamount(amount)}}
           placeholder={'Total Amount'}
           style={styles.input}
           />
@@ -90,7 +90,7 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
       </Text>
         <TextInput
           value={expdate}
-          onChangeText={(lname) => {setExpireDate(lname); setexpdate(lname);}}
+          onChangeText={(expdate) => {setExpireDate(expdate); setexpdate(expdate);}}
           placeholder={'Expiration Date'}
           style={styles.input}
         />

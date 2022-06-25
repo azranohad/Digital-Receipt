@@ -2,7 +2,7 @@ import React, { useState, Component, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { NFTCard, HomeHeader, FocusedStatusBar, CircleButton } from "../components";
+import { NFTCard, HomeHeader, FocusedStatusBar, CircleButton, Loading } from "../components";
 import { COLORS, NFTData, assets } from "../constants";
 import { event } from 'react-native-reanimated';
 import  {firebase} from '../firebase';
@@ -14,7 +14,7 @@ const MyReceiptsScreen = ({navigation, route}) => {
   const [filter, setFilter]= useState(false);
   const [searchByName, setSearchByName] = useState('');
   const [storeName, setStoreName] = useState('');
-  const [userKey, setuserKey] = useState('');
+  const [userKey, setuserKey] = useState('33310727751848c19a8877140d3ce3ac');
   const [fromDate, setfromDate] = useState('1/1/1950');
   const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
@@ -139,6 +139,7 @@ const getAllReceipts = (val)=> {
       {
     setOriginal(data);
     setAll(data);
+    setisLoading(false);
 });
 }
 
@@ -205,15 +206,13 @@ const trashReceipt = (val)=> {
         <View style={{ flex: 1 }}>
           <View style={{ zIndex: 0 }}>
             
-            <FlatList
+            {JsonData?<FlatList
               data={Object.values(JsonData)}
               renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,10)} price={item.total_price} receipt={true} handleGetImg={(v)=>getImg(v)}/>}
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
-              ListHeaderComponent={<>
-              <HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={setFilter} Type={"Receipt"} setAll={setAll} original={original}/>
-              </>}
-              />
+              ListHeaderComponent={
+              <HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={setFilter} Type={"Receipt"} setAll={setAll} original={original}/>}/>:<></>}
           </View>
   
           <View
@@ -236,9 +235,10 @@ const trashReceipt = (val)=> {
 }
 else {
   return (
-    <View style={styles.container}> 
-      <Text>Loading...</Text>
-      </View>
+    <Loading/>
+    // <View style={styles.container}> 
+    //   <Text>Loading...</Text>
+    //   </View>
 
   )
 }

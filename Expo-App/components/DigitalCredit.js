@@ -39,8 +39,10 @@ const DigitalCredit= ({ route, navigation }) => {
   useEffect(()=> {
       // getBarcode(data._id);
       // setLogo(data.url_scan_image);
-      // setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
-      getBarcode(data.creditID)
+      setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
+      //getBarcode(data.creditID)
+      console.log(data);
+      console.log("HI");
       if (data.market=='super-pharm') {
         setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
       }
@@ -49,7 +51,7 @@ const DigitalCredit= ({ route, navigation }) => {
   
       }
   // getBarcode2('/Walmart.png');
-  })
+  },[])
 
 
   const getBarcode = (val)=>{
@@ -97,6 +99,7 @@ const DigitalCredit= ({ route, navigation }) => {
         marginVertical: SIZES.base,
         paddingHorizontal: SIZES.base,
       }}>
+        <Image style={{height:'10%', width:'30%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: logo}}/>
 
     <Text
           style={{
@@ -151,9 +154,8 @@ const DigitalCredit= ({ route, navigation }) => {
           >
           Expiration Date: {data.expiration_date.slice(0,11)}
         </Text>
-            <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
             
-            <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: logo}}/>
+            <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
             <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} />
             
             </View>

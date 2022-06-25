@@ -278,17 +278,17 @@ const ScanReceipts = ({navigation, route}) => {
     console.log("news: ", JsonData)
 
 
-    // fetch(full_url, {
-    //   method: 'PATCH',
-    //   body:JSON.stringify(JsonData),
-    //   headers: {
-    //     'content-type': 'aplication/json',
-    // },
-    // }).then(()=>{
+    fetch(full_url, {
+      method: 'PATCH',
+      body:JSON.stringify(JsonData),
+      headers: {
+        'content-type': 'aplication/json',
+    },
+    }).then(()=>{
 
-    //   // setVisible(false); 
-    //   // setFirst(true); 
-    // });
+      // setVisible(false); 
+      // setFirst(true); 
+    });
   }
 
   const setType = (val)=>{
@@ -407,7 +407,7 @@ const ScanReceipts = ({navigation, route}) => {
         }}>
 
         </ImageBackground> */}
-        <PopUp data={JsonData} handleClose={()=>{setPopUp(false); setModalVisible(false); setChooseAction(true);}} handleConfirm={sendUpdates} setAmount={(v)=>setAmount(v)} setExpireDate={setExpireDate} setDate={setDate} setMarket={setMarket} setName={setName} isReceipt={isReceipt} />
+        <PopUp data={JsonData} handleClose={()=>{setPopUp(false); setModalVisible(false); setChooseAction(true);}} handleConfirm={sendUpdates} setAmount={setAmount} setExpireDate={setExpireDate} setDate={setDate} setMarket={setMarket} setName={setName} isReceipt={isReceipt} />
      {/* <View style={{backgroundColor: COLORS.white,
           borderRadius: SIZES.base,
           width: "50%",
