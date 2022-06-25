@@ -1,7 +1,7 @@
 import { View, Text, SafeAreaView, Image, StatusBar, FlatList , StyleSheet} from "react-native";
 import React, {useState, useEffect} from "react";
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar } from ".";
+import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar, Loading } from ".";
 import {firebase} from '../firebase'
 
 const DetailsHeader = ({navigation }) => (
@@ -15,8 +15,8 @@ const DetailsHeader = ({navigation }) => (
     <CircleButton
       imgUrl={assets.left}
       handlePress={() => navigation.navigate("Receipts")}
-      right={15}
-      top={StatusBar.currentHeight + 10}
+      right={10}
+      top={10}
     />
 
     {/* <CircleButton
@@ -36,40 +36,55 @@ const DigitalShow= ({ route, navigation }) => {
 
   // useEffect(()=> {getBarcode(data.filename);})
   useEffect(()=> {
-    // getBarcode(data._id);
+    getBarcode(data.receiptID);
     // setLogo(data.url_scan_image);
-    setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
     if (data.market=='super-pharm') {
       setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
     }
     else {
       setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/Walmart.png?alt=media&token=48f0d6f0-fb49-4cde-80be-d6838ede4613')
-
     }
-// getBarcode2('/Walmart.png');
+    // setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
+    // setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
 })
 
 
-  const getBarcode = (filename)=>{
-      fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
-          method: 'DELETE',
-          body: JSON.stringify({
-            'user_key': userKey,
-              '_id' : val,
-          }),
-          headers: {
-              'content-type': 'aplication/json',
-          },
-      }).then(res => res.text()).then(data => {
-        console.log(data);
-        setBarcode(filename);
-      })
+const getBarcode = (val)=>{
+  fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
+      method: 'GET',
+      body: JSON.stringify({
+          'receipt_id' : val,
+      }),
+      headers: {
+          'content-type': 'aplication/json',
+      },
+  }).then(res => res.text()).then(data => {
+    console.log(data);
+    setBarcode(data);
+  })
+}
 
-      // var ref = firebase.storage().ref().child(filename)
-      // await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
-      //   setImg(x);
-      // })
+  const getLogo = (val)=>{
+    fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
+        method: 'GET',
+        body: JSON.stringify({
+            'store_name' : val,
+        }),
+        headers: {
+            'content-type': 'aplication/json',
+        },
+    }).then(res => res.text()).then(data => {
+      console.log(data);
+      setBarcode(data);
+    })
   }
+
+  // var ref = firebase.storage().ref().child(filename)
+  // await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
+  //   setImg(x);
+  // })
+
+
 
 
   return (
@@ -117,7 +132,7 @@ const DigitalShow= ({ route, navigation }) => {
             alignContent: "center",
           }}
           >
-          Total: {data.total_price.toFixed(2)}$
+          Total: {data.total_price.toFixed(2)}
         </Text>
             <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
             
@@ -152,11 +167,11 @@ const DigitalShow= ({ route, navigation }) => {
           {data.market}
         </Text>
         <Text style={styles.text_header_date}>
-          {data.date_of_receipt.slice(0,-13)}
+          {data.date_of_receipt.slice(0,10)}
         </Text>
         <Text
           style={styles.text_header_date}>
-          {data.date_of_receipt.slice(-13,-7)}
+          {data.date_of_receipt.slice(11,16)}
         </Text>
         <Text
           style={{
@@ -184,17 +199,19 @@ const DigitalShow= ({ route, navigation }) => {
       />
       
     </SafeAreaView>:
-     <View
-     style={{
-       width: "100%",
-       // flexDirection: "row",
-       // justifyContent: "space-between",
-       alignItems: "center",
-       marginVertical: SIZES.base,
-       padding: SIZES.base,
-     }}>
-       <Text>Loading...</Text>
-     </View>
+    <Loading/>
+    //  <View
+    //  style={{
+    //    width: "100%",
+    //    // flexDirection: "row",
+    //    // justifyContent: "space-between",
+    //    alignItems: "center",
+    //    marginVertical: SIZES.base,
+    //    padding: SIZES.base,
+    //  }}>
+    //    <Text>Loading...</Text>
+
+    //  </View>
   );
 };
 

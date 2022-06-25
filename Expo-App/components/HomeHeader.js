@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { TouchableOpacity } from "react-native";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet,
   TextInput,
@@ -7,6 +6,7 @@ import { StyleSheet,
   Text,
   SectionList,
   SafeAreaView,
+  TouchableOpacity,
   Image,
   Button,
   FlatList,} from "react-native";
@@ -18,10 +18,9 @@ import { RectButton } from "react-native-gesture-handler";
 import { CircleButton } from "./Button";
 import { useNavigation } from "@react-navigation/native";
 
-const HomeHeader = ({ data, onSelect, onSearch, filter, setFilter, Type, date, name, store, setStore, setName, setDate }) => {
+const HomeHeader = ({ data, onSelect, onSearch, filter, setFilter, searchByName, setSearchByName, Type, date, name, store, setStore, setName, setDate, original, setAll }) => {
   const [show, setShow] = useState(false);
   const [placeholder, setPlaceHolder] = useState('Search By Name..');
-  const [searchByName, setSearchByName] = useState('');
 const navigation = useNavigation();
 
 const ListItem = ({ item, onSelect, setFilter }) => {
@@ -85,6 +84,14 @@ const ListItem = ({ item, onSelect, setFilter }) => {
     paddingBottom:20,
   }}
   >
+  {filter && <CircleButton
+imgUrl={assets.left}
+handlePress={() => {setFilter(false); setAll(original);}}
+right={10}
+top={10}
+// top={StatusBar.currentHeight}
+
+/>}
       <View style={{ marginTop: SIZES.font }}>
         <View
           style={{
@@ -105,7 +112,7 @@ const ListItem = ({ item, onSelect, setFilter }) => {
               />
           </TouchableOpacity>
             <TextInput
-              placeholder={placeholder}
+              placeholder='Search By Name..'
               style={{ flex: 1 }}
               onEndEditing={()=>{onSearch(searchByName); setSearchByName('');}}
               // onEndEditing={val=>setSearchByName(val)}
@@ -113,7 +120,7 @@ const ListItem = ({ item, onSelect, setFilter }) => {
               />
       {/* <TouchableOpacity onPress={()=>setShow(!show)}>
         <Image source={assets.search}></Image>
-        </TouchableOpacity> */}
+      </TouchableOpacity> */}
 
         
     </View>

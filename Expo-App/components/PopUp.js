@@ -44,6 +44,9 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
         source={require('../Images/success.png')}
         style={{height: 150, width: 150, marginVertical: 10}}
       /> */}
+       <Text style={styles.textcontainer}>
+          <Text>Name:</Text>
+      </Text>
       <TextInput
           value={name}
           // onEndEditing={(val)=>setName(val)}
@@ -53,12 +56,18 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
           
           // placeholderTextColor={COLORS.primary}
           />
+        <Text style={styles.textcontainer}>
+          <Text>Store:</Text>
+      </Text>
       <TextInput
           value={store}
           onChangeText={(name) => {setMarket(name); setstore(name)}}
           placeholder={'Store'}
           style={styles.input}
           />
+          <Text style={styles.textcontainer}>
+          <Text>Date:</Text>
+      </Text>
           <TextInput
           value={date}
           onChangeText={(name) => {setDate(name); setdate(name)}}
@@ -66,6 +75,9 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
           style={styles.input}
           
           />
+        <Text style={styles.textcontainer}>
+          <Text>Total:</Text>
+      </Text>
         <TextInput
           value={amount}
           onChangeText={(name) => {setAmount(name); setamount(name)}}
@@ -73,6 +85,9 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
           style={styles.input}
           />
       {!isReceipt && <>
+        <Text style={styles.textcontainer}>
+          <Text>Expiration Date:</Text>
+      </Text>
         <TextInput
           value={expdate}
           onChangeText={(lname) => {setExpireDate(lname); setexpdate(lname);}}
@@ -139,6 +154,24 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     backgroundColor: '#e8e8e8'
+  },
+  textcontainer: {
+    fontWeight: 'bold',
+    width: 350,
+    fontStyle: 'normal',
+    textAlign: 'right',
+    alignItems:'center',
+    padding: 0,
+    borderRadius: 1,
+    //borderWidth:1,
+    borderColor:'#dcdcdc',
+    marginTop: 10,
+    marginBottom: 0,
+    backgroundColor: COLORS.white,
+    color: 'black',
+    fontSize: 16,
+
+
   },
 });
 

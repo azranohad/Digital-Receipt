@@ -3,7 +3,7 @@ import React, { useState, Component, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
+import { NFTCard, HomeHeader, FocusedStatusBar, Loading } from "../components";
 import { COLORS, NFTData } from "../constants";
 import { event } from 'react-native-reanimated';
 
@@ -16,17 +16,24 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
   const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
-  const [isLoading, setisLoading] = useState(true);
+  const [isLoading, setisLoading] = useState(false);
   const [image, setImage] = useState(null)
   const [stores, setStores] = useState([]);
+  const [filter, setFilter]= useState(false);
+
 
 
 
 
  useEffect(()=> {
+  if (userKey==''){
     getIdandCredits();
-
-  },[]);
+  }
+  else {
+    getAllCredits(userKey);
+    getStores(userKey);
+  }
+},[]);
  
   const getIdandCredits = async () => {
     // try {
@@ -39,9 +46,9 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
     // } catch(e) {
     //   // error reading value
     // }
-    setuserKey("fd18ed355cd74ae38799f76dc7d20609");
-    getAllCredits("fd18ed355cd74ae38799f76dc7d20609");
-    getStores("fd18ed355cd74ae38799f76dc7d20609");
+    // setuserKey(userKey);
+    getAllCredits(userKey);
+    getStores(userKey);
   }
 
    // set all variables:
@@ -72,51 +79,51 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
     });
   }
     
-    const searchName = ()=> {
+    const searchName = (s)=> {
  
       fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
               'user_key' : userKey,
-              'name_search' : searchByName,
+              'name_search' : s,
           },
       }).then(res => res.json()).then(data => {
        setAll(data);
+       setFilter(true);
+
     });
   }
-  const getStores = ()=> {
+  const getStores = (val)=> {
     setisLoading(true);
     fetch(`http://${route.params.url}/scan_credit_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user_key' : userKey,
+            'user_key' : val,
         },
     }).then(res => res.json()).then(data => {
-      console.log(data);
       setStores(data);
 
   });
 }
 
-const getCreditsByStore = ()=> {
-  setisLoading(true);
+const getCreditsByStore = (val)=> {
   fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
           'user_key' : userKey,
-          'market' : storeName,
+          'market' : val,
       },
   }).then(res => res.json()).then(data => {
    setAll(data);
+   setFilter(true);
+
 });
 }
 
 const getAllCredits = (val)=> {
-  setisLoading(true);
-  console.log(`http://${route.params.url}/scan_credit_controller/get_all_credits_user`);
   fetch(`http://${route.params.url}/scan_credit_controller/get_all_credits_user`, {
       method: 'GET',
       headers: {
@@ -124,7 +131,6 @@ const getAllCredits = (val)=> {
           'user_key' : val,
       },
   }).then(res => res.json()).then(data => {
-    console.log(data);
    setAll(data);
    setOriginal(data);
 });
@@ -141,13 +147,10 @@ const trashCredit = (val)=> {
           'content-type': 'aplication/json',
       },
     }).then(res => res.text()).then(data => {
-      console.log(data);
       if (data=='True'){
         Object.values(JsonData).map((account)=>{
           if (account._id==val){
             let x = JsonData[account._id]
-            console.log(x);
-            console.log(JsonData[val]);
             delete JsonData[val]
         }
           })
@@ -197,10 +200,10 @@ if (!isLoading){
         <View style={{ zIndex: 0 }}>
           {JsonData?<FlatList
             data={Object.values(JsonData)}
-            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,-13)} price={90}  receipt={false} handleGetImg={getImg}/>}
+            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,10)} price={data.total_price}  receipt={false} handleGetImg={getImg}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<HomeHeader data={stores}/>}
+            ListHeaderComponent={<HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getCreditsByStore(val)} filter={filter} setFilter={setFilter} Type={"Credit"} setAll={setAll} original={original}/>}
           />:<></>}
         </View>
 
@@ -224,10 +227,11 @@ if (!isLoading){
 }
 else {
 return (
-  <View style={styles.container}> 
+  // <View style={styles.container}> 
 
-    <Text>Loading...</Text>
-    </View>
+  //   <Text>Loading...</Text>
+  //   </View>
+  <Loading/>
 
 )
 }

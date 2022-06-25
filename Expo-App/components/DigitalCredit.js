@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, Image, StatusBar, FlatList, StyleSheet } from "react-native";
 
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar } from ".";
-import {firebase} from '../firebase'
+import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar, Loading } from ".";
+import {firebase, getStorage} from '../firebase'
 
 const DetailsHeader = ({navigation }) => (
   <View style={{ width: "100%", height: 80 }}>
@@ -16,8 +16,8 @@ const DetailsHeader = ({navigation }) => (
     <CircleButton
       imgUrl={assets.left}
       handlePress={() => navigation.navigate("Store Credits")}
-      right={15}
-      top={StatusBar.currentHeight + 10}
+      right={10}
+      top={10}
     />
 
     {/* <CircleButton
@@ -31,30 +31,39 @@ const DetailsHeader = ({navigation }) => (
 
 const DigitalCredit= ({ route, navigation }) => {
   const { data } = route.params;
+  const [barcode , setBarcode] = useState(null)
   const [logo , setLogo] = useState(null)
 
 
   // useEffect(()=> {getBarcode(data.filename);})
   useEffect(()=> {
-    getBarcode(data._id);
-    setLogo(data.url_scan_image);
-// getBarcode2('/Walmart.png');
-},[])
+      // getBarcode(data._id);
+      // setLogo(data.url_scan_image);
+      // setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
+      getBarcode(data.creditID)
+      if (data.market=='super-pharm') {
+        setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
+      }
+      else {
+        setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/Walmart.png?alt=media&token=48f0d6f0-fb49-4cde-80be-d6838ede4613')
+  
+      }
+  // getBarcode2('/Walmart.png');
+  })
 
 
-  const getBarcode = (filename)=>{
-      fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
-          method: 'DELETE',
+  const getBarcode = (val)=>{
+      fetch(`http://${route.params.url}/scan_credit_controller/get_barcode`, {
+          method: 'GET',
           body: JSON.stringify({
-            'user_key': userKey,
-              '_id' : val,
+              'credit_id' : val,
           }),
           headers: {
               'content-type': 'aplication/json',
           },
       }).then(res => res.text()).then(data => {
         console.log(data);
-        setBarcode(filename);
+        setBarcode(data);
       })
 
       // var ref = firebase.storage().ref().child(filename)
@@ -100,16 +109,16 @@ const DigitalCredit= ({ route, navigation }) => {
           {data.market}
         </Text>
         <Text style={styles.text_header_date}>
-          {data.date_of_receipt.slice(0,-13)}
+          {data.date_of_credit.slice(0,10)}
         </Text>
         <Text
           style={styles.text_header_date}>
-          {data.date_of_receipt.slice(-13,-7)}
+          {data.date_of_credit.slice(11,16)}
         </Text>
         <Text
           style={styles.text_header}
           >
-          Credit Number: {data.receiptID}
+          Credit Number: {data.creditID}
         </Text>
             </View>
             <View
@@ -130,7 +139,7 @@ const DigitalCredit= ({ route, navigation }) => {
             alignContent: "center",
           }}
           >
-          Total: {data.total_price.toFixed(2)}$
+          Total: {data.total_price.toFixed(2)}
         </Text>
         <Text
           style={{
@@ -140,7 +149,7 @@ const DigitalCredit= ({ route, navigation }) => {
             alignContent: "center",
           }}
           >
-          Expiration Date: {data.date_of_receipt.slice(4,-13)}
+          Expiration Date: {data.expiration_date.slice(0,11)}
         </Text>
             <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
             
@@ -152,7 +161,8 @@ const DigitalCredit= ({ route, navigation }) => {
           
           
       
-    </SafeAreaView>: <View
+    </SafeAreaView>:
+     <View
       style={{
         width: "100%",
         // flexDirection: "row",
@@ -161,7 +171,7 @@ const DigitalCredit= ({ route, navigation }) => {
         marginVertical: SIZES.base,
         padding: SIZES.base,
       }}>
-        <Text>Loading...</Text>
+        <Loading/>
       </View>
   );
 };

@@ -9,6 +9,7 @@ import { RectButton, CircleButton } from "./Button";
 
 const NFTCard = ({ data,handlePress, date, price, receipt, handleGetImg}) => {
   const navigation = useNavigation();
+  const uri = data.url_scan_image;
 
 
 
@@ -66,10 +67,10 @@ const NFTCard = ({ data,handlePress, date, price, receipt, handleGetImg}) => {
             fontSize={SIZES.font}
             handlePress={() => {
               if (receipt){
-                data.is_digital_receipt ? navigation.navigate("DigitalReceipt", { data }): handleGetImg(data.uri);
+                data.is_digital_receipt ? navigation.navigate("DigitalReceipt", { data }): navigation.navigate("ScanedImage", {uri});
               }
               else {
-                data.is_digital_credit ? navigation.navigate("DigitalCredit", { data }): handleGetImg(data.uri);
+                data.is_digital_credit ? navigation.navigate("DigitalCredit", { data }): navigation.navigate("ScanedImage", {uri});
               }
             }}
             buttonText={"Show"}

@@ -3,7 +3,7 @@ import {StyleSheet,Text,View,StatusBar, ImageBackground, Image, Pressable, Alert
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { CircleButton, RectButton, PopUp } from "../components";
+import { CircleButton, RectButton, PopUp, Loading } from "../components";
 import Modal from "react-native-modal";
 import  {firebase} from '../firebase';
 
@@ -339,8 +339,10 @@ const ScanReceipts = ({navigation, route}) => {
         <CircleButton
       imgUrl={assets.left}
       handlePress={() => setChooseAction(false)}
-      right={15}
-      top={StatusBar.currentHeight}
+      right={10}
+      top={10}
+      // top={StatusBar.currentHeight}
+
     />
         <View style={{padding: SIZES.base}}>
                 <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Scan"} handlePress={()=>takeAndUploadPhotoAsync()}/>
@@ -378,7 +380,7 @@ const ScanReceipts = ({navigation, route}) => {
        {/* <Image style={{height:'100%', width:'100%'}} resizeMode='contain' source={{ uri: image }}/> */}
      {/* </View> */}
      {/* } */}
-    {isUpLoading && <Text>Uploading...</Text>}
+    {isUpLoading && <Loading/>}
 
      {popUp && !isUpLoading &&
     //  <Modal animationType="slide"></Modal>
@@ -391,10 +393,6 @@ const ScanReceipts = ({navigation, route}) => {
     backdropColor="black"
     // backdropOpacity=0.4
      visible={modalVisible}
-     onRequestClose={() => {
-       Alert.alert("Modal has been closed.");
-       setModalVisible(!modalVisible);
-     }}
    >
     {/* <ImageBackground
        source={assets.nft01}

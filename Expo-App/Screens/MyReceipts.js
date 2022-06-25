@@ -2,10 +2,11 @@ import React, { useState, Component, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
-import { COLORS, NFTData } from "../constants";
+import { NFTCard, HomeHeader, FocusedStatusBar, CircleButton } from "../components";
+import { COLORS, NFTData, assets } from "../constants";
 import { event } from 'react-native-reanimated';
 import  {firebase} from '../firebase';
+import { NavigationHelpersContext } from '@react-navigation/native';
 
 
 const MyReceiptsScreen = ({navigation, route}) => {
@@ -29,10 +30,8 @@ const MyReceiptsScreen = ({navigation, route}) => {
       getIdandReceipts();
     }
     else {
-      getAllReceipts("fd18ed355cd74ae38799f76dc7d20609");
-      getStores("fd18ed355cd74ae38799f76dc7d20609");
-
-      // getAllReceipts(userKey);
+      getAllReceipts(userKey);
+      getStores(userKey);
     }
  },[]);
  
@@ -48,9 +47,12 @@ const MyReceiptsScreen = ({navigation, route}) => {
     // } catch(e) {
     //   // error reading value
     // }
-    setuserKey("fd18ed355cd74ae38799f76dc7d20609");
-    getAllReceipts("fd18ed355cd74ae38799f76dc7d20609");
-    getStores("fd18ed355cd74ae38799f76dc7d20609");
+    // setuserKey("c590e1226f184638bb3753188e37917a");
+    // getAllReceipts("c590e1226f184638bb3753188e37917a");
+    // getStores("c590e1226f184638bb3753188e37917a");
+    // setuserKey(userKey)
+    getAllReceipts(userKey)
+    getStores(userKey);
   }
 
 
@@ -64,7 +66,7 @@ const MyReceiptsScreen = ({navigation, route}) => {
       setJsonData(data);
       setFound(true);
     }
-    setisLoading(false)
+    setisLoading(false);
   }
 
 
@@ -95,14 +97,12 @@ const MyReceiptsScreen = ({navigation, route}) => {
               'name_search' : s,
           },
       }).then(res => res.json()).then(data => {
-        console.log(data);
-        setSearchByName('');
         setAll(data);
+        setFilter(true);
     });
   }
 
   const getStores = (val)=> {
-    // setisLoading(true);
     fetch(`http://${route.params.url}/scan_receipt_controller/get_markets`, {
         method: 'GET',
         headers: {
@@ -110,7 +110,6 @@ const MyReceiptsScreen = ({navigation, route}) => {
             'user-key': val,
         },
     }).then(res => res.json()).then(data => {
-      console.log(data);
       setStores(data);
   });
 }
@@ -131,7 +130,6 @@ const getReceiptsByStore = (val)=> {
 }
 
 const getAllReceipts = (val)=> {
-  console.log(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`);
   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`, {
       method: 'GET',
       headers: {
@@ -141,12 +139,12 @@ const getAllReceipts = (val)=> {
       {
     setOriginal(data);
     setAll(data);
-
 });
 }
 
 const getImg =  async (uri)=> {
   setImage(uri);
+  navigation.navigate("ScanedImage", {uri})
   // // setisLoading(true);
   // const res = await fetch(uri)
   // const blob = await res.blob();
@@ -186,13 +184,10 @@ const trashReceipt = (val)=> {
           'content-type': 'aplication/json',
       },
   }).then(res => res.text()).then(data => {
-    console.log(data);
     if (data=='True'){
       Object.values(JsonData).map((account)=>{
         if (account._id==val){
           let x = JsonData[account._id]
-          console.log(x);
-          console.log(JsonData[val]);
           delete JsonData[val]
       }
         })
@@ -209,13 +204,16 @@ const trashReceipt = (val)=> {
         <FocusedStatusBar backgroundColor={COLORS.primary} />
         <View style={{ flex: 1 }}>
           <View style={{ zIndex: 0 }}>
+            
             <FlatList
               data={Object.values(JsonData)}
-              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,-13)} price={item.total_price} receipt={true} handleGetImg={getImg(item.url_scan_image)}/>}
+              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,10)} price={item.total_price} receipt={true} handleGetImg={(v)=>getImg(v)}/>}
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
-              ListHeaderComponent={<HomeHeader data={stores} onSearch={(val)=>searchName(val)} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={()=>setFilter()} Type={"Receipt"}/>}
-            />
+              ListHeaderComponent={<>
+              <HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={setFilter} Type={"Receipt"} setAll={setAll} original={original}/>
+              </>}
+              />
           </View>
   
           <View

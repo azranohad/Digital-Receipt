@@ -18,11 +18,18 @@ import SMSLoginScreen from './Screens/SMSLogin';
 import ProductsScreen from './Screens/Products';
 import DigitalReceipt from './components/DigitalReceipt';
 import DigitalCredit from './components/DigitalCredit';
+import ScanedImage from './Screens/ScanedImage';
 import newGpsScreen from './Screens/NewGps';
 import UserLocationScreen from './Screens/UserLocation';
 
 import {DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import {LogBox} from "react-native";
+
+LogBox.ignoreLogs([
+"exported from 'deprecated-react-native-prop-types'.",
+])
+
 const theme = {
   ...DefaultTheme,
   colors: {
@@ -34,7 +41,8 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.0.111:5000";
+  const url="192.168.43.254:5000";
+
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
@@ -50,7 +58,7 @@ export default function App() {
   
   return (
     <NavigationContainer theme={theme} >
-      <Drawer.Navigator initialRouteName = "Login" screenOptions={{headerTitle:"", headerTransparent:true}}>
+      <Drawer.Navigator initialRouteName = "Home" screenOptions={{headerTitle:"", headerTransparent:false}}>
         <Drawer.Screen name="Home"  component={HomeScreen} 
     //     options={{headerStyle: {
     //     position: 'absolute',
@@ -71,19 +79,21 @@ export default function App() {
     // // )
     //  }}
      />
-        <Drawer.Screen name="My Profile" component={ProfileScreen} initialParams={{url: url}}/>
+        <Drawer.Screen name="My Profile" component={ProfileScreen} initialParams={{url: url}} />
         <Drawer.Screen name="Receipts" component={MyReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Scan Receipts" component={ScanReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Store Credits" component={MyStoreCreditsScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen} initialParams={{url: url}}/>
+        <Drawer.Screen name="Products" component={ProductsScreen}  initialParams={{url: url}}/>
+        {/* <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="Settings" component={SettingScreen} initialParams={{url: url}}/> */}
         <Drawer.Screen name="Sign Up" component={SignupScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/>
         {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
-        <Drawer.Screen name="Products" component={ProductsScreen}/>
+        {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
         <Drawer.Screen name="SMSLogin" component={SMSLoginScreen} initialParams={{url: url}}/>
       <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt}/>
       <Drawer.Screen name="DigitalCredit" component={DigitalCredit}/>
+        <Drawer.Screen name="ScanedImage" component={ScanedImage} initialParams={{url: url}} />
         {/* <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/> */}
 
