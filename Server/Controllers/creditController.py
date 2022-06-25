@@ -29,26 +29,25 @@ def scan_credit():
 @scan_credit_api.route('/get_credit_by_date', methods=['GET'])
 def get_credit_by_date():
 
-    user_details = request.get_json(force=True)['user_key']
+    user_details = request.headers['user_key']
     logger.print_api_message("received get_credit_by_date request | user: " + user_details)
 
-    from_date = request.get_json(force=True)['from_date']
-    to_date = request.get_json(force=True)['to_date']
+    from_date = request.headers['from_date']
+    to_date = request.headers['to_date']
 
     return credit_repository.get_by_date(user_details, from_date, to_date)
 
 @scan_credit_api.route('/get_markets', methods=['GET'])
 def get_markets_credit():
-    user_details = request.get_json(force=True)['user_key']
+    user_details = request.headers['user_key']
     logger.print_api_message("received get_markets request | user: " + user_details)
-
     return credit_repository.get_values_by_key(user_details, "market")
 
 
 @scan_credit_api.route('/get_credit_by_market', methods=['GET'])
 def get_credit_by_market():
-    user_details = request.get_json(force=True)['user_key']
-    market = request.get_json(force=True)['market']
+    user_details = request.headers['user_key']
+    market = request.headers['market']
     logger.print_api_message("received get_credit_by_market request | user: " + user_details + "| market:" + market)
 
     return credit_repository.get_credit_by_value(user_details, "market", market)
@@ -56,23 +55,22 @@ def get_credit_by_market():
 
 @scan_credit_api.route('/get_all_credits_user', methods=['GET'])
 def get_all_credits_user():
-    user_key = request.get_json(force=True)['user_key']
+    user_key = request.headers['user_key']
     logger.print_api_message("received get_all_credits_user request | user: " + user_key)
-
     return credit_repository.get_all_credits_user(user_key)
 
 @scan_credit_api.route('/get_credit_by_name', methods=['GET'])
 def get_credit_by_name():
-    user_details = request.get_json(force=True)['user_key']
-    name_search = request.get_json(force=True)['name_search']
+    user_details = request.headers['user_key']
+    name_search = request.headers['name_search']
     logger.print_api_message("received get_credit_by_name request | user: " + user_details + "| name credit:" + name_search)
 
     return credit_repository.get_credit_by_name(user_details, name_search)
 
 @scan_credit_api.route('/get_image_credit', methods=['GET'])
 def get_image_credit():
-    user_details = request.get_json(force=True)['user_key']
-    image_id = request.get_json(force=True)['image_id']
+    user_details = request.headers['user_key']
+    image_id = request.headers['image_id']
     logger.print_api_message("received get_image_credit request | user: " + user_details + "| image name:" + image_id)
 
     return server_local_repository.get_scan_image(user_details, image_id)

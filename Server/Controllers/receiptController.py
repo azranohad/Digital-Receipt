@@ -44,6 +44,7 @@ def get_receipt_by_date():
 def get_markets_receipt():
     user_details = request.headers['user_key']
     logger.print_api_message("receiptController | received get_markets request | user: " + user_details)
+    print(receipt_repository.get_values_by_key(user_details, "market"))
     return receipt_repository.get_values_by_key(user_details, "market")
 
 
@@ -59,6 +60,8 @@ def get_receipt_by_market():
 def get_all_receipts_user():
     user_key = request.headers['user_key']
     logger.print_api_message("receiptController | received get_all_receipts_user request | user: " + user_key)
+    print(receipt_repository.get_all_receipts_user(user_key))
+    print("lk")
     return receipt_repository.get_all_receipts_user(user_key)
 
 
