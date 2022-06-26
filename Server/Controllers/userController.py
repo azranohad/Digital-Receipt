@@ -9,11 +9,13 @@ users_api = Blueprint('users_api', __name__)
 
 user_service = userService()
 user_repository = userRepository()
+server_consts = serverConsts()
+
 
 @users_api.route('/create_user', methods=['POST'])
 def create_user():
     try:
-        phone_number = request.get_json(force=True)['phone_number']
+        phone_number = request.get_json(force=True)[server_consts.PHONE_NUMBER]
     except:
         logger.print_api_message("request for create user must contain phone_number field")
         return "request for create user must contain phone_number field"
@@ -26,7 +28,7 @@ def create_user():
 
 @users_api.route('/update_user', methods=['POST'])
 def update_user_data():
-    user_key = request.get_json(force=True)['user_key']
+    user_key = request.get_json(force=True)[server_consts.USER_KEY]
     user_repository.update_user(user_key, request.get_json(force=True))
 
 
@@ -38,7 +40,7 @@ def get_user_key():
 
 @users_api.route('/get_user_data', methods=['GET','POST'])
 def get_user_data():
-    user_key = request.headers['user_key']
+    user_key = request.headers[server_consts.USER_KEY]
     return user_repository.get_user_data(user_key)
 
 @users_api.route('/send_smsCode_to_verify', methods=['GET','POST'])
@@ -55,7 +57,7 @@ def verify_sms_code():
 
 @users_api.route('/add_user_name_and_password', methods=['POST'])
 def add_user_name_and_password():
-    user_key = request.get_json(force=True)['user_key']
+    user_key = request.get_json(force=True)[server_consts.USER_KEY]
     user_name = request.get_json(force=True)['user_name']
     password = request.get_json(force=True)['password']
     request.get_json(force=True)
@@ -81,5 +83,5 @@ def login_user_name_and_password():
 
 @users_api.route('/delete_user', methods=['DELETE'])
 def delete_user():
-    user_key = request.get_json(force=True)['user_key']
+    user_key = request.get_json(force=True)[server_consts.USER_KEY]
     return user_service.delete_user(user_key)

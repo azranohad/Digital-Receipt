@@ -1,4 +1,5 @@
 from flask import Flask
+import socket
 
 from Server.Controllers.creditController import scan_credit_api
 from Server.Controllers.recommendationSystemController import recommendation_system_api
@@ -17,7 +18,12 @@ app.register_blueprint(location_api, url_prefix='/location_controller')
 app.register_blueprint(scan_credit_api, url_prefix='/scan_credit_controller')
 app.register_blueprint(recommendation_system_api, url_prefix='/recommendation_system_controller')
 
+import socket
+
+hostname = socket.getfqdn()
+IPAddr=socket.gethostbyname_ex(hostname)[2][1]
 
 app.debug = True
-app.run(host="127.0.0.1", threaded=True)
+socket.gethostbyname_ex(hostname)[2][1]
+app.run(host=IPAddr, threaded=True)
 

@@ -8,6 +8,7 @@ from datetime import datetime
 from SystemFiles.logger.loggerService import loggerService
 from datetime import timedelta
 from datetime import datetime
+import uuid
 
 
 class creditRepository:
@@ -19,6 +20,8 @@ class creditRepository:
         return self.mongoDb_repository.get_client()["Credits"]['credits']
 
     def insert_credit(self, user_key, credit):
+        credit['_id'] = uuid.uuid4().hex
+
         collection = self.get_collection()
         result = collection.insert_one(credit)
         if result.acknowledged:
@@ -127,7 +130,7 @@ class creditRepository:
 #         "market": "super-pharm",
 #         "date_of_credit": datetime.today() + timedelta(days=-600),
 #         "expiration_date":  datetime.today() + timedelta(days=30),
-#         "total_price": 200,
+#         "total_price": 150,
 #         "creditID": ''.join(random.choice(string.digits) for i in range(13)),
 #         "isDigitalCredit": True
 #     })

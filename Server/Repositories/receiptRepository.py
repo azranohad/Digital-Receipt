@@ -1,6 +1,8 @@
 from Server.Repositories.mongoDbRepository import mongoDbRepository
 from datetime import datetime
-
+import uuid
+import dateutil
+from dateutil.parser import parse
 # @singleton
 from SystemFiles.logger.loggerService import loggerService
 
@@ -29,6 +31,7 @@ class receiptRepository:
 
 
     def insert_receipt(self, user_key, receipt):
+        receipt['_id'] = uuid.uuid4().hex
         collection = self.get_collection()
         result = collection.insert_one(receipt)
         status = result.acknowledged
@@ -98,7 +101,7 @@ class receiptRepository:
         return self.update_receipt_data_impl(user_key, _id, dict_update_receipt)
 
     def update_receipt_data_impl(self, user_key, _id, dict_update_receipt):
-        result = self.get_collection().update({'user_key': user_key,'_id': _id}, {'$set': dict_update_receipt})
+        result = self.get_collection().update({'user_key': user_key, '_id': _id}, {'$set': dict_update_receipt})
         is_updated_existing = result['updatedExisting']
         if is_updated_existing:
             self.logger.print_info_message(
@@ -124,4 +127,27 @@ class receiptRepository:
 
     def get_distinct_values_by_key(self, key):
         return self.get_collection().distinct(key)
+
+# repo = receiptRepository()
+# users = ["33310727751848c19a8877140d3ce3ac", "c590e1226f184638bb3753188e37917a", "a02b5a3e82ba4235a23381d4586bd60c", "a32b34ee98ed4b5e88f022a4cd683ba5"]
+# stores = ["K.S.P", "H&O", "Terminal X", "Adidas", "Nike", "Foot Locker", "FOX"]
+# for user in users:
+#     receipts = repo.get_all_receipts_user(user)
+#     for rec in receipts.values():
+#         if stores.__contains__(rec.get('market')):
+#             repo.delete_receipt(user, rec.get('_id'))
+# x = 3
+#
+#
+# for user in users:
+#     for store in stores:
+#         repo.insert_receipt(user, {
+#             "user_key": user,
+#             "market": store,
+#             "total_price" : 157.0,
+#             "date_of_receipt" : dateutil.parser.parse('15/04/2022')
+#         })
+#
+#
+# x = 3
 

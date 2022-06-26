@@ -31,7 +31,7 @@ class serverLocalRepository:
         path_image = os.path.join(self.get_user_folder_scans(user_details), image_key)
         image_file.save(path_image)
 
-        return image_key
+        return path_image
 
     def get_scan_image(self, user_key, image_name):
         path_image = os.path.join(self.get_user_folder_scans(user_key), image_name)
