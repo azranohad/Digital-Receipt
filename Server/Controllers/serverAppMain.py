@@ -21,9 +21,8 @@ app.register_blueprint(recommendation_system_api, url_prefix='/recommendation_sy
 import socket
 
 hostname = socket.getfqdn()
-IPAddr=socket.gethostbyname_ex(hostname)[2][1]
 
 app.debug = True
-socket.gethostbyname_ex(hostname)[2][1]
-app.run(host=IPAddr, threaded=True)
+IP_Address = socket.gethostbyname_ex(hostname)[2][1]
+app.run(host=IP_Address, threaded=True)
 
