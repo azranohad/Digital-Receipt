@@ -5,9 +5,11 @@ from datetime import date
 from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.locationRepository import locationRepository
 from Server.Repositories.userRepository import userRepository
+from Server.serverConsts import serverConsts
 from SystemFiles.logger.loggerService import loggerService
 
 geolocator = Nominatim(user_agent="sample app")
+server_consts = serverConsts()
 
 # @singleton
 class storeLocationService:
@@ -26,12 +28,12 @@ class storeLocationService:
     #True - possible send recommendation
     def possible_send_recommended(self, user_key):
         today = str(date.today())
-        if self.user_repository.get_user_data(user_key).keys().__contains__('last_recommendation_date'):
-            last_recommendation_date = self.user_repository.get_user_data(user_key)['last_recommendation_date']
+        if self.user_repository.get_user_data(user_key).keys().__contains__(server_consts.LAST_RECOMMENDATION_DATE):
+            last_recommendation_date = self.user_repository.get_user_data(user_key)[server_consts.LAST_RECOMMENDATION_DATE]
             if last_recommendation_date != today:
                 return True
         else:
-            self.user_repository.update_user(user_key, {"last_recommendation_date" : today})
+            self.user_repository.update_user(user_key, {server_consts.LAST_RECOMMENDATION_DATE : today})
             return True
 
         return False
@@ -52,8 +54,8 @@ class storeLocationService:
         if nearest_stores:
             for store in nearest_stores:
                 for credit in credits.values():
-                    credit['_id'] = str(credit.get('_id'))
-                    credits_to_return[credit.get('_id')] = credit
+                    credit[server_consts.ID] = str(credit.get(server_consts.ID))
+                    credits_to_return[credit.get(server_consts.ID)] = credit
 
         return credits_to_return
 

@@ -6,8 +6,10 @@ from tempfile import NamedTemporaryFile
 from flask import send_file
 from singleton_decorator import singleton
 
+from Server.serverConsts import serverConsts
 from SystemFiles.logger.loggerService import loggerService
 
+server_consts = serverConsts()
 
 # @singleton
 class serverLocalRepository:
@@ -17,7 +19,7 @@ class serverLocalRepository:
 
     def get_user_folder_scans(self, user_details):
         project_folder = re.split(r'.(?=Digital-Receipt)', os.getcwd())[0]
-        base_path = os.path.join(project_folder, 'Digital-Receipt', 'DB', 'scanStorage')
+        base_path = os.path.join(project_folder, server_consts.FOLDER_PROJECT_NAME, 'DB', 'scanStorage')
         path = os.path.join(base_path, user_details)
 
         if os.path.exists(path):

@@ -8,9 +8,11 @@ from dateutil.parser import parse
 from singleton_decorator import singleton
 
 from Server.DataObjects.receiptDataObject import itemObject
+from Server.serverConsts import serverConsts
 
 STOPWORDS = ['summe', 'visa', 'mwst', 'brutto', 'netto', 'zahlen']
 
+server_consts = serverConsts()
 
 @singleton
 class parseReceiptDataService:
@@ -449,12 +451,12 @@ class parseReceiptDataService:
         if len(receipt_data_object.items) != 0:
             items = self.items_to_map(receipt_data_object)
         receipt_dict = {
-            "_id": str(image_id),
-            "user_key": user_key,
-            "scan_date": dateutil.parser.parse(datatime1.now().strftime('%d/%m/%Y %H:%M:%S')),
+            server_consts.ID: str(image_id),
+            server_consts.USER_KEY: user_key,
+            server_consts.SCAN_DATE: dateutil.parser.parse(datatime1.now().strftime('%d/%m/%Y %H:%M:%S')),
             "receiptID": str(receipt_data_object.receiptID),
-            "date_of_receipt": dateutil.parser.parse(receipt_data_object.date_of_receipt),
-            "market": str(receipt_data_object.market),
+            server_consts.DATE_OF_RECEIPT: dateutil.parser.parse(receipt_data_object.date_of_receipt),
+            server_consts.MARKET: str(receipt_data_object.market),
             "items": items,
             "total_price": float(receipt_data_object.total_price),
             "url_scan_image": receipt_data_object.url_scan_image,
@@ -464,8 +466,8 @@ class parseReceiptDataService:
 
     def receipt_data_to_app(self, receipt_id, receipt_data_object):
         receipt_dict = {
-            "_id": str(receipt_id),
+            server_consts.ID: str(receipt_id),
             "date": str(receipt_data_object.date_of_receipt),
-            "market": str(receipt_data_object.market),
+            server_consts.MARKET: str(receipt_data_object.market),
         }
         return receipt_dict

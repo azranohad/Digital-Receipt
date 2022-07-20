@@ -6,6 +6,7 @@ from Server.Repositories.serverLocalRepository import serverLocalRepository
 from Server.Repositories.userRepository import userRepository
 from Server.Services.generalService import generalService
 from Server.Services.userService import userService
+from Server.serverConsts import serverConsts
 from SystemFiles.logger.loggerService import loggerService
 import uuid
 from barcode import EAN13
@@ -14,6 +15,7 @@ from tempfile import NamedTemporaryFile
 from shutil import copyfileobj
 from flask import send_file
 
+server_consts = serverConsts()
 
 # @singleton
 class receiptService:
@@ -28,16 +30,16 @@ class receiptService:
 
 
     def insert_receipt(self, phone_number, receipt_data_dict):
-        if not self.user_repository.is_user_exist('phone_number', phone_number):
+        if not self.user_repository.is_user_exist(server_consts.PHONE_NUMBER, phone_number):
             user_key = self.user_service.create_user(phone_number, {})
         else:
-            user_key = self.user_repository.get_user_from_db({"phone_number": phone_number})
-        receipt_data_dict['user_key'] = user_key
-        receipt_data_dict["_id"] = uuid.uuid4().hex
+            user_key = self.user_repository.get_user_from_db({server_consts.PHONE_NUMBER: phone_number})
+        receipt_data_dict[server_consts.USER_KEY] = user_key
+        receipt_data_dict[server_consts.ID] = uuid.uuid4().hex
         return self.receipt_repository.insert_receipt(user_key, receipt_data_dict)
 
     def delete_receipt(self, user_key, _id):
-        is_digital_receipt = self.receipt_repository.get_receipt_by_value(user_key, '_id', _id)['is_digital_receipt']
+        is_digital_receipt = self.receipt_repository.get_receipt_by_value(user_key, server_consts.ID, _id)[server_consts.IS_DIGITAL_RECEIPT]
         if is_digital_receipt:
             return self.receipt_repository.delete_receipt(user_key, _id)
         if not self.local_repository.delete_scan_image(user_key, _id):
@@ -62,7 +64,7 @@ class receiptService:
 
     def get_logo(self, store_name):
         logo_name = store_name + '.png'
-        path = os.path.join(self.general_service.get_project_folder(), 'Digital-Receipt', 'DB', 'logo', logo_name)
+        path = os.path.join(self.general_service.get_project_folder(), server_consts.FOLDER_PROJECT_NAME, 'DB', 'logo', logo_name)
 
         tempFileObj = NamedTemporaryFile(mode='w+b', suffix='.png')
         pilImage = open(path, 'rb')

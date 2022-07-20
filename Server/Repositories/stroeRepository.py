@@ -1,6 +1,8 @@
 from Server.Repositories.mongoDbRepository import mongoDbRepository
+from Server.serverConsts import serverConsts
 from SystemFiles.logger.loggerService import loggerService
 
+server_consts = serverConsts()
 
 # @singleton
 class storeRepository:
@@ -10,7 +12,7 @@ class storeRepository:
 
 
     def get_collection(self):
-        return self.mongoDb_repository.get_client()["Items"]["items"]
+        return self.mongoDb_repository.get_client()[server_consts.ITEMS_DB][server_consts.ITEMS_COLLECTION]
 
     #item data is dictionary
     def insert_item_to_db(self, item_data):
@@ -33,11 +35,11 @@ class storeRepository:
 
     def get_item_data_by_itemID(self, itemID):
         items_collection = self.get_collection()
-        return items_collection.find_one({'itemID':{"$regex" : itemID}})
+        return items_collection.find_one({server_consts.ITEM_ID:{"$regex" : itemID}})
 
 
     def update_item_data(self, itemID, dict_update_item):
-        result = self.get_collection().update({'itemID': itemID}, {'$set': dict_update_item})
+        result = self.get_collection().update({server_consts.ITEM_ID: itemID}, {'$set': dict_update_item})
         if result['updatedExisting']:
             self.logger.print_info_message(
                 "storeRepository | details (" + str(dict_update_item.keys()) + ") of item: " + str(
@@ -47,7 +49,7 @@ class storeRepository:
                 "storeRepository | failed update data of item: " + itemID)
 
     def delete_item(self, itemID):
-        result = self.get_collection().delete_one({'itemID': itemID})
+        result = self.get_collection().delete_one({server_consts.ITEM_ID: itemID})
         status = result.acknowledged
         if status:
             self.logger.print_event("storeRepository | item: " + itemID + " deleted from data base")
@@ -56,7 +58,7 @@ class storeRepository:
         return str(status)
 
 # repo = storeRepository()
-# items = repo.get_items_by_generic_value('market', 'walmart')
+# items = repo.get_items_by_generic_value(server_consts.MARKET, 'walmart')
 # for item in items:
 #     repo.delete_item(item)
 #

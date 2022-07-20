@@ -1,9 +1,11 @@
 from Server.Repositories.receiptRepository import receiptRepository
 from Server.Repositories.stroeRepository import storeRepository
 from Server.Repositories.userRepository import userRepository
+from Server.serverConsts import serverConsts
 from SystemFiles.logger.loggerService import loggerService
 from RecommendationSystem.rec import Recommender
 
+server_consts = serverConsts()
 
 class recommendationSystemService:
     def __init__(self):
@@ -20,8 +22,8 @@ class recommendationSystemService:
         items_data = {}
         for itemID in list_of_recommendation_items:
             item_data = self.store_repository.get_item_data_by_itemID(itemID)
-            item_data.pop('_id')
-            items_data[str(item_data.get('itemID'))] = item_data
+            item_data.pop(server_consts.ID)
+            items_data[str(item_data.get(server_consts.ITEM_ID))] = item_data
         return items_data
 
 
@@ -33,13 +35,13 @@ class recommendationSystemService:
         items_data = {}
         for itemID in list_of_recommendation_items:
             item_data = self.store_repository.get_item_data_by_itemID(itemID)
-            item_data.pop('_id')
-            items_data[str(item_data.get('itemID'))] = item_data
+            item_data.pop(server_consts.ID)
+            items_data[str(item_data.get(server_consts.ITEM_ID))] = item_data
         return items_data
 
 
     def get_store_recommendations_by_phone_number(self, phone_number, store_name):
-        user_key = self.user_repository.get_users_by_generic_value("phone_number", phone_number)[0]
+        user_key = self.user_repository.get_users_by_generic_value(server_consts.PHONE_NUMBER, phone_number)[0]
         return self.get_store_recommendations(user_key, store_name)
 
 
