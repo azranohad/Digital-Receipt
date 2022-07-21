@@ -4,7 +4,7 @@ from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
 from Server.Services.creditService import creditService
 from Server.serverConsts import serverConsts
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 scan_credit_api = Blueprint('scan_credit_api', __name__)
 
@@ -95,7 +95,7 @@ def delete_credit():
     return credit_repository.delete_credit(user_key, _id)
 
 #return boolean
-@scan_credit_api.route('/exist_expired_credit', methods=['GET'])
+@scan_credit_api.route('/exist_expired_credit', methods=['GET','POST'])
 def exist_expired_credit():
     user_key = request.get_json(force=True)[server_consts.USER_KEY]
     logger.print_api_message("creditController | received exist_expired_credit request | user: " + user_key)

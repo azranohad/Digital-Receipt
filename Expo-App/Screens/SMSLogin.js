@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
 import { NFTCard, HomeHeader, FocusedStatusBar ,RectButton} from "../components";
 
-const SMSLoginScreen = ( props) => {
+const SMSLoginScreen = ( {route}) => {
     const [phoneNumber, setUsername] = useState('');
     const [isPhoneNumsent, setPhoneNum] = useState(false);
     const [isTempPasswordsent, setTempPasswordsent] = useState(false);
@@ -33,7 +33,7 @@ const SMSLoginScreen = ( props) => {
      
     async function sendDetails() {
         setPhoneNum(true)
-        fetch(`http://${url}:5000/users_controller/send_smsCode_to_verify`, {
+        fetch(`http://${route.params.url}/users_controller/send_smsCode_to_verify`, {
             method: 'POST',
             body:JSON.stringify({"phone_number": phoneNumber}),
             headers: {
@@ -57,7 +57,7 @@ const SMSLoginScreen = ( props) => {
     }
     async function sendTempPassword() {
         //setTempPasswordsent(true)
-        fetch(`http://${url}:5000/users_controller/verify_sms_code`, {
+        fetch(`http://${route.params.url}/users_controller/verify_sms_code`, {
             method: 'POST',
             body:JSON.stringify({"phone_number": phoneNumber, "temp_password": tempPassword}),
             headers: {

@@ -360,7 +360,7 @@ const LoginScreen = ({ route}) => {
       // },[])
 
     async function sendDetails() {
-        fetch(`http://${url}:5000/users_controller/login_user_name_and_password`, {
+        fetch(`http://${route.params.url}/users_controller/login_user_name_and_password`, {
             method: 'POST',
             body:JSON.stringify({"user_name": username, "password": password}),
             headers: {
@@ -377,9 +377,9 @@ const LoginScreen = ({ route}) => {
             else {
                 // let id = Object.values(data)[0];
                 storeData(data.toString());
-                fetch(`http://${url}:5000/users_controller/login_user_name_and_password`, {
+                fetch(`http://${route.params.url}/scan_credit_controller/exist_expired_credit`, {
                   method: 'POST',
-                  //body:JSON.stringify({"user_key": data.toString()}),
+                  body:JSON.stringify({"user_key": data.toString()}),
                   headers: {
                       'content-type': 'aplication/json',
                       "user_key": data.toString()

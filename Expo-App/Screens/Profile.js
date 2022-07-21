@@ -6,7 +6,7 @@ import { Value } from 'react-native-reanimated';
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
 import { NFTCard, HomeHeader, FocusedStatusBar ,RectButton} from "../components";
 
-const ProfileScreen = (props) => {
+const ProfileScreen = ({route}) => {
             const [userKey, setuserKey] = useState('');
             const [username, setUsername] = useState('');
             const [name, setName] = useState('');
@@ -19,6 +19,7 @@ const ProfileScreen = (props) => {
             const [age, setAge] = useState('');
             const [birthday, setBirthday] = useState('');
             const [error, setError] = useState('');
+            const url = route.params.url;
             const getData = async () => {
               try {
                 const value = await AsyncStorage.getItem('userId')
@@ -32,6 +33,7 @@ const ProfileScreen = (props) => {
                 // error reading value
               }
             }
+            const user_key = getData();
             const getTempData =  () => {
               try {
                 const value = "12345";
@@ -48,13 +50,13 @@ const ProfileScreen = (props) => {
             
             useEffect(() =>
             {
-              let x = getData().value;
-               getData().then(res => setuserKey(res)).then(res => fetch("http://192.168.0.111:5000/users_controller/get_user_data", {
+              setuserKey(getData().value);
+               getData().then(res => setuserKey(res)).then(res => fetch(`http://${url}/users_controller/get_user_data`, {
           method: 'GET',
           //body:JSON.stringify({"user_key": x}),
           headers: {
               'content-type': 'aplication/json',
-              "user_key": userKey,
+              "user_key": "33310727751848c19a8877140d3ce3ac",
           },
       })).then(res => res.json()).then(data => {
           //console.log("data: ", data);
@@ -68,36 +70,36 @@ const ProfileScreen = (props) => {
 
             console.log(data);
 
-            if(data['username'] !== 'undefined') {
-              setUsername(data['username']);
+            // if(data['username'] !== 'undefined') {
+            //   setUsername(data['username']);
+            // }
+            if(data['private_name'] !== 'undefined') {
+              setName(data['private_name']);
             }
-            if(data['name'] !== 'undefined') {
-              setName(data['name']);
+            if(data['family_name'] !== 'undefined') {
+              setLastName(data['family_name']);
             }
-            if(data['lastname'] !== 'undefined') {
-              setLastName(data['lastname']);
-            }
-            if(data['phonenumber'] !== 'undefined') {
+            if(data['phone_number'] !== 'undefined') {
               setPhonenumber(data['phone_number']);
             }
-            if(data['email'] !== 'undefined') {
-              setEmail(data['email']);
-            }
-            if(data['country'] !== 'undefined') {
-              setCountry(data['country']);
-            }
-            if(data['city'] !== 'undefined') {
-              setCity(data['city']);
-            }
-            if(data['id'] !== 'undefined') {
-              setId(data['id']);
-            }
+            // if(data['email'] !== 'undefined') {
+            //   setEmail(data['email']);
+            // }
+            // if(data['country'] !== 'undefined') {
+            //   setCountry(data['country']);
+            // }
+            // if(data['city'] !== 'undefined') {
+            //   setCity(data['city']);
+            // }
+            // if(data['id'] !== 'undefined') {
+            //   setId(data['id']);
+            // }
             if(data['age'] !== 'undefined') {
-              setAge(data['age']);
+              setAge(String(data['age']));
             }
-            if(data['birthday'] !== 'undefined') {
-              setBirthday(data['birthday']);
-            }
+            // if(data['birthday'] !== 'undefined') {
+            //   setBirthday(data['birthday']);
+            // }
               //storeData(data.toString());
           }
           console.log("end");
@@ -113,7 +115,7 @@ const ProfileScreen = (props) => {
         console.log("userKey: ",userKey);
 
         //setuserKey(value)
-        fetch("http://192.168.0.111:5000/users_controller/update_user", {
+        fetch(`http://${url}/users_controller/update_user`, {
           method: 'POST',
           body:JSON.stringify({
             "user_key": userKey,

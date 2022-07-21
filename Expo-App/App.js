@@ -57,9 +57,9 @@ export default function App() {
   
   return (
     <NavigationContainer theme={theme} >
-      <Drawer.Navigator initialRouteName = "Login" screenOptions={{headerTitle:"", headerTransparent:true}}>
+      <Drawer.Navigator initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true}}>
       <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Home"  component={HomeScreen} 
+        <Drawer.Screen name="Home"  component={HomeScreen} options={{drawerItemStyle: {height:0}}}
     //     options={{headerStyle: {
     //     position: 'absolute',
     //     backgroundColor: 'transparent',
@@ -83,24 +83,24 @@ export default function App() {
         <Drawer.Screen name="Receipts" component={MyReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Scan Receipts" component={ScanReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Store Credits" component={MyStoreCreditsScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Products" component={ProductsScreen}  initialParams={{url: url}}/>
+        <Drawer.Screen name="Products" component={ProductsScreen}  initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
         {/* <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="Settings" component={SettingScreen} initialParams={{url: url}}/> */}
         <Drawer.Screen name="Sign Up" component={SignupScreen} initialParams={{url: url}}/>
         {/* <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
         {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
-        <Drawer.Screen name="SMSLogin" component={SMSLoginScreen} initialParams={{url: url}}/>
-      <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt}/>
-      <Drawer.Screen name="DigitalCredit" component={DigitalCredit}/>
-        <Drawer.Screen name="ScanedImage" component={ScanedImage} initialParams={{url: url}} />
+        <Drawer.Screen name="SMSLogin" component={SMSLoginScreen} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
+      <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt} options={{drawerItemStyle: {height:0}}}/>
+      <Drawer.Screen name="DigitalCredit" component={DigitalCredit} options={{drawerItemStyle: {height:0}}} />
+        <Drawer.Screen name="ScanedImage" component={ScanedImage} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
         {/* <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/> */}
 
       </Drawer.Navigator>
     </NavigationContainer>
     
-  );
+  ); 
 }
 
 const styles = StyleSheet.create({
