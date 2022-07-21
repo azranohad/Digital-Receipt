@@ -102,7 +102,7 @@ class receiptRepository:
         dict_update_receipt = {}
         for item in request:
             dict_update_receipt[item] = request[item]
-        if request.has_key(server_consts.DATE_OF_RECEIPT):
+        if server_consts.DATE_OF_RECEIPT in request.keys():
             dict_update_receipt[server_consts.DATE_OF_RECEIPT] = dateutil.parser.parse(request.get(server_consts.DATE_OF_RECEIPT))
         dict_update_receipt.pop(server_consts.ID)
         dict_update_receipt.pop(server_consts.USER_KEY)

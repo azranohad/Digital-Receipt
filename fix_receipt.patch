@@ -1,0 +1,33 @@
+Index: Server/Features/ScanReceipt/scanReceiptManager.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/Features/ScanReceipt/scanReceiptManager.py b/Server/Features/ScanReceipt/scanReceiptManager.py
+--- a/Server/Features/ScanReceipt/scanReceiptManager.py	(revision 302234e0f446f149d987d9b81ae37ac014ba5bdc)
++++ b/Server/Features/ScanReceipt/scanReceiptManager.py	(date 1658398672772)
+@@ -40,7 +40,7 @@
+         raw_data_receipt = self.scan_image_service.scan_image_to_data(process_image)
+ 
+         self.parse_data_from_receipt_image(raw_string_receipt, raw_data_receipt, receipt_data_object)
+-        self.receipt_repository.insert_receipt(user_key, self.parse_receipt_data_service.receipt_data_to_db(user_key, path_image, receipt_data_object))
++        self.receipt_repository.insert_receipt(user_key, self.parse_receipt_data_service.receipt_data_to_db(user_key, image_key, receipt_data_object))
+         self.server_local_repository.delete_scan_image(user_key, image_key)
+         return self.parse_receipt_data_service.receipt_data_to_app(image_key, receipt_data_object)
+ 
+Index: Server/Repositories/receiptRepository.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Server/Repositories/receiptRepository.py b/Server/Repositories/receiptRepository.py
+--- a/Server/Repositories/receiptRepository.py	(revision 302234e0f446f149d987d9b81ae37ac014ba5bdc)
++++ b/Server/Repositories/receiptRepository.py	(date 1658398672782)
+@@ -32,7 +32,6 @@
+ 
+ 
+     def insert_receipt(self, user_key, receipt):
+-        receipt[server_consts.RECEIPTS_COLLECTION] = uuid.uuid4().hex
+         collection = self.get_collection()
+         result = collection.insert_one(receipt)
+         status = result.acknowledged
