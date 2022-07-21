@@ -109,7 +109,7 @@ const SignupScreen = ({navigation, route}) => {
         //     }
         // });
 
-        fetch(`http://192.168.0.111:5000/users_controller/create_user`, {
+        fetch(`http://${route.params.url}/users_controller/create_user`, {
             method: 'POST',
             body:JSON.stringify({
                 "user_name": username,

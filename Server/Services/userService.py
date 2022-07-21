@@ -10,11 +10,11 @@ from Server.DataObjects.userDataObject import userDataObject
 from Server.Features.SMSSender.smsService import smsService
 from Server.Repositories.userRepository import userRepository
 from Server.serverConsts import serverConsts
+from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
 # @singleton
-from SystemFiles.logger.loggerService import loggerService
 
 
 class userService:
