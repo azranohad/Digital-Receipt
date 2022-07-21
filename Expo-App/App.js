@@ -95,7 +95,7 @@ export default function App() {
       <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
       <Drawer.Screen name="DigitalCredit" component={DigitalCredit} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}} />
         <Drawer.Screen name="ScanedImage" component={ScanedImage} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
-        <Drawer.Screen name="StoreProduct" component={StoreProducts} initialParams={{url: url, store:"walmart"}} options={{drawerItemStyle: {height:0}}}/>
+        <Drawer.Screen name="StoreProduct" component={StoreProducts} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
 
         {/* <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/> */}

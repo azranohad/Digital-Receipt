@@ -14,8 +14,7 @@ const StoreProducts = ({route, navigation}) => {
     const [JsonData, setJsonData] = useState([]);
  
 
-  useFocusEffect(
-    React.useCallback(async ()=>{
+  useEffect(async ()=>{
       if (userKey==''){
         try {
           const value = await AsyncStorage.getItem('userId')
@@ -30,7 +29,7 @@ const StoreProducts = ({route, navigation}) => {
       else {
         getByStore(store,userKey);
       }
-    },[]));
+    },[]);
  
 
 
