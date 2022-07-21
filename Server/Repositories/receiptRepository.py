@@ -32,7 +32,6 @@ class receiptRepository:
 
 
     def insert_receipt(self, user_key, receipt):
-        receipt[server_consts.RECEIPTS_COLLECTION] = uuid.uuid4().hex
         collection = self.get_collection()
         result = collection.insert_one(receipt)
         status = result.acknowledged
@@ -74,6 +73,12 @@ class receiptRepository:
             receipt_list[record[server_consts.ID]] = record
         return receipt_list
 
+    def list_to_dict(self, list):
+        dict = {}
+        for item in list:
+            dict[item.get(server_consts.ID)] = item
+        return dict
+
     def get_all_receipts_user(self, user_key):
         collection = self.get_collection()
         cursor_sort = collection.find({server_consts.USER_KEY: user_key}).sort(server_consts.DATE_OF_RECEIPT, 1)
@@ -81,7 +86,7 @@ class receiptRepository:
         receipt_list = {}
         for record in cursor_sort:
             receipt_list[record[server_consts.ID]] = record
-        return receipt_list
+        return self.list_to_dict(sorted(receipt_list.values(), key=lambda x: x[server_consts.DATE_OF_RECEIPT],  reverse=True))
 
     def get_receipt_by_name(self, user_key, name_search):
         list_of_names = self.get_values_by_key(user_key, server_consts.NAME_FOR_CLIENT)

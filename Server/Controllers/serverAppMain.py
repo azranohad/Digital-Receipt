@@ -8,7 +8,7 @@ from storeController import store_api
 from userController import users_api
 from locationController import location_api
 app = Flask(__name__)
-
+app.config['JSON_SORT_KEYS'] = False
 
 #list of controller
 app.register_blueprint(receipt_api, url_prefix='/scan_receipt_controller')
