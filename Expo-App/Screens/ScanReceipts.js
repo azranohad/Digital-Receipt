@@ -4,6 +4,8 @@ import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
 import { CircleButton, RectButton, PopUp, Loading } from "../components";
+import  AsyncStorage  from '@react-native-async-storage/async-storage';
+
 import Modal from "react-native-modal";
 import  {firebase} from '../firebase';
 import { useFocusEffect } from '@react-navigation/native';
@@ -33,35 +35,38 @@ const ScanReceipts = ({navigation, route}) => {
   const [filename, setFilename] = useState('');
   const [JsonData, setJsonData] = useState([]);
 
-
-  // useFocusEffect(
-  //   React.useCallback(
-  //     getId();
-  // ))
-  useEffect(() => {
-    ;(async () => {
-      const cameraStatus = await Camera.requestCameraPermissionsAsync()
-      setHasCameraPermission(cameraStatus.status === 'granted')
-      const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync()
-      setHasGalleryPermission(galleryStatus.status === 'granted')
-    })();
-    getId();
-  }, [])
+  // useEffect(() => {
+  //   if (navigation.isFocused()) {
+  //     resetReviews(); // replace with your function
+  //   }
+  // }, [navigation.isFocused()]);
+  useFocusEffect(
+    React.useCallback(()=>{
+      getId();
+    })
+  );
+  // useEffect(() => {
+  //   if (navigation.isFocused()) {
+  //   ;(async () => {
+  //     const cameraStatus = await Camera.requestCameraPermissionsAsync()
+  //     setHasCameraPermission(cameraStatus.status === 'granted')
+  //     const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync()
+  //     setHasGalleryPermission(galleryStatus.status === 'granted')
+  //   })();
+  //   getId();}
+  // }, [navigation.isFocused()])
 
 
   const getId = async () => {
-    // try {
-    //   const value = await AsyncStorage.getItem('userKey')
-    //   if(value !== null) {
-    //     console.log("getdata: ",value);
-    //     setuserKey(value);
-    //     getAllCredits(value);
-    //   }
-    // } catch(e) {
-    //   // error reading value
-    // }
-    setuserKey("ec2eac3508b24882bc45b09dfeee2ee3");
-    console.log("here");
+    try {
+      const value = await AsyncStorage.getItem('userId')
+      if(value !== null) {
+        console.log("getdata: ",value);
+        setuserKey(value);
+      }
+    } catch(e) {
+      // error reading value
+    }
   }
 
   const setisReceiptData = (bool) => {
@@ -101,10 +106,15 @@ const ScanReceipts = ({navigation, route}) => {
         'content-type': 'multipart/form-data',
       },
     }).then(res => res.json()).then(data => {
-      console.log(data);
+      console.log("response: ", data);
+      if (isReceipt) {
+        data.date_of_receipt!='None'?setDate(data.date_of_receipt):setDate('');
+      }
+      else {
+        data.date_of_credit!='None'?setDate(data.date_of_receipt):setDate('');
+      }
+      data.market!='None'?setMarket(data.market):setMarket('');
       setJsonData(data);
-      setDate(data.date);
-      setMarket(data.market);
       setisUpLoading(false);
       setPopUp(true);
 
@@ -160,16 +170,20 @@ const ScanReceipts = ({navigation, route}) => {
     if (!isReceipt){
       JsonData.expire_date = expireDate;
       full_url = `http://${route.params.url}/${specUrl}/update_credit_data`;
+      JsonData.date_of_credit = date;
+      JsonData.is_digital_credit = false;
     }
     else {
       full_url = `http://${route.params.url}/${specUrl}/update_receipt_data`
+      JsonData.date_of_receipt = date;
+      JsonData.is_digital_receipt = false;
     }
     //const obj = JSON.parse(JsonData)
     JsonData.name_for_client = name;
     JsonData.total_price = amount;
     JsonData.user_key = userKey;
     JsonData.market = market;
-    JsonData.date = date;
+    
 
     
     //JsonData.filename = filename
@@ -241,7 +255,7 @@ const ScanReceipts = ({navigation, route}) => {
       imgUrl={assets.left}
       handlePress={() => setChooseAction(false)}
       right={10}
-      top={10}
+      top={50}
       // top={StatusBar.currentHeight}
 
     />
@@ -261,94 +275,6 @@ const ScanReceipts = ({navigation, route}) => {
     {isUpLoading && <Loading/>}
 
      {popUp && !isUpLoading &&
-//     //  <Modal animationType="slide"></Modal>
-//     <>
-//     {/* <View style={{alignItems: 'center', backgroundColor: COLORS.white}}>
-//           </View> */}
-
-
-//     <View style={{alignItems: 'center', backgroundColor: COLORS.white, borderRadius:SIZES.large, paddingBottom:10}}>
-//     {/* <ImageBackground
-//        source={assets.nft01}
-//        resizeMode="cover"
-//        style={{
-//         width: "100%",
-//         borderTopLeftRadius: SIZES.font,
-//         borderTopRightRadius: SIZES.font,
-//         alignItems:"center",
-//         justifyContent: "center",
-//         paddingBottom:SIZES.small
-//        }}
-//        imageStyle={{ borderRadius: SIZES.large}}
-//         > */}
-
-//       {/* <View style={styles.header}>
-//         <TouchableOpacity onPress={()=>handleClose(false)}>
-//            <Image source={require('../Images/x.png')}
-//                     style={{height: 30, width: 30}}/>
-//         </TouchableOpacity>
-//       </View> */}
-//       {/* <Image
-//         source={require('../Images/success.png')}
-//         style={{height: 150, width: 150, marginVertical: 10}}
-//       /> */}
-//        <Text style={styles.textcontainer}>
-//           <Text>Name:</Text>
-//       </Text>
-//       <TextInput
-//           value={name}
-//           // onEndEditing={(val)=>setName(val)}
-//           onChangeText={(name) => {setName(name);}}
-//           placeholder={'Name'}
-//           style={styles.input}
-          
-//           // placeholderTextColor={COLORS.primary}
-//           />
-//         <Text style={styles.textcontainer}>
-//           <Text>Store:</Text>
-//       </Text>
-//       <TextInput
-//           value={JsonData.market}
-//           onChangeText={(store) => {setMarket(store);}}
-//           placeholder={'Store'}
-//           style={styles.input}
-//           />
-//           <Text style={styles.textcontainer}>
-//           <Text>Date:</Text>
-//       </Text>
-//           <TextInput
-//           value={JsonData.date}
-//           onChangeText={(date) => {setDate(date)}}
-//           placeholder={'Date'}
-//           style={styles.input}
-          
-//           />
-//         <Text style={styles.textcontainer}>
-//           <Text>Total:</Text>
-//       </Text>
-//         <TextInput
-//           value={amount.toString()}
-//           onChangeText={(amount) => {setAmount(Number(amount));}}
-//           placeholder={'Total Amount'}
-//           style={styles.input}
-//           />
-//       {!isReceipt && <>
-//         <Text style={styles.textcontainer}>
-//           <Text>Expiration Date:</Text>
-//       </Text>
-//         <TextInput
-//           value={expireDate}
-//           onChangeText={(expdate) => {setExpireDate(expdate);}}
-//           placeholder={'Expiration Date'}
-//           style={styles.input}
-//         />
-//       </>}
-//       <RectButton  minWidth={120} fontSize={SIZES.medium} {...SHADOWS.dark} buttonText={"Confirm"} handlePress={()=>sendUpdates()}/>
-//       {/* <Button title="Confirm" onPress={()=>{sendUpdates();}}></Button>
-//       <Button title="Edit" onPress={()=>{}}></Button> */}
-// {/* </ImageBackground> */}
-//     </View>
-// </>
      <Modal
      animationType="slide"
      transparent={true}

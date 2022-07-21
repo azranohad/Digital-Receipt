@@ -15,7 +15,7 @@ const MyReceiptsScreen = ({navigation, route}) => {
   const [filter, setFilter]= useState(false);
   const [searchByName, setSearchByName] = useState('');
   const [storeName, setStoreName] = useState('');
-  const [userKey, setuserKey] = useState('ec2eac3508b24882bc45b09dfeee2ee3');
+  const [userKey, setuserKey] = useState('');
   // 33310727751848c19a8877140d3ce3ac
   const [fromDate, setfromDate] = useState('1/1/1950');
   const [toDate, settoDate] = useState('1/1/2023');
@@ -28,11 +28,16 @@ const MyReceiptsScreen = ({navigation, route}) => {
 
 useFocusEffect(
   React.useCallback(()=>{
-    console.log("rrr");
-    getIdandReceipts();
-      //getAllReceipts(userKey);
-      //getStores(userKey);
-    
+    setAll([]);
+    if (userKey==''){
+      getIdandReceipts();
+    }
+    else {
+      // setFilter(false);
+      // setAll([]);
+      getAllReceipts(userKey);
+      getStores(userKey);
+    }
   },[]));
 
 //   useEffect(()=>{
@@ -48,7 +53,7 @@ useFocusEffect(
   // get id of user and all his receipts
   const getIdandReceipts = async () => {
     try {
-      const value = await AsyncStorage.getItem('userKey')
+      const value = await AsyncStorage.getItem('userId')
       if(value !== null) {
         console.log("getdata: ",value);
         setuserKey(value);
@@ -226,7 +231,7 @@ const trashReceipt = (val)=> {
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
               ListHeaderComponent={
-              <HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={setFilter} Type={"Receipt"} setAll={setAll} original={original}/>}/>:<></>}
+              <HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={setFilter} Type={"Receipt"} setAll={setAll} original={original} setJsonData={setJsonData}/>}/>:<></>}
           </View>
   
           <View

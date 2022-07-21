@@ -2,6 +2,7 @@
 import React, { useState, Component, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { NFTCard, HomeHeader, FocusedStatusBar, Loading } from "../components";
 import { COLORS, NFTData } from "../constants";
@@ -11,7 +12,7 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
   const [found, setFound]= useState(false);
   const [searchByName, setSearchByName] = useState('');
   const [storeName, setStoreName] = useState('');
-  const [userKey, setuserKey] = useState('33310727751848c19a8877140d3ce3ac');
+  const [userKey, setuserKey] = useState('');
   const [fromDate, setfromDate] = useState('1/1/1950');
   const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
@@ -24,31 +25,34 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
 
 
 
-
- useEffect(()=> {
-  if (userKey==''){
-    getIdandCredits();
-  }
-  else {
-    getAllCredits(userKey);
-    getStores(userKey);
-  }
-},[]);
+  useFocusEffect(
+    React.useCallback(()=>{
+      setAll([]);
+      if (userKey==''){
+        getIdandCredits();
+      }
+      else {
+        getAllCredits(userKey);
+        getStores(userKey);
+      }
+    },[]));
+ 
  
   const getIdandCredits = async () => {
-    // try {
-    //   const value = await AsyncStorage.getItem('userKey')
-    //   if(value !== null) {
-    //     console.log("getdata: ",value);
-    //     setuserKey(value);
-    //     getAllCredits(value);
-    //   }
-    // } catch(e) {
-    //   // error reading value
-    // }
+    try {
+      const value = await AsyncStorage.getItem('userId')
+      if(value !== null) {
+        console.log("getdata: ",value);
+        setuserKey(value);
+        getAllCredits(value);
+        getStores(userKey);
+      }
+    } catch(e) {
+      // error reading value
+    }
     // setuserKey(userKey);
-    getAllCredits(userKey);
-    getStores(userKey);
+    // getAllCredits(userKey);
+    // getStores(userKey);
   }
 
    // set all variables:
@@ -148,15 +152,18 @@ const trashCredit = (val)=> {
           'content-type': 'aplication/json',
       },
     }).then(res => res.text()).then(data => {
+      console.log(data);
       if (data=='True'){
         Object.values(JsonData).map((account)=>{
           if (account._id==val){
             let x = JsonData[account._id]
+            console.log(x,val);
             delete JsonData[val]
         }
           })
+          console.log(JsonData);
+        setJsonData(...JsonData);
       }
-    setAll(JsonData);
   });
   }
 
@@ -193,7 +200,7 @@ const trashCredit = (val)=> {
 
 
 
-if (!isLoading){
+// if (!isLoading){
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
@@ -225,17 +232,17 @@ if (!isLoading){
       </View>
     </SafeAreaView>
   )
-}
-else {
-return (
-  // <View style={styles.container}> 
+// }
+// else {
+// return (
+//   // <View style={styles.container}> 
 
-  //   <Text>Loading...</Text>
-  //   </View>
-  <Loading/>
+//   //   <Text>Loading...</Text>
+//   //   </View>
+//   <Loading/>
 
-)
-}
+// )
+// }
 }
 
 const styles = StyleSheet.create({

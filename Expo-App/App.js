@@ -21,6 +21,7 @@ import DigitalCredit from './components/DigitalCredit';
 import newGpsScreen from './Screens/NewGps';
 import UserLocationScreen from './Screens/UserLocation';
 import ScanedImage from './Screens/ScanedImage';
+import StoreProducts from './Screens/StoreProducts';
 
 import {DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -59,7 +60,7 @@ export default function App() {
     <NavigationContainer theme={theme} >
       <Drawer.Navigator initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true}}>
       <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Home"  component={HomeScreen} options={{drawerItemStyle: {height:0}}}
+        <Drawer.Screen name="Home"  component={ProductsScreen}  initialParams={{url: url}}
     //     options={{headerStyle: {
     //     position: 'absolute',
     //     backgroundColor: 'transparent',
@@ -94,6 +95,7 @@ export default function App() {
       <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
       <Drawer.Screen name="DigitalCredit" component={DigitalCredit} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}} />
         <Drawer.Screen name="ScanedImage" component={ScanedImage} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
+        <Drawer.Screen name="StoreProduct" component={StoreProducts} initialParams={{url: url, store:"walmart"}} options={{drawerItemStyle: {height:0}}}/>
 
         {/* <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/> */}
