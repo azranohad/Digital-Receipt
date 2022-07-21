@@ -1,6 +1,6 @@
 from Server.Repositories.mongoDbRepository import mongoDbRepository
 from Server.serverConsts import serverConsts
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 

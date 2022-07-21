@@ -10,7 +10,7 @@ from Server.DataObjects.userDataObject import userDataObject
 from Server.Features.SMSSender.smsService import smsService
 from Server.Repositories.userRepository import userRepository
 from Server.serverConsts import serverConsts
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
@@ -29,7 +29,7 @@ class userService:
         user_data.phone_number = phone_number
 
         if self.user_repository.is_user_exist(server_consts.PHONE_NUMBER, phone_number):
-            self.logger.print_info_message("the user is exist in system, details of user updated")
+            self.logger.print_info_message("userService | the user is exist in system, details of user updated")
             # return user key from user_from_db
 
             return self.user_repository.get_users_by_generic_value(server_consts.PHONE_NUMBER, phone_number)[0]
@@ -64,10 +64,10 @@ class userService:
 
     def get_user_key_sms_login(self, phone_number, temp_pass_from_user):
         if self.verify_sms_temp_password(phone_number, temp_pass_from_user):
-            self.logger.print_event('verify sms code for phone number: ' + str(phone_number))
+            self.logger.print_event('userService | verify sms code for phone number: ' + str(phone_number))
             return self.user_repository.get_users_by_generic_value(server_consts.PHONE_NUMBER, phone_number)[0]
 
-        self.logger.print_event('mismatch sms code for phone number: ' + str(phone_number))
+        self.logger.print_event('userService | mismatch sms code for phone number: ' + str(phone_number))
         return 'The code is wrong'
 
     def check_the_validity_of_a_password(self, password):

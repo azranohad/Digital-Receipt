@@ -4,8 +4,9 @@ from datetime import datetime
 from Server.Repositories.mongoDbRepository import mongoDbRepository
 # @singleton
 from Server.serverConsts import serverConsts
-from systemFiles.logger.loggerService import loggerService
-
+from SystemFiles.logger.loggerService import loggerService
+import dateutil
+from dateutil.parser import parse
 server_consts = serverConsts()
 
 class receiptRepository:
@@ -101,7 +102,8 @@ class receiptRepository:
         dict_update_receipt = {}
         for item in request:
             dict_update_receipt[item] = request[item]
-
+        if request.has_key(server_consts.DATE_OF_RECEIPT):
+            dict_update_receipt[server_consts.DATE_OF_RECEIPT] = dateutil.parser.parse(request.get(server_consts.DATE_OF_RECEIPT))
         dict_update_receipt.pop(server_consts.ID)
         dict_update_receipt.pop(server_consts.USER_KEY)
         return self.update_receipt_data_impl(user_key, _id, dict_update_receipt)

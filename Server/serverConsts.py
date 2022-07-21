@@ -34,6 +34,9 @@ class serverConsts:
     NAME_SEARCH = "name_search"
     SCAN_DATE = "scan_date"
     DATE_OF_CREDIT = "date_of_credit"
+    TOTAL_PRICE = "total_price"
+    ITEMS = "items"
+    URL_SCAN_IMAGE = "url_scan_image"
 
     #Stores
     STORE_NAME = 'store_name'

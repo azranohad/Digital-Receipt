@@ -5,7 +5,7 @@ from Server.Repositories.locationRepository import locationRepository
 
 from Server.Services.storeLocationService import storeLocationService
 from Server.serverConsts import serverConsts
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 location_api = Blueprint('location_api', __name__)
 logger = loggerService()

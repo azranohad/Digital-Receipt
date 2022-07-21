@@ -9,7 +9,7 @@ from Server.serverConsts import serverConsts
 from datetime import datetime
 import uuid
 
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
@@ -23,7 +23,6 @@ class creditRepository:
         return self.mongoDb_repository.get_client()[server_consts.CREDITS_DB][server_consts.CREDITS_COLLECTION]
 
     def insert_credit(self, user_key, credit):
-        credit[server_consts.ID] = uuid.uuid4().hex
 
         collection = self.get_collection()
         result = collection.insert_one(credit)
@@ -66,15 +65,23 @@ class creditRepository:
         for record in cursor:
             credit_list[record[server_consts.ID]] = record
         return credit_list
-
+    
+    
+    def list_to_dict(self, list):
+        dict = {}
+        for item in list:
+            dict[item.get(server_consts.ID)] = item
+        return dict
+    
+    
     def get_all_credits_user(self, user_key):
         collection = self.get_collection()
         cursor_sort = collection.find({server_consts.USER_KEY: user_key}).sort(server_consts.DATE_OF_CREDIT, 1)
 
-        credit_list = {}
+        credit_dict = {}
         for record in cursor_sort:
-            credit_list[record[server_consts.ID]] = record
-        return credit_list
+            credit_dict[record[server_consts.ID]] = record
+        return self.list_to_dict(sorted(credit_dict.values(), key=lambda x: x[server_consts.DATE_OF_CREDIT], reverse=True))
 
     def get_credit_by_name(self, user_key, name_search):
         list_of_names = self.get_values_by_key(user_key, server_consts.NAME_FOR_CLIENT)

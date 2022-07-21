@@ -2,7 +2,7 @@
 import os
 import re
 
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 
 class generalService:

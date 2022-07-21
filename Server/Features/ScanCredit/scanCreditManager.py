@@ -23,12 +23,20 @@ def credit_data_to_db(user_key, credit_name, image_id, credit_data_object):
         server_consts.USER_KEY: user_key,
         server_consts.SCAN_DATE: dateutil.parser.parse(datatime.now().strftime('%d/%m/%Y')),
         server_consts.NAME_FOR_CLIENT: str(credit_name),
-        server_consts.CREDIT_ID: str(credit_data_object.creditID),
-        server_consts.DATE_OF_CREDIT: dateutil.parser.parse(credit_data_object.date_of_credit),
-        server_consts.EXPIRATION_DATE: dateutil.parser.parse(credit_data_object.expiration_date),
-        server_consts.MARKET: str(credit_data_object.market),
         server_consts.IS_DIGITAL_RECEIPT: False
     }
+
+    try:
+        if credit_data_object.creditID is not None:
+            credit_dict[server_consts.CREDIT_ID] = str(credit_data_object.creditID)
+        if credit_data_object.date_of_credit is not None:
+            credit_dict[server_consts.DATE_OF_CREDIT] = dateutil.parser.parse(credit_data_object.date_of_credit)
+        if credit_data_object.expiration_date is not None:
+            credit_dict[server_consts.EXPIRATION_DATE] = dateutil.parser.parse(credit_data_object.expiration_date)
+        if credit_data_object.market is not None:
+            credit_dict[server_consts.MARKET] = str(credit_data_object.market)
+    except:
+        return {}
     return credit_dict
 
 
