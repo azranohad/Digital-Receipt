@@ -3,7 +3,7 @@ from Server.Repositories.stroeRepository import storeRepository
 from Server.Repositories.userRepository import userRepository
 from Server.serverConsts import serverConsts
 from RecommendationSystem.rec import Recommender
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 

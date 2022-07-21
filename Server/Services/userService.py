@@ -10,7 +10,7 @@ from Server.DataObjects.userDataObject import userDataObject
 from Server.Features.SMSSender.smsService import smsService
 from Server.Repositories.userRepository import userRepository
 from Server.serverConsts import serverConsts
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 

@@ -2,7 +2,7 @@ from Server.Repositories.creditRepository import creditRepository
 from datetime import timedelta
 from datetime import datetime
 
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 
 class creditService:

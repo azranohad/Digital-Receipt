@@ -2,7 +2,7 @@ from flask import request, Blueprint
 
 from Server.Services.recommendationSystemService import recommendationSystemService
 from Server.serverConsts import serverConsts
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 recommendation_system_api = Blueprint('recommendation_system_api', __name__)
 

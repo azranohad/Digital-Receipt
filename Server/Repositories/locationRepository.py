@@ -5,12 +5,11 @@ from pymongo import GEO2D
 from geopy.geocoders import Nominatim
 
 from Server.Repositories.mongoDbRepository import mongoDbRepository
-from SystemFiles.logger.loggerService import loggerService
 #from Server.Services.storeLocationService import storeLocationService
 from Server.serverConsts import serverConsts
 from geopy.geocoders import Nominatim
 
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
