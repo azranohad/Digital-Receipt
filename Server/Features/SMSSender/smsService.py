@@ -7,10 +7,11 @@ from twilio.rest import Client
 # Find your Account SID and Auth Token at twilio.com/console
 # and set the environment variables. See http://twil.io/secure
 #password Laos147258369147
+#Zi5GYK915x1vYAq--RhJae8lenDZp0LKa4vFWhEu
 from SystemFiles.logger.loggerService import loggerService
 
-sid = 'AC61671c64fea797d29e4abb199b5611b5'
-token = '75d70369ec1ce7036f60c6cb0c33c3fa'
+sid = 'ACd003de66ea99d54e810f03ebe57e6d6e'
+token = '1756883af4fb0af61a7672e07e7ca30f'
 
 @singleton
 class smsService:
@@ -22,14 +23,14 @@ class smsService:
         phone_num_area = '+972'+phone
         message = self.client.messages.create(
             body=message_body,
-            from_='+19706140426',
+            from_='+19706716126',
             to=phone_num_area
         )
         log_message = 'send message to: ' + phone + ' message sid: ' + str(message.sid)
         self.logger.print_info_message(log_message)
 
     def send_temp_password_login(self, phone, password):
-        message_body = 'Use verification code ' + password + ' for login to Digital recipe app'
+        message_body = 'Use verification code ' + password + ' for login to Digital receipt app'
         self.send_message(phone, message_body)
 
 

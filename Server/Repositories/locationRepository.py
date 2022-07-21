@@ -3,11 +3,13 @@ import geopy.distance
 from singleton_decorator import singleton
 from pymongo import GEO2D
 from Server.Repositories.mongoDbRepository import mongoDbRepository
-from Server.Services.storeLocationService import storeLocationService
 from SystemFiles.logger.loggerService import loggerService
 from Server.serverConsts import serverConsts
+from geopy.geocoders import Nominatim
+
 
 server_consts = serverConsts()
+geolocator = Nominatim(user_agent="sample app")
 
 def get_location_stores_from_csv(file_path):
     file = open(file_path)
@@ -24,7 +26,6 @@ def get_location_stores_from_csv(file_path):
 # @singleton
 class locationRepository:
     def __init__(self):
-        self.store_location_service = storeLocationService()
         self.mongoDb_repository = mongoDbRepository()
         self.db_stores = self.mongoDb_repository.get_client()[server_consts.STORES_DB]
         self.logger = loggerService()
@@ -32,13 +33,19 @@ class locationRepository:
         self.DISTANCE = 0.01
 
 
+
+    def get_address_from_coordinates(self, coordinates):
+        coordinates_str = str(coordinates[0]) + ', ' + (str(coordinates[1]))
+        data_from_coordinates = geolocator.reverse(coordinates_str)
+        return data_from_coordinates.address
+
     # store is array [name/company, coordinates]
     def add_new_store_to_db(self, store):
 
         if not self.mongoDb_repository.is_collection_exist(server_consts.STORES_DB, store[0]):
             self.db_stores[store[0]].create_index([(server_consts.LOCATION, GEO2D)])
         self.db_stores[store[0]].insert_one({
-            server_consts.ADDRESS: self.store_location_service.get_address_from_coordinates(store[1]),
+            server_consts.ADDRESS: self.get_address_from_coordinates(store[1]),
             server_consts.LOCATION: store[1]
         })
 

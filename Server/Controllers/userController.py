@@ -22,7 +22,6 @@ def create_user():
         return "request for create user must contain phone_number field"
     logger.print_api_message("received create_user post request | user: " + phone_number)
     user_key = user_service.create_user(phone_number, request.get_json(force=True))
-    #user_key[0] --> key
 
     return user_key
 

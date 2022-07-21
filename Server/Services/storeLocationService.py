@@ -1,5 +1,4 @@
 # from singleton_decorator import singleton
-from geopy.geocoders import Nominatim
 from datetime import date
 
 from Server.Repositories.creditRepository import creditRepository
@@ -8,7 +7,6 @@ from Server.Repositories.userRepository import userRepository
 from Server.serverConsts import serverConsts
 from SystemFiles.logger.loggerService import loggerService
 
-geolocator = Nominatim(user_agent="sample app")
 server_consts = serverConsts()
 
 # @singleton
@@ -18,11 +16,6 @@ class storeLocationService:
         self.logger = loggerService()
         self.location_repository = locationRepository()
         self.credit_repository = creditRepository()
-
-    def get_address_from_coordinates(self, coordinates):
-        coordinates_str = str(coordinates[0]) + ', ' + (str(coordinates[1]))
-        data_from_coordinates = geolocator.reverse(coordinates_str)
-        return data_from_coordinates.address
 
 
     #True - possible send recommendation
