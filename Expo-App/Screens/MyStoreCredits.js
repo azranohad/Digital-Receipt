@@ -169,32 +169,7 @@ const trashCredit = (val)=> {
 
   const getImg =  async (uri)=> {
     setImage(uri);
-    // // setisLoading(true);
-    // const res = await fetch(uri)
-    // const blob = await res.blob();
-    // const filename = uri.substring(uri.lastIndexOf('/')+1);
-    // var ref = firebase.storage().ref().child(filename).put(blob);
-    // try {
-    //   await ref;
-    // } catch (e){
-    //   console.log(e);
-    // }
-    // Alert.alert('Photo uploaded');
-    // await firebase.storage().ref().child(filename).getDownloadURL(ref).then( img => {
-    //   setImage(img);
-    // })
-  //   fetch(`http://${route.params.url}/scan_receipt_controller/get_image_receipt`, {
-  //       method: 'GET',
-  //       headers: {
-  //           'content-type': 'multipart/form-data',
-  //           'user_key' : userKey,
-  //           '_id' : val,
-  //       },
-  //   }).then(res => 
-  //     res.json()).then(res => {
-  //     const imageBlob = res.blob();
-  //     const imageObjectURL = URL.createObjectURL(imageBlob);
-  // });
+ 
   }
 
 

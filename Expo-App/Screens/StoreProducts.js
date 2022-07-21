@@ -21,6 +21,7 @@ const StoreProducts = ({route, navigation}) => {
           if(value !== null) {
             console.log("getdata: ",value);
             getByStore(store,value);
+            setuserKey(value)
           }
         } catch(e) {
           // error reading value

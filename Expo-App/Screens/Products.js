@@ -176,13 +176,13 @@ const trashReceipt = (val)=> {
     )
 }
 else {
-  return (
-    <Loading/>
+  return null
+    // <Loading/>
     // <View style={styles.container}> 
     //   <Text>Loading...</Text>
     //   </View>
 
-  )
+  
 }
 }
 

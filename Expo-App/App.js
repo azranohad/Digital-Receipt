@@ -22,6 +22,7 @@ import newGpsScreen from './Screens/NewGps';
 import UserLocationScreen from './Screens/UserLocation';
 import ScanedImage from './Screens/ScanedImage';
 import StoreProducts from './Screens/StoreProducts';
+import StoreCreditSoonExpire from './Screens/StoreCreditSoonExpires';
 
 import {DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -96,6 +97,7 @@ export default function App() {
       <Drawer.Screen name="DigitalCredit" component={DigitalCredit} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}} />
         <Drawer.Screen name="ScanedImage" component={ScanedImage} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
         <Drawer.Screen name="StoreProduct" component={StoreProducts} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
+        <Drawer.Screen name="StoreCreditSoonExpire" component={StoreCreditSoonExpire} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
 
         {/* <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/> */}
