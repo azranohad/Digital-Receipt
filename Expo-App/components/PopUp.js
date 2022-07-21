@@ -2,7 +2,7 @@ import React, {useState, useContext} from "react";
 import { useNavigation } from "@react-navigation/native";
 import { View, Image , Text, TextInput, StyleSheet, TouchableOpacity, ImageBackground} from "react-native";
 
-import { COLORS, SIZES, SHADOWS, assets } from "../constants";
+import { COLORS, SIZES, SHADOWS, assets, FONTS } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
@@ -19,8 +19,8 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
           </View> */}
 
 
-    <View style={{alignItems: 'center', backgroundColor: "transparent", borderRadius:SIZES.large}}>
-    <ImageBackground
+    <View style={{alignItems: 'center', backgroundColor: COLORS.white, borderRadius:SIZES.large, paddingBottom:10, paddingTop:10}}>
+    {/* <ImageBackground
        source={assets.nft01}
        resizeMode="cover"
        style={{
@@ -32,14 +32,14 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
         paddingBottom:SIZES.small
        }}
        imageStyle={{ borderRadius: SIZES.large}}
-        >
+        > */}
 
-      <View style={styles.header}>
+      {/* <View style={styles.header}>
         <TouchableOpacity onPress={()=>handleClose(false)}>
            <Image source={require('../Images/x.png')}
                     style={{height: 30, width: 30}}/>
         </TouchableOpacity>
-      </View>
+      </View> */}
       {/* <Image
         source={require('../Images/success.png')}
         style={{height: 150, width: 150, marginVertical: 10}}
@@ -80,7 +80,7 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
       </Text>
         <TextInput
           value={amount}
-          onChangeText={(amount) => {setAmount(amount); setamount(amount)}}
+          onChangeText={(amount) => {setAmount(Number(amount)); setamount(Number(amount))}}
           placeholder={'Total Amount'}
           style={styles.input}
           />
@@ -98,7 +98,7 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
       <RectButton  minWidth={120} fontSize={SIZES.medium} {...SHADOWS.dark} buttonText={"Confirm"} handlePress={()=>handleConfirm()}/>
       {/* <Button title="Confirm" onPress={()=>{sendUpdates();}}></Button>
       <Button title="Edit" onPress={()=>{}}></Button> */}
-</ImageBackground>
+{/* </ImageBackground> */}
     </View>
 </>
 
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    width: 250,
+    width: 350,
     height: 44,
     padding: 10,
     marginTop: 20,
@@ -156,19 +156,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8e8e8'
   },
   textcontainer: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     width: 350,
-    fontStyle: 'normal',
+    fontFamily: FONTS.semiBold,
     textAlign: 'right',
     alignItems:'center',
     padding: 0,
     borderRadius: 1,
-    //borderWidth:1,
+    // borderWidth:1,
     borderColor:'#dcdcdc',
     marginTop: 10,
     marginBottom: 0,
-    backgroundColor: COLORS.white,
-    color: 'black',
+    // backgroundColor: COLORS.lightgray,
+    color: COLORS.primary,
     fontSize: 16,
 
 

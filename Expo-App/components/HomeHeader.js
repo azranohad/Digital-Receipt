@@ -88,7 +88,7 @@ const ListItem = ({ item, onSelect, setFilter }) => {
 imgUrl={assets.left}
 handlePress={() => {setFilter(false); setAll(original);}}
 right={10}
-top={10}
+top={70}
 // top={StatusBar.currentHeight}
 
 />}

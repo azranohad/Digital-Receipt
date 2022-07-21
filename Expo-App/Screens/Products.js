@@ -105,8 +105,11 @@ const getByStore = (val)=> {
   }).then(res => res.json()).then(data => {
     setAll(data);
     setFilter(true);
+    setStoreName('');
 });
 }
+
+
 
 const getAllProducts = (val)=> {
   // console.log(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`);
@@ -192,7 +195,7 @@ const trashReceipt = (val)=> {
               renderItem={({ item }) => <ProductCard data={item}/>}
               keyExtractor={(item) => item.itemID}
               showsVerticalScrollIndicator={false}
-              ListHeaderComponent={<SearchHeader handleSearch={(val)=>getByStore(val)} searchByName={searchByName} setSearchByName={setSearchByName}/>}
+              ListHeaderComponent={<SearchHeader handleSearch={(val)=>getByStore(val)} searchByName={searchByName} setSearchByName={setSearchByName} original={original} setJsonData={setJsonData}/>}
             />
           </View>
   

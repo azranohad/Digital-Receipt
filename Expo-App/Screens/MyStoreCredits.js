@@ -201,7 +201,7 @@ if (!isLoading){
         <View style={{ zIndex: 0 }}>
           {JsonData?<FlatList
             data={Object.values(JsonData)}
-            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,10)} price={item.total_price}  receipt={false} handleGetImg={getImg}/>}
+            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,16)} price={item.total_price}  receipt={false} handleGetImg={getImg}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={<HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getCreditsByStore(val)} filter={filter} setFilter={setFilter} Type={"Credit"} setAll={setAll} original={original}/>}

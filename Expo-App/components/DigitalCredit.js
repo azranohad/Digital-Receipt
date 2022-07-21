@@ -17,7 +17,7 @@ const DetailsHeader = ({navigation }) => (
       imgUrl={assets.left}
       handlePress={() => navigation.navigate("Store Credits")}
       right={10}
-      top={10}
+      top={80}
     />
 
     {/* <CircleButton
@@ -112,11 +112,11 @@ const DigitalCredit= ({ route, navigation }) => {
           {data.market}
         </Text>
         <Text style={styles.text_header_date}>
-          {data.date_of_credit.slice(0,10)}
+          {data.date_of_credit.slice(0,16)}
         </Text>
         <Text
           style={styles.text_header_date}>
-          {data.date_of_credit.slice(11,16)}
+          {data.date_of_credit.slice(17,22)}
         </Text>
         <Text
           style={styles.text_header}

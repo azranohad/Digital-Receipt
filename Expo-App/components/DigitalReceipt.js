@@ -16,7 +16,7 @@ const DetailsHeader = ({navigation }) => (
       imgUrl={assets.left}
       handlePress={() => navigation.navigate("Receipts")}
       right={10}
-      top={10}
+      top={80}
     />
 
     {/* <CircleButton
@@ -36,6 +36,7 @@ const DigitalShow= ({ route, navigation }) => {
 
   // useEffect(()=> {getBarcode(data.filename);})
   useEffect(()=> {
+    // console.log(data);
     // getBarcode(data.receiptID);
     // setLogo(data.url_scan_image);
     if (data.market=='super-pharm') {
@@ -50,6 +51,7 @@ const DigitalShow= ({ route, navigation }) => {
 
 
 const getBarcode = (val)=>{
+  console.log(`http://${route.params.url}/scan_receipt_controller/get_barcode`);
   fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
       method: 'GET',
       body: JSON.stringify({

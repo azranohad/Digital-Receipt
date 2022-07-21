@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView, Image, StatusBar, FlatList, StyleSheet } from "react-native";
+import { View, Text, SafeAreaView, Image, StatusBar, FlatList, StyleSheet, ScrollView } from "react-native";
 import {useNavigation} from '@react-navigation/native'
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
 import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar,Loading } from "../components";
@@ -11,7 +11,7 @@ const Header = ({navigation }) => (
       imgUrl={assets.left}
       handlePress={() => {navigation.navigate("Receipts")}}
       right={10}
-      top={10}
+      top={40}
     />
   </View>
   
@@ -34,7 +34,16 @@ const ScanedImage= ({ route}) => {
   return (
     image ? <>
     <Header navigation={navigation}/>
-    <Image style={{height:'100%', width:'100%'}} resizeMode='contain' source={{ uri: image }}/>
+    <ScrollView
+  contentContainerStyle={{alignItems: 'center'}}>
+    <Image style={{height:800, width:"100%"}} source={{ uri: image }}/>
+
+    {/* <Image
+      source={require('./fullSkeleton.png')}
+      resizeMode='cover'
+      /> */}
+</ScrollView>
+    {/* <Image style={{height:'100%', width:'100%'}} resizeMode='contain' source={{ uri: image }}/> */}
     {/* <Image style={{height:'100%', width:'100%'}} resizeMode='contain' source={{ uri: data.url_scan_image }}/> */}
     </>:
     <Loading/>

@@ -1,4 +1,5 @@
 import React, { useState, Component, useEffect } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
@@ -14,7 +15,8 @@ const MyReceiptsScreen = ({navigation, route}) => {
   const [filter, setFilter]= useState(false);
   const [searchByName, setSearchByName] = useState('');
   const [storeName, setStoreName] = useState('');
-  const [userKey, setuserKey] = useState('33310727751848c19a8877140d3ce3ac');
+  const [userKey, setuserKey] = useState('ec2eac3508b24882bc45b09dfeee2ee3');
+  // 33310727751848c19a8877140d3ce3ac
   const [fromDate, setfromDate] = useState('1/1/1950');
   const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
@@ -24,35 +26,45 @@ const MyReceiptsScreen = ({navigation, route}) => {
   const [image, setImage] = useState(null)
 
 
+useFocusEffect(
+  React.useCallback(()=>{
+    console.log("rrr");
+    getIdandReceipts();
+      //getAllReceipts(userKey);
+      //getStores(userKey);
+    
+  },[]));
 
-  useEffect(()=>{
-    if (userKey==''){
-      getIdandReceipts();
-    }
-    else {
-      getAllReceipts(userKey);
-      getStores(userKey);
-    }
- },[]);
+//   useEffect(()=>{
+//     if (userKey==''){
+//       getIdandReceipts();
+//     }
+//     else {
+//       getAllReceipts(userKey);
+//       getStores(userKey);
+//     }
+//  },[]);
  
   // get id of user and all his receipts
   const getIdandReceipts = async () => {
-    // try {
-    //   const value = await AsyncStorage.getItem('userKey')
-    //   if(value !== null) {
-    //     console.log("getdata: ",value);
-    //     setuserKey(value);
-    //     getAllReceipts(value);
-    //   }
-    // } catch(e) {
-    //   // error reading value
-    // }
+    try {
+      const value = await AsyncStorage.getItem('userKey')
+      if(value !== null) {
+        console.log("getdata: ",value);
+        setuserKey(value);
+        getAllReceipts(value);
+        getStores(value);
+      }
+    } catch(e) {
+      console.log(e);
+      // error reading value
+    }
     // setuserKey("c590e1226f184638bb3753188e37917a");
     // getAllReceipts("c590e1226f184638bb3753188e37917a");
     // getStores("c590e1226f184638bb3753188e37917a");
     // setuserKey(userKey)
-    getAllReceipts(userKey)
-    getStores(userKey);
+    // getAllReceipts(userKey)
+    // getStores(userKey);
   }
 
 
@@ -130,6 +142,7 @@ const getReceiptsByStore = (val)=> {
 }
 
 const getAllReceipts = (val)=> {
+  console.log("joj");
   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`, {
       method: 'GET',
       headers: {
@@ -137,6 +150,7 @@ const getAllReceipts = (val)=> {
           'user_key' : val,
       },}).then(res=>res.json()).then(data => 
       {
+        console.log(data);
     setOriginal(data);
     setAll(data);
     setisLoading(false);
@@ -208,7 +222,7 @@ const trashReceipt = (val)=> {
             
             {JsonData?<FlatList
               data={Object.values(JsonData)}
-              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,10)} price={item.total_price} receipt={true} handleGetImg={(v)=>getImg(v)}/>}
+              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,16)} price={item.total_price} receipt={true} handleGetImg={(v)=>getImg(v)}/>}
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
               ListHeaderComponent={

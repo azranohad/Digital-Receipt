@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet,
   TextInput,
@@ -18,8 +18,13 @@ import { RectButton } from "react-native-gesture-handler";
 import { CircleButton } from "./Button";
 import { useNavigation } from "@react-navigation/native";
 
-const SearchHeader = ({ handleSearch, setSearchByName, searchByName}) => {
+const SearchHeader = ({ handleSearch, setSearchByName, searchByName, original, setJsonData}) => {
     const [placeholder, setPlaceHolder] = useState("Search Store..");
+    const [filter, setFilter] = useState(false);
+
+    useEffect(()=>{
+        console.log("kokk");
+    },[placeholder])
     return(
     <View style={{
             backgroundColor: COLORS.primary, //primary
@@ -30,6 +35,15 @@ const SearchHeader = ({ handleSearch, setSearchByName, searchByName}) => {
             paddingBottom:20,
         }}
         >
+             {filter && <CircleButton
+                imgUrl={assets.left}
+                handlePress={() => {setFilter(false); setJsonData(original); //setSearchByName("Search Store..");
+            }}
+                right={10}
+                top={70}
+                // top={StatusBar.currentHeight}
+
+                />}
             <View style={{ marginTop: SIZES.font }}>
                 <View
                 style={{
@@ -49,10 +63,11 @@ const SearchHeader = ({ handleSearch, setSearchByName, searchByName}) => {
                     style={{ width: 20, height: 20, marginRight: SIZES.base }}
                     />
                 </TouchableOpacity>
-                    <TextInput
+                    <TextInput 
                     placeholder={placeholder}
                     style={{ flex: 1 }}
-                    onEndEditing={()=>{handleSearch(searchByName); setPlaceHolder("Search Store..");}}
+                    onEndEditing={()=>{handleSearch(searchByName); setPlaceHolder("Search Store.."); 
+                    setFilter(true);}}
                     // onEndEditing={val=>setSearchByName(val)}
                     onChangeText={(val)=>setSearchByName(val)}
                     />
