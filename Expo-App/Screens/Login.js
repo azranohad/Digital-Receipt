@@ -15,6 +15,7 @@ import * as Notifications from 'expo-notifications';
 import * as Location from 'expo-location';
 
 // TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+//   console.log("LOCATION_TASK_NAME");
 //   //const [expoPushToken, setExpoPushToken] = useState('');
 //   //let token;
 //   if (error) {
@@ -32,8 +33,7 @@ import * as Location from 'expo-location';
 
 //       (async () => {  fetch(`http://192.168.0.111:5000/location_controller/get_nearest_store`, {
 //         method: 'POST',
-//         body:JSON.stringify({latitude,longitude,
-//                             "user_key":"b91c59eeca42460283ec295b1bab861c"                    
+//         body:JSON.stringify({latitude,longitude,"user_key":"b91c59eeca42460283ec295b1bab861c"                    
 //         }),
 //         headers: {
 //             'content-type': 'aplication/json',
@@ -130,7 +130,7 @@ import * as Location from 'expo-location';
 //     let longitude = locations[0].coords.longitude;
 //     if (location) {
 
-//       (async () => {  fetch(`http://192.168.0.111:5000/location_controller/get_nearest_store_credit`, {
+//       (async () => {  fetch(`http://192.168.0.111:5000/location_controller/exist_credit_to_nearest_store`, {
 //         method: 'POST',
 //         body:JSON.stringify({latitude,longitude,
 //                             "user_key":"530feb6b8263491d969d979e4234259c"                    
@@ -186,7 +186,7 @@ import * as Location from 'expo-location';
 //         });
 //       }
 //         console.log(token);
-//       // console.log({expoPushToken})
+//        console.log({expoPushToken})
 //         let message = {
 //           to: token,
 //           sound: 'default',
@@ -251,61 +251,61 @@ const LoginScreen = ({ route}) => {
         }
       }
       useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-              setErrorMsg('Permission to access location was denied');
-              return;
-            }
-            let { Backgroundstatus } = await Location.requestBackgroundPermissionsAsync();
-            if (Backgroundstatus !== 'granted') {
-              setErrorMsg('Permission to access location was denied');
-              return;
-            }
-            //let location = await Location.getCurrentPositionAsync({});
+        // (async () => {
+        //     let { status } = await Location.requestForegroundPermissionsAsync();
+        //     if (status !== 'granted') {
+        //       setErrorMsg('Permission to access location was denied');
+        //       return;
+        //     }
+        //     let { Backgroundstatus } = await Location.requestBackgroundPermissionsAsync();
+        //     if (Backgroundstatus !== 'granted') {
+        //       setErrorMsg('Permission to access location was denied');
+        //       return;
+        //     }
+        //     //let location = await Location.getCurrentPositionAsync({});
             
-            //setLocation(location);
-          })();
-          (async () => {
-            // Don't track position if permission is not granted
-            const { granted } = await Location.getBackgroundPermissionsAsync()
-            if (!granted) {
-              console.log("location tracking denied")
-              return
-            } else {
-                console.log("location tracking succsess")
+        //     //setLocation(location);
+        //   })();
+          // (async () => {
+          //   // Don't track position if permission is not granted
+          //   const { granted } = await Location.getBackgroundPermissionsAsync()
+          //   if (!granted) {
+          //     console.log("location tracking denied")
+          //     return
+          //   } else {
+          //       console.log("location tracking succsess")
                 
-            }
+          //   }
         
-            // Make sure the task is defined otherwise do not start tracking
-            const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME)
-            if (!isTaskDefined) {
-              console.log("Task is not defined")
-              return
-            }
+          //   // Make sure the task is defined otherwise do not start tracking
+          //   const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME)
+          //   if (!isTaskDefined) {
+          //     console.log("Task is not defined")
+          //     return
+          //   }
         
-            // Don't track if it is already running in background
-            const hasStarted = await Location.hasStartedLocationUpdatesAsync(
-              LOCATION_TASK_NAME
-            )
-            if (hasStarted) {
-              console.log("Already started")
-              return
-            }
+          //   // Don't track if it is already running in background
+          //   const hasStarted = await Location.hasStartedLocationUpdatesAsync(
+          //     LOCATION_TASK_NAME
+          //   )
+          //   if (hasStarted) {
+          //     console.log("Already started")
+          //     return
+          //   }
         
-            // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-            //   // For better logs, we set the accuracy to the most sensitive option
-            //   accuracy: Location.Accuracy.BestForNavigation,
-            //   // Make sure to enable this notification if you want to consistently track in the background
-            //   deferredUpdatesInterval: 10000,
-            //   showsBackgroundLocationIndicator: true,
-            //   foregroundService: {
-            //     notificationTitle: "Location",
-            //     notificationBody: "Location tracking in background",
-            //     notificationColor: "#fff",
-            //   },
-            // })
-          })();
+          //   // await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+          //   //   // For better logs, we set the accuracy to the most sensitive option
+          //   //   accuracy: Location.Accuracy.BestForNavigation,
+          //   //   // Make sure to enable this notification if you want to consistently track in the background
+          //   //   deferredUpdatesInterval: 10000,
+          //   //   showsBackgroundLocationIndicator: true,
+          //   //   foregroundService: {
+          //   //     notificationTitle: "Location",
+          //   //     notificationBody: "Location tracking in background",
+          //   //     notificationColor: "#fff",
+          //   //   },
+          //   // })
+          // })();
         let temptoken;
         registerForPushNotificationsAsync().then(token => {setExpoPushToken(token)});
     
@@ -321,9 +321,9 @@ const LoginScreen = ({ route}) => {
           console.log(response["title"] );
           //const navigation = useNavigation();
           if (response["title"] === "Digital-receipt Credits") {
-            navigation.navigate('Sign Up');
+            navigation.navigate('Store Credits');
           } else {
-            navigation.navigate('My Profile');
+            navigation.navigate('Products');
           }
         });
         
@@ -370,19 +370,19 @@ const LoginScreen = ({ route}) => {
             console.log("data: ", data);
             // let response = Object.values(data)[0];
             // console.log("res: ",response);
-            if (data=="Incorrect username or password"){
-                console.log("Incorrect username or password");
+            if (data=="the user name or password incorrect"){
+                console.log("the user name or password incorrect");
                 setError(data);
             }
             else {
-                // let id = Object.values(data)[0];
+                console.log(data.toString())
                 storeData(data.toString());
                 fetch(`http://${route.params.url}/scan_credit_controller/exist_expired_credit`, {
                   method: 'POST',
                   body:JSON.stringify({"user_key": data.toString()}),
                   headers: {
                       'content-type': 'aplication/json',
-                      "user_key": data.toString()
+                      //"user_key": data.toString()
                       //"user_key": "33310727751848c19a8877140d3ce3ac"
                       //"user_key": "33310727751848c19a8877140d3ce3ac"
                   },
@@ -455,7 +455,7 @@ const LoginScreen = ({ route}) => {
               <Text style={styles.modalText}>You have a store credit that is about to expire!</Text>
               <Pressable
                 style={[styles.button3, styles.buttonClose]}
-                onPress={() => navigation.navigate('Store Credits')}
+                onPress={() =>{setModalVisible(!isModalVisible); navigation.navigate('Store Credits')}}
               >
                 
                 <Text style={styles.textStyle}>Go To Credits</Text>

@@ -4,62 +4,41 @@ import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList,TouchableOpacity,Image} from 'react-native';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { ProductCard, HomeHeader, FocusedStatusBar, SearchHeader, Loading } from "../components";
+import { useFocusEffect } from '@react-navigation/native';
+
 
 const Products = ({route, navigation}) => {
   const [found, setFound]= useState(false);
   const [filter, setFilter]= useState(false);
   const [searchByName, setSearchByName] = useState('');
   const [storeName, setStoreName] = useState('');
-  const [userKey, setuserKey] = useState('33310727751848c19a8877140d3ce3ac');
-  const [fromDate, setfromDate] = useState('1/1/1950');
-  const [toDate, settoDate] = useState('1/1/2023');
+  const [userKey, setuserKey] = useState('');
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
   const [stores, setStores] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   const [image, setImage] = useState(null)
 
-
-
-  useEffect(()=>{
-    //getAllProducts(userKey);
-    // setuserKey(userKey);
-    // getByStore()
-    if (userKey==''){
-      getAllProducts(userKey);
-      // getIdandReceipts();
-      // console.log("here");
-    }
-    else {    
+  useFocusEffect(
+    React.useCallback(async ()=>{
+      if (userKey==''){
+        try {
+          const value = await AsyncStorage.getItem('userId')
+          if(value !== null) {
+            console.log("getdata: ",value);
+            setuserKey(value);
+            getAllProducts(value);
+          }
+        } catch(e) {
+          // error reading value
+        }
+      }
+      else {
+        setFilter(false)
         getAllProducts(userKey);
-
-      //getStores("fd18ed355cd74ae38799f76dc7d20609");
-
-      // getAllProducts(userKey);
-    }
- },[]);
-
-
+      }
+    },[]));
  
-  // get id of user and all his receipts
-  const getIdandReceipts = async () => {
-    // try {
-    //   const value = await AsyncStorage.getItem('userKey')
-    //   if(value !== null) {
-    //     console.log("getdata: ",value);
-    //     setuserKey(value);
-    //     getAllProducts(value);
-    //   }
-    // } catch(e) {
-    //   // error reading value
-    // }
-    setuserKey("33310727751848c19a8877140d3ce3ac");
-    getByStore()
-    //getAllProducts("33310727751848c19a8877140d3ce3ac");
-   // getStores("33310727751848c19a8877140d3ce3ac");
-    setisLoading(false)
-  }
-
 
   // set all variables:
   const setAll = (data)=>{
@@ -74,27 +53,7 @@ const Products = ({route, navigation}) => {
     setisLoading(false)
   }
 
-
-    const searchName = ()=> {
-      // setisLoading(true);
-      console.log(s);
-      fetch(`http://${route.params.url}/recommendation_system_controller/get_recommendation_for_store`, {
-          method: 'GET',
-          headers: {
-              'content-type': 'aplication/json',
-              'user_key': userKey,
-              'name_search' : searchByName,
-          },
-      }).then(res => res.json()).then(data => {
-        console.log(data);
-        setSearchByName('');
-        setAll(data);
-    });
-  }
-
-
 const getByStore = (val)=> {
-  // setisLoading(true);
   fetch(`http://${route.params.url}/recommendation_system_controller/get_recommendation_for_store`, {
       method: 'GET',
       headers: {
@@ -112,7 +71,6 @@ const getByStore = (val)=> {
 
 
 const getAllProducts = (val)=> {
-  // console.log(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`);
   fetch(`http://${route.params.url}/recommendation_system_controller/get_general_recommendation`, {
       method: 'GET',
       headers: {
@@ -195,7 +153,7 @@ const trashReceipt = (val)=> {
               renderItem={({ item }) => <ProductCard data={item}/>}
               keyExtractor={(item) => item.itemID}
               showsVerticalScrollIndicator={false}
-              ListHeaderComponent={<SearchHeader handleSearch={(val)=>getByStore(val)} searchByName={searchByName} setSearchByName={setSearchByName} original={original} setJsonData={setJsonData}/>}
+              ListHeaderComponent={<SearchHeader handleSearch={(val)=>getByStore(val)} searchByName={searchByName} setSearchByName={setSearchByName} original={original} setJsonData={setJsonData} filter={filter} setFilter={setFilter}/>}
             />
           </View>
   
@@ -218,13 +176,13 @@ const trashReceipt = (val)=> {
     )
 }
 else {
-  return (
-    <Loading/>
+  return null
+    // <Loading/>
     // <View style={styles.container}> 
     //   <Text>Loading...</Text>
     //   </View>
 
-  )
+  
 }
 }
 

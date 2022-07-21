@@ -23,7 +23,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
     let longitude = locations[0].coords.longitude;
     if (location) {
 
-      (async () => {  fetch(`http://192.168.0.111:5000/location_controller/get_nearest_store`, {
+      (async () => {  fetch(`http://192.168.0.11:5000/location_controller/get_nearest_store`, {
         method: 'POST',
         body:JSON.stringify({latitude,longitude}),
         headers: {
@@ -262,7 +262,7 @@ export default function NewGps({navigation, route}, props) {
       let longitudeToSend = myJSON.longitude;
 
     //console.log(myJSON);
-    fetch(`http://192.168.0.111:5000/location_controller/get_nearest_store`, {
+    fetch(`http://192.168.0.11:5000/location_controller/get_nearest_store`, {
         method: 'POST',
         body:JSON.stringify({latitude,longitude}),
         headers: {
@@ -376,7 +376,7 @@ export default function NewGps({navigation, route}, props) {
 }
 async function sendDiscountRequest(data){
     //sendPushNotification(expoPushToken,data);
-    fetch(`http://192.168.0.111:5000/location_controller/get_nearest_store`, {
+    fetch(`http://192.168.0.11:5000/location_controller/get_nearest_store`, {
         method: 'POST',
         body:JSON.stringify({latitude,longitude}),
         headers: {

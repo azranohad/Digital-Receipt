@@ -21,6 +21,8 @@ import DigitalCredit from './components/DigitalCredit';
 import newGpsScreen from './Screens/NewGps';
 import UserLocationScreen from './Screens/UserLocation';
 import ScanedImage from './Screens/ScanedImage';
+import StoreProducts from './Screens/StoreProducts';
+import StoreCreditSoonExpire from './Screens/StoreCreditSoonExpires';
 
 import {DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
@@ -41,7 +43,7 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.43.254:5000";
+  const url="192.168.0.111:5000";
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
@@ -57,9 +59,9 @@ export default function App() {
   
   return (
     <NavigationContainer theme={theme} >
-      <Drawer.Navigator initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true}}>
-      <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Home"  component={HomeScreen} options={{drawerItemStyle: {height:0}}}
+      <Drawer.Navigator initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true, drawerItemStyle:{borderBottomWidth: 0.5}, drawerLabelStyle:{fontStyle:'italic'}}}>
+      <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
+        <Drawer.Screen name="Home"  component={HomeScreen} options={{drawerItemStyle: {height:0}} }
     //     options={{headerStyle: {
     //     position: 'absolute',
     //     backgroundColor: 'transparent',
@@ -83,10 +85,10 @@ export default function App() {
         <Drawer.Screen name="Receipts" component={MyReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Scan Receipts" component={ScanReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Store Credits" component={MyStoreCreditsScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Products" component={ProductsScreen}  initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
+        <Drawer.Screen name="Products" component={ProductsScreen}  initialParams={{url: url}}/>
         {/* <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="Settings" component={SettingScreen} initialParams={{url: url}}/> */}
-        <Drawer.Screen name="Sign Up" component={SignupScreen} initialParams={{url: url}}/>
+        <Drawer.Screen name="Sign Up" component={SignupScreen} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
         {/* <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
         {/* <Drawer.Screen name="Gps" component={GpsScreen}/> */}
@@ -94,6 +96,8 @@ export default function App() {
       <Drawer.Screen name="DigitalReceipt" component={DigitalReceipt} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
       <Drawer.Screen name="DigitalCredit" component={DigitalCredit} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}} />
         <Drawer.Screen name="ScanedImage" component={ScanedImage} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
+        <Drawer.Screen name="StoreProduct" component={StoreProducts} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
+        <Drawer.Screen name="StoreCreditSoonExpire" component={StoreCreditSoonExpire} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
 
         {/* <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/> */}
@@ -101,7 +105,7 @@ export default function App() {
       </Drawer.Navigator>
     </NavigationContainer>
     
-  );
+  ); 
 }
 
 const styles = StyleSheet.create({

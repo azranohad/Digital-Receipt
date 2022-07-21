@@ -18,9 +18,9 @@ import { RectButton } from "react-native-gesture-handler";
 import { CircleButton } from "./Button";
 import { useNavigation } from "@react-navigation/native";
 
-const SearchHeader = ({ handleSearch, setSearchByName, searchByName, original, setJsonData}) => {
+const SearchHeader = ({ handleSearch, setSearchByName, searchByName, original, setJsonData, filter, setFilter}) => {
     const [placeholder, setPlaceHolder] = useState("Search Store..");
-    const [filter, setFilter] = useState(false);
+    // const [filter, setFilter] = useState(false);
 
     useEffect(()=>{
         console.log("kokk");

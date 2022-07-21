@@ -9,7 +9,7 @@ from Server.serverConsts import serverConsts
 from datetime import datetime
 import uuid
 
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 

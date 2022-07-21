@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet,
   TextInput,
@@ -18,13 +18,14 @@ import { RectButton } from "react-native-gesture-handler";
 import { CircleButton } from "./Button";
 import { useNavigation } from "@react-navigation/native";
 
-const HomeHeader = ({ data, onSelect, onSearch, filter, setFilter, searchByName, setSearchByName, Type, date, name, store, setStore, setName, setDate, original, setAll }) => {
+const HomeHeader = ({ data, onSelect, onSearch, filter, setFilter, searchByName, setSearchByName, Type, date, name, store, setStore, setName, setDate, original, setAll, setJsonData }) => {
   const [show, setShow] = useState(false);
   const [placeholder, setPlaceHolder] = useState('Search By Name..');
 const navigation = useNavigation();
 
 const ListItem = ({ item, onSelect, setFilter }) => {
   const [isPressed, setIsPressed] = useState(false);
+
   return (
     <View style={styles.item}>
       <TouchableOpacity
@@ -34,7 +35,7 @@ const ListItem = ({ item, onSelect, setFilter }) => {
         borderRadius: SIZES.extraLarge,
         minWidth: 100,
       }}
-      onPress={()=>{setIsPressed(true); onSelect(item);setFilter(true);}}
+      onPress={()=>{setIsPressed(true);setJsonData([]); onSelect(item);setFilter(true); }}
     >
       <Text
         style={{

@@ -5,7 +5,7 @@ import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStat
 import {firebase} from '../firebase'
 
 const DetailsHeader = ({navigation }) => (
-  <View style={{ width: "100%", height: 80 }}>
+  <View style={{ width: "100%", height: 110 }}>
     {/* <Image
       source={assets.nft01}
       resizeMode="cover"
@@ -92,6 +92,7 @@ const getBarcode = (val)=>{
   return (
     
     logo&& barcode ?<SafeAreaView style={{ flex: 1 }}>
+   
       <DetailsHeader data={data} navigation={navigation} />
 
       <FocusedStatusBar
@@ -100,7 +101,7 @@ const getBarcode = (val)=>{
         translucent={true}
       />
 
-     
+
       
       {/* <Image style={{height:'40%', width:'100%'}} resizeMode='contain' source={{uri: img}}/> */}
       <FlatList
