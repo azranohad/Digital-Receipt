@@ -13,27 +13,43 @@ const StoreCreditSoonExpires = ({navigation, route}) => {
     const { store } = route.params;
     const [userKey, setuserKey] = useState('');
     const [JsonData, setJsonData] = useState([]);
+    const [text, setText] = React.useState("waiting...");
  
 
-  useEffect(async ()=>{
+  useEffect( ()=>{
+    let isCancelled = false;
+
       if (userKey==''){
-        try {
-          const value = await AsyncStorage.getItem('userId')
-          if(value !== null) {
-            console.log("getdata: ",value);
-            getCreditsByStore(value, store);
-            setuserKey(userKey)
-          }
-        } catch(e) {
-          // error reading value
-        }
+        firstEnter().then(() => {
+            if (!isCancelled) {
+              setText("done!");
+            }
+        })
       }
       else {
-        getCreditsByStore(userKey,store);
+        getCreditsByStore(userKey,store).then(() => {
+            if (!isCancelled) {
+              setText("done!");
+            }
+        })
       }
+      return () => {
+        isCancelled = true;
+      };
     },[]);
  
-
+const firstEnter = async ()=>{
+    try {
+        const value = await AsyncStorage.getItem('userId')
+        if(value !== null) {
+          console.log("getdata: ",value);
+          getCreditsByStore(value, store);
+          setuserKey(userKey)
+        }
+      } catch(e) {
+        // error reading value
+      }
+}
 const getCreditsByStore = (user, store)=> {
   fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_market`, {
       method: 'GET',

@@ -32,10 +32,13 @@ const DigitalShow= ({ route, navigation }) => {
   const { data } = route.params;
   const [barcode , setBarcode] = useState(null)
   const [logo , setLogo] = useState(null)
+  const [text, setText] = React.useState("waiting...");
 
 
   // useEffect(()=> {getBarcode(data.filename);})
   useEffect(()=> {
+    let isCancelled = false;
+
     // console.log(data);
     // getBarcode(data.receiptID);
     // setLogo(data.url_scan_image);
@@ -47,7 +50,10 @@ const DigitalShow= ({ route, navigation }) => {
     }
     // setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
     setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
-})
+    return () => {
+      isCancelled = true;
+    };
+  })
 
 
 const getBarcode = (val)=>{

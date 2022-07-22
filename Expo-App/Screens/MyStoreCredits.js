@@ -21,21 +21,50 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
   const [image, setImage] = useState(null)
   const [stores, setStores] = useState([]);
   const [filter, setFilter]= useState(false);
+  const [text, setText] = React.useState("waiting...");
 
 
 
+  useEffect(()=>{
+    let isCancelled = false;
 
-  useFocusEffect(
-    React.useCallback(()=>{
-      setAll([]);
+    if (!filter){
+      //setAll([]);
       if (userKey==''){
-        getIdandCredits();
-      }
+        getIdandCredits().then(() => {
+          if (!isCancelled) {
+            setText("done!");
+          }
+      })}
       else {
-        getAllCredits(userKey);
-        getStores(userKey);
+        getAllCredits(userKey).then(()=>{
+          if (!isCancelled) {
+            setText("done!");
+          }
+         })
+        getStores(userKey).then(()=>{
+          if (!isCancelled) {
+            setText("done!");
+          }
+         })
       }
-    },[]));
+    }
+    return () => {
+      isCancelled = true;
+    };
+
+    },[]);
+  // useFocusEffect(
+  //   React.useCallback(()=>{
+  //     setAll([]);
+  //     if (userKey==''){
+  //       getIdandCredits();
+  //     }
+  //     else {
+  //       getAllCredits(userKey);
+  //       getStores(userKey);
+  //     }
+  //   },[]));
  
  
   const getIdandCredits = async () => {

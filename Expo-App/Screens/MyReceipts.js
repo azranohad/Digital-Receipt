@@ -1,4 +1,4 @@
-import React, { useState, Component, useEffect } from 'react';
+import React, { useState, Component, useEffect, useRef } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
@@ -8,7 +8,11 @@ import { COLORS, NFTData, assets } from "../constants";
 import { event } from 'react-native-reanimated';
 import  {firebase} from '../firebase';
 import { NavigationHelpersContext } from '@react-navigation/native';
+import {LogBox} from "react-native";
 
+LogBox.ignoreLogs([
+"exported from 'deprecated-react-native-prop-types'.",
+])
 
 const MyReceiptsScreen = ({navigation, route}) => {
   // const isCancelled = React.useRef(false);
@@ -26,34 +30,57 @@ const MyReceiptsScreen = ({navigation, route}) => {
   const [stores, setStores] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   const [image, setImage] = useState(null)
+  const _isMounted = useRef(true);
+  const [text, setText] = React.useState("waiting...");
 
-  useFocusEffect(
-    React.useCallback(()=>{
-      setFilter(false)
-      setJsonData([]);
-      if (userKey==''){
-        getIdandReceipts();
-      }
-      else {
-        getAllReceipts(userKey);
-        getStores(userKey);
-      }
+  
+  // useFocusEffect(
+  //   React.useCallback(()=>{
+  //     if (!filter){
+
+  //       if (userKey==''){
+  //         console.log("userkey ==''");
+  //         getIdandReceipts();
+
+  //       }
+  //       else {
+  //         console.log("else stores+receipts");
+  //         getAllReceipts(userKey);
+  //         getStores(userKey);
+  //       }
+  //     }
     
-    },[updateScreen]));
+  //   },[updateScreen]));
 
-  // useEffect(()=>{
-  //     setAll([]);
-  //     if (userKey==''){
-  //       getIdandReceipts();
-  //     }
-  //     else {
-  //       getAllReceipts(userKey);
-  //       getStores(userKey);
-  //     }
-  //     return () => {
-  //       isCancelled.current = true;
-  //     };
-  //   },[]);
+  useEffect(()=>{
+    let isCancelled = false;
+
+    if (!filter){
+      //setAll([]);
+      if (userKey==''){
+        getIdandReceipts().then(() => {
+          if (!isCancelled) {
+            setText("done!");
+          }
+      })}
+      else {
+         getAllReceipts(userKey).then(()=>{
+          if (!isCancelled) {
+            setText("done!");
+          }
+         })
+        getStores(userKey).then(()=>{
+          if (!isCancelled) {
+            setText("done!");
+          }
+         })
+      }
+    }
+    return () => {
+      isCancelled = true;
+    };
+
+    },[updateScreen]);
 
 
     // useEffect(()=>{
@@ -176,7 +203,7 @@ const getAllReceipts = (val)=> {
           'user_key' : val,
       },}).then(res=>res.json()).then(data => 
       {
-        console.log(data);
+        // console.log(data);
     setOriginal(data);
     setAll(data);
     setisLoading(false);
@@ -228,6 +255,8 @@ const trashReceipt = (val)=> {
       //       console.log("2222222222222:",JsonData);
       //   }
       //     })
+      delete JsonData[val]
+      // setUpdateScreen(!updateScreen)
       
       fetch(`http://${route.params.url}/scan_receipt_controller/delete_receipt`, {
         method: 'DELETE',
@@ -241,11 +270,8 @@ const trashReceipt = (val)=> {
     }).then(res => res.text()).then(data => {
       console.log("data:", data);
       if (data=='True'){
-        console.log(JsonData[val]);
-        delete JsonData[val]
-        setJsonData(JsonData);
-        setUpdateScreen(!updateScreen)
         
+        setJsonData(JsonData);
       // Object.values(JsonData).map((account)=>{
       //   if (account._id==val){
       //     let x = JsonData[account._id]
