@@ -24,7 +24,7 @@ hostname = socket.getfqdn()
 
 app.debug = True
 IP_Address = socket.gethostbyname_ex(hostname)[2][1]
-app.run(host="127.0.0.1", threaded=True)
+app.run(host="192.168.0.111", threaded=True)
 
 #app.run(host=IP_Address, threaded=True)
 

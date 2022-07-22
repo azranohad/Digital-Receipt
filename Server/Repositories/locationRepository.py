@@ -9,7 +9,7 @@ from Server.Repositories.mongoDbRepository import mongoDbRepository
 from Server.serverConsts import serverConsts
 from geopy.geocoders import Nominatim
 
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 

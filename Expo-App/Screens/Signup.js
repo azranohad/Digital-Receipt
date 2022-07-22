@@ -145,6 +145,7 @@ const SignupScreen = ({navigation, route}) => {
                 //id = data
                 console.log(data.toString())
                 storeData(data.toString());
+                navigation.navigate('Home');
             }
         }).catch(function(error) {
             console.log('There has been a problem with your fetch operation: ' + error.message);

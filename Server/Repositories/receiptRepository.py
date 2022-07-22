@@ -7,7 +7,7 @@ from Server.serverConsts import serverConsts
 import dateutil
 from dateutil.parser import parse
 
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 

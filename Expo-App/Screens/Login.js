@@ -92,7 +92,8 @@ import * as Location from 'expo-location';
 //           sound: 'default',
 //           title: 'Digital-receipt Products',
 //           body: 'Watch all the '+ storeName +' products you might like',
-//           data: { someData: 'goes here' },
+//           //data: { someData: 'goes here' },
+//           data: storeName,
 //         };
       
 //         await fetch('https://exp.host/--/api/v2/push/send', {
@@ -192,7 +193,8 @@ import * as Location from 'expo-location';
 //           sound: 'default',
 //           title: 'Digital-receipt Credits',
 //           body: 'Watch Your '+ storeName +' credits',
-//           data: { someData: 'goes here' },
+//           data: storeName,
+//           //data: { someData: 'goes here' },
 //         };
       
 //         await fetch('https://exp.host/--/api/v2/push/send', {
@@ -323,7 +325,7 @@ const LoginScreen = ({ route}) => {
           if (response["title"] === "Digital-receipt Credits") {
             navigation.navigate('Store Credits');
           } else {
-            navigation.navigate('Products');
+            navigation.navigate('Home');
           }
         });
         
@@ -393,7 +395,7 @@ const LoginScreen = ({ route}) => {
                   if (data1=="false"){
                       console.log("false");
                       setModalVisible(false)
-                      navigation.navigate('Receipts');
+                      navigation.navigate('Home');
                       //setError(data);
                   }
                   else {
@@ -462,7 +464,7 @@ const LoginScreen = ({ route}) => {
               </Pressable>
               <Pressable
                 style={[styles.button3, styles.buttonClose]}
-                onPress={() => {setModalVisible(!isModalVisible);  navigation.navigate('Receipts')}}
+                onPress={() => {setModalVisible(!isModalVisible);  navigation.navigate('Home')}}
               >
                 
                 <Text style={styles.textStyle}>No Thanks</Text>

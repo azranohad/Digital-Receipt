@@ -4,7 +4,7 @@ from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
 from Server.Services.creditService import creditService
 from Server.serverConsts import serverConsts
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 scan_credit_api = Blueprint('scan_credit_api', __name__)
 

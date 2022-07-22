@@ -10,7 +10,7 @@ from Server.DataObjects.userDataObject import userDataObject
 from Server.Features.SMSSender.smsService import smsService
 from Server.Repositories.userRepository import userRepository
 from Server.serverConsts import serverConsts
-from SystemFiles.logger.loggerService import loggerService
+from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
@@ -51,7 +51,7 @@ class userService:
         # generate random 6 digits to temp password
         temp_password = ''.join(random.choice(string.digits) for i in range(6))
         self.login_password_cache[phone_number] = temp_password
-        # self.sms_service.send_temp_password_login(phone_number, temp_password)
+        self.sms_service.send_temp_password_login(phone_number, temp_password)
 
         # temp for test
         return temp_password

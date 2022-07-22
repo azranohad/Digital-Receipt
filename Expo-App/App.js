@@ -43,7 +43,7 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.43.254:5000";
+  const url="192.168.0.111:5000";
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
@@ -61,7 +61,9 @@ export default function App() {
     <NavigationContainer theme={theme} >
       <Drawer.Navigator backBehavior="order" initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true, drawerItemStyle:{borderBottomWidth: 0.5}, drawerLabelStyle:{fontStyle:'italic'}}}>
       <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
-        <Drawer.Screen name="Home"  component={HomeScreen} options={{drawerItemStyle: {height:0}} }
+      <Drawer.Screen name="Home" component={ProductsScreen}  initialParams={{url: url}}/>
+
+        {/* <Drawer.Screen name="Home"  component={HomeScreen} options={{drawerItemStyle: {height:0}} }
     //     options={{headerStyle: {
     //     position: 'absolute',
     //     backgroundColor: 'transparent',
@@ -80,12 +82,11 @@ export default function App() {
     // //   />
     // // )
     //  }}
-     />
+     /> */}
         <Drawer.Screen name="My Profile" component={ProfileScreen} initialParams={{url: url}} />
         <Drawer.Screen name="Receipts" component={MyReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Scan" component={ScanReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Store Credits" component={MyStoreCreditsScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Products" component={ProductsScreen}  initialParams={{url: url}}/>
         {/* <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="Settings" component={SettingScreen} initialParams={{url: url}}/> */}
         <Drawer.Screen name="Sign Up" component={SignupScreen} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
