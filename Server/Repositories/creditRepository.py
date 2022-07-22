@@ -128,18 +128,18 @@ class creditRepository:
                 "creditRepository | delete credit from Data Base Failed. user key: " + user_key)
         return str(status)
 
-repo = creditRepository()
-users = ["33310727751848c19a8877140d3ce3ac", "c590e1226f184638bb3753188e37917a", "a02b5a3e82ba4235a23381d4586bd60c", "a32b34ee98ed4b5e88f022a4cd683ba5"]
-
-for user in users:
-    repo.insert_credit(user, {
-        server_consts.ID: uuid.uuid4().hex,
-        server_consts.USER_KEY: user,
-        server_consts.MARKET: "Fox",
-        server_consts.NAME_FOR_CLIENT: "Fox credit store",
-        server_consts.DATE_OF_CREDIT: datetime.today() + timedelta(days=-600),
-        server_consts.EXPIRATION_DATE:  datetime.today() + timedelta(days=20),
-        server_consts.TOTAL_PRICE: 150,
-        server_consts.CREDIT_ID: ''.join(random.choice(string.digits) for i in range(13)),
-        server_consts.IS_DIGITAL_CREDIT: True
-    })
+# repo = creditRepository()
+# users = ["33310727751848c19a8877140d3ce3ac", "c590e1226f184638bb3753188e37917a", "a02b5a3e82ba4235a23381d4586bd60c", "a32b34ee98ed4b5e88f022a4cd683ba5"]
+#
+# for user in users:
+#     repo.insert_credit(user, {
+#         server_consts.ID: uuid.uuid4().hex,
+#         server_consts.USER_KEY: user,
+#         server_consts.MARKET: "Fox",
+#         server_consts.NAME_FOR_CLIENT: "Fox credit store",
+#         server_consts.DATE_OF_CREDIT: datetime.today() + timedelta(days=-600),
+#         server_consts.EXPIRATION_DATE:  datetime.today() + timedelta(days=20),
+#         server_consts.TOTAL_PRICE: 150,
+#         server_consts.CREDIT_ID: ''.join(random.choice(string.digits) for i in range(13)),
+#         server_consts.IS_DIGITAL_CREDIT: True
+#     })
