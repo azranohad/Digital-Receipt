@@ -18,13 +18,10 @@ const ScanReceipts = ({navigation, route}) => {
   const [hasGalleryPermission, setHasGalleryPermission] = useState(null)
   const [image, setImage] = useState(null)
   const [popUp, setPopUp] = useState(false);
-  const [opacity, setOpacity] = useState(1);
-  const [imgBackground, setImgBackground] = useState(assets.nft01);
   const [first, setFirst] = useState(true)
-  const [visible, setVisible] = useState(false)
   const [chooseAction, setChooseAction] = useState(false);
   const [userKey, setuserKey] = useState('')
-  const [amount, setAmount] = useState(0)
+  const [amount, setAmount] = useState('')
   const [date, setDate] = useState('')
   const [name, setName] = useState('')
   const [market, setMarket] = useState('')
@@ -32,7 +29,6 @@ const ScanReceipts = ({navigation, route}) => {
   const [specUrl, setSpecUrl] = useState('')
   const [isReceipt, setisReceipt] = useState(true)
   const [isUpLoading, setisUpLoading] = useState(false);
-  const [filename, setFilename] = useState('');
   const [JsonData, setJsonData] = useState([]);
 
   // useEffect(() => {
@@ -42,19 +38,23 @@ const ScanReceipts = ({navigation, route}) => {
   // }, [navigation.isFocused()]);
   useFocusEffect(
     React.useCallback(()=>{
-      getId();
-    })
-  );
-  // useEffect(() => {
-  //   if (navigation.isFocused()) {
-  //   ;(async () => {
-  //     const cameraStatus = await Camera.requestCameraPermissionsAsync()
-  //     setHasCameraPermission(cameraStatus.status === 'granted')
-  //     const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync()
-  //     setHasGalleryPermission(galleryStatus.status === 'granted')
-  //   })();
-  //   getId();}
-  // }, [navigation.isFocused()])
+      // getId();
+      // console.log("hereeee");
+      setChooseAction(false)
+      setPopUp(false)
+      
+    },[]));
+  useEffect(() => {
+    if (navigation.isFocused()) {
+    ;(async () => {
+      const cameraStatus = await Camera.requestCameraPermissionsAsync()
+      setHasCameraPermission(cameraStatus.status === 'granted')
+      const galleryStatus = await ImagePicker.requestMediaLibraryPermissionsAsync()
+      setHasGalleryPermission(galleryStatus.status === 'granted')
+    })();
+    setChooseAction(false);
+    getId();}
+  }, [navigation.isFocused()])
 
 
   const getId = async () => {
@@ -108,12 +108,14 @@ const ScanReceipts = ({navigation, route}) => {
     }).then(res => res.json()).then(data => {
       console.log("response: ", data);
       if (isReceipt) {
-        data.date_of_receipt!='None'?setDate(data.date_of_receipt):setDate('');
+        console.log("rec:",data.date_of_receipt!="None");
+        data.date_of_receipt!="None"?setDate(data.date_of_receipt):setDate('');
       }
       else {
-        data.date_of_credit!='None'?setDate(data.date_of_receipt):setDate('');
+        console.log("credit:",data.date_of_credit!="None");
+        data.date_of_credit!="None"?setDate(data.date_of_credit):setDate('');
       }
-      data.market!='None'?setMarket(data.market):setMarket('');
+      data.market!="None"?setMarket(data.market):setMarket('');
       setJsonData(data);
       setisUpLoading(false);
       setPopUp(true);
@@ -154,7 +156,7 @@ const ScanReceipts = ({navigation, route}) => {
 
   const sendUpdates = async () => {
     setImage(null);
-    setPopUp(false);
+    // setPopUp(false);
     setModalVisible(false);
     
     //Alert.alert("Uploaded successfully!                       ");
@@ -180,7 +182,7 @@ const ScanReceipts = ({navigation, route}) => {
     }
     //const obj = JSON.parse(JsonData)
     JsonData.name_for_client = name;
-    JsonData.total_price = amount;
+    JsonData.total_price = Number(amount);
     JsonData.user_key = userKey;
     JsonData.market = market;
     
@@ -199,9 +201,10 @@ const ScanReceipts = ({navigation, route}) => {
         'content-type': 'aplication/json',
     },
     }).then(()=>{
+
+      isReceipt? navigation.navigate("Receipts"): navigation.navigate('Store Credits');
     }
     );
-    isReceipt? navigation.navigate("Receipts"): navigation.navigate('Store Credits');
   }
 
   const setType = (val)=>{
@@ -284,9 +287,9 @@ const ScanReceipts = ({navigation, route}) => {
      visible={modalVisible}
    >
         <PopUp data={JsonData} 
-        handleClose={()=>{setPopUp(false); setModalVisible(false); setAmount(0); setName(JsonData.market+" "+JsonData.date); sendUpdates();}} 
+        handleClose={()=>{ setModalVisible(false); setAmount("0"); setName(JsonData.market+" "+JsonData.date); sendUpdates();}} 
         handleConfirm={sendUpdates} setAmount={setAmount} setExpireDate={setExpireDate} 
-        setDate={setDate} setMarket={setMarket} setName={setName} 
+        setDate={setDate} setMarket={setMarket} setName={setName} scanned_date={date} scanned_store={market}
         isReceipt={isReceipt} />
 
    </Modal>
