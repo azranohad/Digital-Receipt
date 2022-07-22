@@ -7,10 +7,10 @@ import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
 //{ data,handlePress, date, price, receipt}
-export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, setExpireDate, setMarket, setName, isReceipt}) =>{
+export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, setExpireDate, setMarket, setName, scanned_date, scanned_store, isReceipt}) =>{
   const [name, setname] = useState('')
-  const [date, setdate] = useState(data.date)
-  const [store, setstore] = useState(data.market)
+  const [date, setdate] = useState(scanned_date)
+  const [store, setstore] = useState(scanned_store)
   const [amount, setamount] = useState('')
   const [expdate, setexpdate] = useState('')
   return (
@@ -80,7 +80,7 @@ export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, set
       </Text>
         <TextInput
           value={amount}
-          onChangeText={(amount) => {setAmount(Number(amount)); setamount(Number(amount))}}
+          onChangeText={(amount) => {setAmount(amount); setamount(amount)}}
           placeholder={'Total Amount'}
           style={styles.input}
           />

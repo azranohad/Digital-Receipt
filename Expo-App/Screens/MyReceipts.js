@@ -11,6 +11,8 @@ import { NavigationHelpersContext } from '@react-navigation/native';
 
 
 const MyReceiptsScreen = ({navigation, route}) => {
+  // const isCancelled = React.useRef(false);
+  const[updateScreen,setUpdateScreen]=useState(true)
   const [found, setFound]= useState(false);
   const [filter, setFilter]= useState(false);
   const [searchByName, setSearchByName] = useState('');
@@ -25,20 +27,40 @@ const MyReceiptsScreen = ({navigation, route}) => {
   const [isLoading, setisLoading] = useState(true);
   const [image, setImage] = useState(null)
 
+  useFocusEffect(
+    React.useCallback(()=>{
+      setFilter(false)
+      setJsonData([]);
+      if (userKey==''){
+        getIdandReceipts();
+      }
+      else {
+        getAllReceipts(userKey);
+        getStores(userKey);
+      }
+    
+    },[updateScreen]));
 
-useFocusEffect(
-  React.useCallback(()=>{
-    setAll([]);
-    if (userKey==''){
-      getIdandReceipts();
-    }
-    else {
-      // setFilter(false);
-      // setAll([]);
-      getAllReceipts(userKey);
-      getStores(userKey);
-    }
-  },[]));
+  // useEffect(()=>{
+  //     setAll([]);
+  //     if (userKey==''){
+  //       getIdandReceipts();
+  //     }
+  //     else {
+  //       getAllReceipts(userKey);
+  //       getStores(userKey);
+  //     }
+  //     return () => {
+  //       isCancelled.current = true;
+  //     };
+  //   },[]);
+
+
+    // useEffect(()=>{
+    //   console.log("333333333333333333333333333333",JsonData);
+    // },[updateScreen])
+
+
 
 //   useEffect(()=>{
 //     if (userKey==''){
@@ -147,7 +169,6 @@ const getReceiptsByStore = (val)=> {
 }
 
 const getAllReceipts = (val)=> {
-  console.log("joj");
   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts_user`, {
       method: 'GET',
       headers: {
@@ -194,25 +215,46 @@ const getImg =  async (uri)=> {
 }
 
 const trashReceipt = (val)=> {
-  fetch(`http://${route.params.url}/scan_receipt_controller/delete_receipt`, {
-      method: 'DELETE',
-      body: JSON.stringify({
-        'user_key': userKey,
+  // console.log("trash");
+  console.log("111111111111111111:", JsonData[val]);
+  // console.log("22222222222222222222222:", JsonData);
+  // delete JsonData[val]
+  // console.log("444444444444444444444444444444",JsonData);
+  // Object.values(JsonData).map((account)=>{
+    //     if (account._id==val){
+      //       let x = JsonData[account._id]
+      
+      //       setJsonData(delete JsonData[val]);
+      //       console.log("2222222222222:",JsonData);
+      //   }
+      //     })
+      
+      fetch(`http://${route.params.url}/scan_receipt_controller/delete_receipt`, {
+        method: 'DELETE',
+        body: JSON.stringify({
+          'user_key': userKey,
           '_id' : val,
       }),
       headers: {
-          'content-type': 'aplication/json',
+        'content-type': 'aplication/json',
       },
-  }).then(res => res.text()).then(data => {
-    if (data=='True'){
-      Object.values(JsonData).map((account)=>{
-        if (account._id==val){
-          let x = JsonData[account._id]
-          delete JsonData[val]
-      }
-        })
+    }).then(res => res.text()).then(data => {
+      console.log("data:", data);
+      if (data=='True'){
+        console.log(JsonData[val]);
+        delete JsonData[val]
+        setJsonData(JsonData);
+        setUpdateScreen(!updateScreen)
+        
+      // Object.values(JsonData).map((account)=>{
+      //   if (account._id==val){
+      //     let x = JsonData[account._id]
+      //     delete JsonData[val]
+      //     setJsonData(JsonData);
+      //     console.log(JsonData);
+      // }
+      //   })
     }
-  setAll(JsonData);
 });
 }
 

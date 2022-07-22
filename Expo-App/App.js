@@ -43,7 +43,7 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.0.111:5000";
+  const url="192.168.43.254:5000";
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
@@ -83,7 +83,7 @@ export default function App() {
      />
         <Drawer.Screen name="My Profile" component={ProfileScreen} initialParams={{url: url}} />
         <Drawer.Screen name="Receipts" component={MyReceiptsScreen} initialParams={{url: url}}/>
-        <Drawer.Screen name="Scan Receipts" component={ScanReceiptsScreen} initialParams={{url: url}}/>
+        <Drawer.Screen name="Scan" component={ScanReceiptsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Store Credits" component={MyStoreCreditsScreen} initialParams={{url: url}}/>
         <Drawer.Screen name="Products" component={ProductsScreen}  initialParams={{url: url}}/>
         {/* <Drawer.Screen name="Expense Analysis" component={ExpenseAnalysisScreen} initialParams={{url: url}}/> */}
@@ -98,6 +98,7 @@ export default function App() {
         <Drawer.Screen name="ScanedImage" component={ScanedImage} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
         <Drawer.Screen name="StoreProduct" component={StoreProducts} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
         <Drawer.Screen name="StoreCreditSoonExpire" component={StoreCreditSoonExpire} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
+        <Drawer.Screen name="Log Out" component={LoginScreen} initialParams={{url: url}}/>
 
         {/* <Drawer.Screen name="newGps" component={newGpsScreen} initialParams={{url: url}}/> */}
         {/* <Drawer.Screen name="UserLocation" component={UserLocationScreen} initialParams={{url: url}}/> */}
