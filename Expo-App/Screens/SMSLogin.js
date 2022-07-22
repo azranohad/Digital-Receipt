@@ -77,7 +77,7 @@ const SMSLoginScreen = ( {route}) => {
                 storeData(data.toString());
                 //setPasswordVerified(true);
                 setPhoneNum(false);
-                navigation.navigate('Receipts');
+                navigation.navigate('Home');
             }
             console.log("end");
         });
