@@ -12,27 +12,43 @@ const StoreProducts = ({route, navigation}) => {
 
     const [userKey, setuserKey] = useState('');
     const [JsonData, setJsonData] = useState([]);
+    const [text, setText] = React.useState("waiting...");
  
 
-  useEffect(async ()=>{
+  useEffect(()=>{
+    let isCancelled = false;
+
       if (userKey==''){
-        try {
-          const value = await AsyncStorage.getItem('userId')
-          if(value !== null) {
-            console.log("getdata: ",value);
-            getByStore(store,value);
-            setuserKey(value)
-          }
-        } catch(e) {
-          // error reading value
+       FirstEnter().then(() => {
+        if (!isCancelled) {
+          setText("done!");
         }
+    })
       }
       else {
-        getByStore(store,userKey);
+        getByStore(store,userKey).then(() => {
+            if (!isCancelled) {
+              setText("done!");
+            }
+        })
       }
+      return () => {
+        isCancelled = true;
+      };
     },[]);
  
-
+const FirstEnter = async ()=>{
+    try {
+        const value = await AsyncStorage.getItem('userId')
+        if(value !== null) {
+          console.log("getdata: ",value);
+          getByStore(store,value)
+          setuserKey(value)
+        }
+      } catch(e) {
+        // error reading value
+      }
+}
 
 
 const getByStore = (store, user)=> {

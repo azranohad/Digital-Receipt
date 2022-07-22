@@ -18,26 +18,113 @@ const Products = ({route, navigation}) => {
   const [stores, setStores] = useState([]);
   const [isLoading, setisLoading] = useState(true);
   const [image, setImage] = useState(null)
+  const [text, setText] = React.useState("waiting...");
 
-  useFocusEffect(
-    React.useCallback(async ()=>{
+
+  // useEffect(async ()=>{
+  //   async function fetchdata() 
+  //   if (userKey==''){
+  //     try {
+  //       const value = await AsyncStorage.getItem('userId')
+  //       if(value !== null) {
+  //         console.log("getdata: ",value);
+  //         setuserKey(value);
+  //         getAllProducts(value);
+  //       }
+  //     } catch(e) {
+  //       // error reading value
+  //     }
+  //   }
+  //   else {
+  //     setFilter(false)
+  //     getAllProducts(userKey);
+  //   }
+  // },[])
+
+  const getIdandProducts = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userId')
+      if(value !== null) {
+        console.log("getdata: ",value);
+        setuserKey(value);
+        getAllProducts(value);
+      }
+    } catch(e) {
+      // error reading value
+    }
+   
+  }
+
+  useEffect(()=>{
+    let isCancelled = false;
+   
+    
+      //setAll([]);
       if (userKey==''){
-        try {
-          const value = await AsyncStorage.getItem('userId')
-          if(value !== null) {
-            console.log("getdata: ",value);
-            setuserKey(value);
-            getAllProducts(value);
+        getIdandProducts().then(() => {
+          if (!isCancelled) {
+            setText("done!");
           }
-        } catch(e) {
-          // error reading value
-        }
-      }
+      })}
       else {
-        setFilter(false)
-        getAllProducts(userKey);
+         getAllProducts(userKey).then(()=>{
+          if (!isCancelled) {
+            setText("done!");
+          }
+         })
       }
-    },[]));
+    
+    return () => {
+      isCancelled = true;
+    };
+
+    },[]);
+
+  // useFocusEffect(
+  //   React.useCallback(async ()=>{
+  //     async function fetchdata() {
+
+  //       if (userKey==''){
+  //         try {
+  //           const value = await AsyncStorage.getItem('userId')
+  //           if(value !== null) {
+  //             console.log("getdata: ",value);
+  //             setuserKey(value);
+  //             //getAllProducts(value);
+  //             fetch(`http://${route.params.url}/recommendation_system_controller/get_general_recommendation`, {
+  //               method: 'GET',
+  //               headers: {
+  //                   'content-type': 'aplication/json',
+  //                   'user_key' : value,
+  //               },}).then(res=>res.json()).then(data => 
+  //               {
+  //             setOriginal(data);
+  //             setAll(data);
+          
+  //         });
+  //           }
+  //         } catch(e) {
+  //           // error reading value
+  //         }
+  //       }
+  //       else {
+  //         setFilter(false)
+  //         //getAllProducts(userKey);
+  //         fetch(`http://${route.params.url}/recommendation_system_controller/get_general_recommendation`, {
+  //           method: 'GET',
+  //           headers: {
+  //               'content-type': 'aplication/json',
+  //               'user_key' : userKey,
+  //           },}).then(res=>res.json()).then(data => 
+  //           {
+  //         setOriginal(data);
+  //         setAll(data);
+      
+  //       });
+  //     }
+  //     } 
+  //     fetchdata();
+  //   },[]));
  
 
   // set all variables:
@@ -62,9 +149,9 @@ const getByStore = (val)=> {
           'store_name' : val
       },
   }).then(res => res.json()).then(data => {
-    setAll(data);
-    setFilter(true);
+    setJsonData(data);
     setStoreName('');
+    setFilter(true);
 });
 }
 
@@ -84,61 +171,6 @@ const getAllProducts = (val)=> {
 });
 }
 
-const getImg =  async (uri)=> {
-  setImage(uri);
-  // // setisLoading(true);
-  // const res = await fetch(uri)
-  // const blob = await res.blob();
-  // const filename = uri.substring(uri.lastIndexOf('/')+1);
-  // var ref = firebase.storage().ref().child(filename).put(blob);
-  // try {
-  //   await ref;
-  // } catch (e){
-  //   console.log(e);
-  // }
-  // Alert.alert('Photo uploaded');
-  // await firebase.storage().ref().child(filename).getDownloadURL(ref).then( img => {
-  //   setImage(img);
-  // })
-//   fetch(`http://${route.params.url}/scan_receipt_controller/get_image_receipt`, {
-//       method: 'GET',
-//       headers: {
-//           'content-type': 'multipart/form-data',
-//           'user_key' : userKey,
-//           '_id' : val,
-//       },
-//   }).then(res => 
-//     res.json()).then(res => {
-//     const imageBlob = res.blob();
-//     const imageObjectURL = URL.createObjectURL(imageBlob);
-// });
-}
-
-const trashReceipt = (val)=> {
-  fetch(`http://${route.params.url}/scan_receipt_controller/delete_receipt`, {
-      method: 'DELETE',
-      body: JSON.stringify({
-        'user_key': userKey,
-          '_id' : val,
-      }),
-      headers: {
-          'content-type': 'aplication/json',
-      },
-  }).then(res => res.text()).then(data => {
-    console.log(data);
-    if (data=='True'){
-      Object.values(JsonData).map((account)=>{
-        if (account._id==val){
-          let x = JsonData[account._id]
-          console.log(x);
-          console.log(JsonData[val]);
-          delete JsonData[val]
-      }
-        })
-    }
-  setAll(JsonData);
-});
-}
 
 
 

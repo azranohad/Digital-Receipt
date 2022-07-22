@@ -33,24 +33,35 @@ const DigitalCredit= ({ route, navigation }) => {
   const { data } = route.params;
   const [barcode , setBarcode] = useState(null)
   const [logo , setLogo] = useState(null)
+  const [text, setText] = React.useState("waiting...");
 
 
   // useEffect(()=> {getBarcode(data.filename);})
   useEffect(()=> {
+    let isCancelled = false;
+
       // getBarcode(data._id);
       // setLogo(data.url_scan_image);
-      setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
+      setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead')
+    
       //getBarcode(data.creditID)
       console.log(data);
       console.log("HI");
       if (data.market=='super-pharm') {
-        setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
+        setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60');
+      }
+      else if (data.market=="Fox"){
+        setLogo("https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/fox.jpg?alt=media&token=08acbec6-854d-4860-8726-e5b245d456b4")
+          
       }
       else {
         setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/Walmart.png?alt=media&token=48f0d6f0-fb49-4cde-80be-d6838ede4613')
   
       }
   // getBarcode2('/Walmart.png');
+  return () => {
+    isCancelled = true;
+  };
   },[])
 
 
@@ -152,7 +163,7 @@ const DigitalCredit= ({ route, navigation }) => {
             alignContent: "center",
           }}
           >
-          Expiration Date: {data.expiration_date.slice(0,11)}
+          Expiration Date: {data.expiration_date.slice(0,16)}
         </Text>
             
             <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
