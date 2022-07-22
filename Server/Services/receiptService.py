@@ -43,11 +43,10 @@ class receiptService:
         receipt_data_dict = self.receipt_repository.get_receipt_by_value(user_key, server_consts.ID, _id).get(_id)
         is_digital_receipt = receipt_data_dict[server_consts.IS_DIGITAL_RECEIPT]
         if is_digital_receipt:
-            self.receipt_repository.delete_receipt(user_key, _id)
+            return self.receipt_repository.delete_receipt(user_key, _id)
 
         if not self.receipt_repository.delete_receipt(user_key, _id):
             self.logger.print_severe_message("receiptService | delete scan receipt  data from DB Failed. user key: " + user_key)
-            self.receipt_repository.delete_receipt(user_key, _id)
         # delete from firebase
         if not self.fire_base_repository.delete_image(user_key, receipt_data_dict.get(server_consts.ID)):
             self.logger.print_severe_message('receiptService | Error deleting image from firebase')
