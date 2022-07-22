@@ -23,6 +23,8 @@ class creditData:
         self.total_price = None
         self.url_scan_image = None
         self.creditID = None
+        self.isDigitalCredit = None
+
 
 class itemObject:
     def __init__(self, itemDescription, price, amount=None, itemID=None):

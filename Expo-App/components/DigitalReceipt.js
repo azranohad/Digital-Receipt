@@ -1,11 +1,11 @@
-import React from "react";
-import { View, Text, SafeAreaView, Image, StatusBar, FlatList } from "react-native";
-
+import { View, Text, SafeAreaView, Image, StatusBar, FlatList , StyleSheet} from "react-native";
+import React, {useState, useEffect} from "react";
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar } from ".";
+import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar, Loading } from ".";
+import {firebase} from '../firebase'
 
 const DetailsHeader = ({navigation }) => (
-  <View style={{ width: "100%", height: 80 }}>
+  <View style={{ width: "100%", height: 110 }}>
     {/* <Image
       source={assets.nft01}
       resizeMode="cover"
@@ -15,8 +15,8 @@ const DetailsHeader = ({navigation }) => (
     <CircleButton
       imgUrl={assets.left}
       handlePress={() => navigation.navigate("Receipts")}
-      right={15}
-      top={StatusBar.currentHeight + 10}
+      right={10}
+      top={80}
     />
 
     {/* <CircleButton
@@ -30,10 +30,69 @@ const DetailsHeader = ({navigation }) => (
 
 const DigitalShow= ({ route, navigation }) => {
   const { data } = route.params;
+  const [barcode , setBarcode] = useState(null)
+  const [logo , setLogo] = useState(null)
+
+
+  // useEffect(()=> {getBarcode(data.filename);})
+  useEffect(()=> {
+    // console.log(data);
+    // getBarcode(data.receiptID);
+    // setLogo(data.url_scan_image);
+    if (data.market=='super-pharm') {
+      setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
+    }
+    else {
+      setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/Walmart.png?alt=media&token=48f0d6f0-fb49-4cde-80be-d6838ede4613')
+    }
+    // setLogo('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60')
+    setBarcode('https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead');
+})
+
+
+const getBarcode = (val)=>{
+  console.log(`http://${route.params.url}/scan_receipt_controller/get_barcode`);
+  fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
+      method: 'GET',
+      body: JSON.stringify({
+          'receipt_id' : val,
+      }),
+      headers: {
+          'content-type': 'aplication/json',
+      },
+  }).then(res => res.text()).then(data => {
+    console.log(data);
+    setBarcode(data);
+  })
+}
+
+  const getLogo = (val)=>{
+    fetch(`http://${route.params.url}/scan_receipt_controller/get_barcode`, {
+        method: 'GET',
+        body: JSON.stringify({
+            'store_name' : val,
+        }),
+        headers: {
+            'content-type': 'aplication/json',
+        },
+    }).then(res => res.text()).then(data => {
+      console.log(data);
+      setBarcode(data);
+    })
+  }
+
+  // var ref = firebase.storage().ref().child(filename)
+  // await firebase.storage().ref(filename).getDownloadURL(ref).then( x => {
+  //   setImg(x);
+  // })
+
+
+
 
   return (
     
-    <SafeAreaView style={{ flex: 1 }}>
+    logo&& barcode ?<SafeAreaView style={{ flex: 1 }}>
+   
       <DetailsHeader data={data} navigation={navigation} />
 
       <FocusedStatusBar
@@ -42,32 +101,9 @@ const DigitalShow= ({ route, navigation }) => {
         translucent={true}
       />
 
-      <View
-        style={{
-          width: "100%",
-          position: "absolute",
-          bottom: 0,
-          paddingVertical: SIZES.font,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "rgba(255,255,255,0.5)",
-          zIndex: 1,
-        }}
-      >
-        <Text
-          style={{
-            fontFamily: FONTS.semiBold,
-            fontSize: SIZES.medium,
-            color: COLORS.primary,
-            alignContent: "center",
-            paddingBottom: SIZES.extraLarge,
-          }}
-        >
-          Total: {data.total_price.toFixed(2)}$
-        </Text>
-        <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} />
-      </View>
+
       
+      {/* <Image style={{height:'40%', width:'100%'}} resizeMode='contain' source={{uri: img}}/> */}
       <FlatList
         data={data.items}
         renderItem={({ item }) => <DetailsBid bid={item} />}
@@ -78,6 +114,38 @@ const DigitalShow= ({ route, navigation }) => {
           paddingLeft: SIZES.large*1.5,
           paddingRight: SIZES.large*1.5,
         }}
+
+        ListFooterComponent={()=>(
+          <React.Fragment>
+            <View
+      style={{
+        width: "100%",
+        // flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginVertical: SIZES.base,
+        paddingHorizontal: SIZES.base,
+      }}>
+
+          <Text
+          style={{
+            fontFamily: FONTS.semiBold,
+            fontSize: SIZES.extraLarge,
+            color: COLORS.primary,
+            alignContent: "center",
+          }}
+          >
+          Total: {data.total_price.toFixed(2)}
+        </Text>
+            <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
+            
+            <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} />
+            
+            </View>
+          </React.Fragment>
+        )
+        
+      }
         ListHeaderComponent={() => (
           <React.Fragment>
             {/* <SubInfo /> */}
@@ -90,6 +158,7 @@ const DigitalShow= ({ route, navigation }) => {
         marginVertical: SIZES.base,
         paddingHorizontal: SIZES.base,
       }}>
+        <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: logo}}/>
     <Text
           style={{
             fontFamily: FONTS.semiBold,
@@ -100,15 +169,12 @@ const DigitalShow= ({ route, navigation }) => {
         >
           {data.market}
         </Text>
+        <Text style={styles.text_header_date}>
+          {data.date_of_receipt.slice(0,16)}
+        </Text>
         <Text
-          style={{
-            fontFamily: FONTS.semiBold,
-            fontSize: SIZES.large,
-            color: COLORS.primary,
-            alignContent: "center"
-          }}
-        >
-          {data.date_of_receipt.slice(0,-13)}
+          style={styles.text_header_date}>
+          {data.date_of_receipt.slice(17,22)}
         </Text>
         <Text
           style={{
@@ -135,8 +201,38 @@ const DigitalShow= ({ route, navigation }) => {
           )}
       />
       
-    </SafeAreaView>
+    </SafeAreaView>:
+    <Loading/>
+    //  <View
+    //  style={{
+    //    width: "100%",
+    //    // flexDirection: "row",
+    //    // justifyContent: "space-between",
+    //    alignItems: "center",
+    //    marginVertical: SIZES.base,
+    //    padding: SIZES.base,
+    //  }}>
+    //    <Text>Loading...</Text>
+
+    //  </View>
   );
 };
+
+
+const styles = StyleSheet.create({
+  text_header: {
+    fontFamily: FONTS.semiBold,
+    fontSize: SIZES.medium,
+    color: COLORS.primary,
+    alignContent: "center",
+    paddingBottom: SIZES.extraLarge,
+  },
+  text_header_date: {
+    fontFamily: FONTS.semiBold,
+    fontSize: SIZES.large,
+    color: COLORS.primary,
+    alignContent: "center"
+  }
+});
 
 export default DigitalShow;

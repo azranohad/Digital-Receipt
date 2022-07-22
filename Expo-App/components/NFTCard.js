@@ -6,8 +6,12 @@ import { COLORS, SIZES, SHADOWS, assets } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
-const NFTCard = ({ data,handlePress, date, price, receipt}) => {
+
+const NFTCard = ({ data,handlePress, date, price, receipt, handleGetImg}) => {
   const navigation = useNavigation();
+  const uri = data.url_scan_image;
+
+
 
   return (
     <View
@@ -61,7 +65,17 @@ const NFTCard = ({ data,handlePress, date, price, receipt}) => {
           <RectButton
             minWidth={80}
             fontSize={SIZES.font}
-            handlePress={() => navigation.navigate("DigitalReceipt", { data })}
+            handlePress={() => {
+              if (receipt){
+                console.log(data);
+                data.is_digital_receipt ? navigation.navigate("DigitalReceipt", { data }): navigation.navigate("ScanedImage", {uri});
+              }
+              else {
+                console.log(data.isDigitalCredit);
+
+                data.isDigitalCredit ? navigation.navigate("DigitalCredit", { data }): navigation.navigate("ScanedImage", {uri});
+              }
+            }}
             buttonText={"Show"}
           />
         </View>

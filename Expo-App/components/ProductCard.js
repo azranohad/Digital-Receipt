@@ -1,13 +1,14 @@
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Image } from "react-native";
+import { View, Image, Text, Linking } from "react-native";
 
-import { COLORS, SIZES, SHADOWS, assets } from "../constants";
+import { COLORS, SIZES, SHADOWS, assets, FONTS } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
 const ProductCard = ({ data}) => {
   const navigation = useNavigation();
+ 
 
   return (
     <View
@@ -19,36 +20,36 @@ const ProductCard = ({ data}) => {
         ...SHADOWS.dark,
       }}
     >
-      <View
+      <View 
         style={{
           width: "100%",
-          height: 30,
+          height: 250,
         }}
       >
         <Image
-        source = {data.image}
-         // source={assets.nft01}
-          resizeMode="cover"
+        source = {{uri: data.url_image}}
+          resizeMode="contain"
           style={{
             width: "100%",
             height: "100%",
-            borderTopLeftRadius: SIZES.font,
-            borderTopRightRadius: SIZES.font,
           }}
         />
 
-        {/* <CircleButton imgUrl={assets.trash} right={10} top={10} handlePress={handlePress}/> */}
       </View>
 
-      {/* <SubInfo date={data.date_of_receipt}/> */}
 
-      <View style={{ width: "100%", padding: SIZES.font }}>
+      <View style={{ width: "100%", padding: SIZES.font }} >
         <NFTTitle
-          title={data.name}
-          subTitle={data.market}
+          title={data.itemDescription}
+          subTitle={data.brand}
           titleSize={SIZES.large}
-          subTitleSize={SIZES.small}
+          subTitleSize={SIZES.medium}
         />
+        <Text  style={{
+          fontFamily: FONTS.semiBold,
+          fontSize: SIZES.small,
+          color: COLORS.primary,
+        }}>{data.market}</Text>
 
         <View
           style={{
@@ -58,11 +59,11 @@ const ProductCard = ({ data}) => {
             alignItems: "center",
           }}
         >
-          <EthPrice price={data.total_price.toFixed(2)} />
+          <EthPrice price={data.price} />
           <RectButton
             minWidth={120}
             fontSize={SIZES.font}
-            handlePress={data.reference}
+            handlePress={() => Linking.openURL(data.link_to_item)}
             buttonText={"Shop"}
           />
         </View>

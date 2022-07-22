@@ -2,9 +2,23 @@ from Server.Repositories.stroeRepository import storeRepository
 import geopy.distance
 from singleton_decorator import singleton
 from pymongo import GEO2D
+from geopy.geocoders import Nominatim
+
 from Server.Repositories.mongoDbRepository import mongoDbRepository
+#from Server.Services.storeLocationService import storeLocationService
+from Server.serverConsts import serverConsts
+from geopy.geocoders import Nominatim
+
 from SystemFiles.logger.loggerService import loggerService
 
+server_consts = serverConsts()
+
+geolocator = Nominatim(user_agent="sample app")
+
+def get_address_from_coordinates(self, coordinates):
+    coordinates_str = str(coordinates[0]) + ', ' + (str(coordinates[1]))
+    data_from_coordinates = geolocator.reverse(coordinates_str)
+    return data_from_coordinates.address
 
 def get_location_stores_from_csv(file_path):
     file = open(file_path)
@@ -21,21 +35,27 @@ def get_location_stores_from_csv(file_path):
 # @singleton
 class locationRepository:
     def __init__(self):
-        self.mongo_db_repository = mongoDbRepository()
-        self.db_stores = self.mongo_db_repository.get_client()['stores']
+        self.mongoDb_repository = mongoDbRepository()
+        self.db_stores = self.mongoDb_repository.get_client()[server_consts.STORES_DB]
         self.logger = loggerService()
         self.store_repository = storeRepository()
         self.DISTANCE = 0.01
 
 
+
+    def get_address_from_coordinates(self, coordinates):
+        coordinates_str = str(coordinates[0]) + ', ' + (str(coordinates[1]))
+        data_from_coordinates = geolocator.reverse(coordinates_str)
+        return data_from_coordinates.address
+
     # store is array [name/company, coordinates]
     def add_new_store_to_db(self, store):
 
-        if not self.mongo_db_repository.is_collection_exist('stores', store[0]):
-            self.db_stores[store[0]].create_index([("loc", GEO2D)])
+        if not self.mongoDb_repository.is_collection_exist(server_consts.STORES_DB, store[0]):
+            self.db_stores[store[0]].create_index([(server_consts.LOCATION, GEO2D)])
         self.db_stores[store[0]].insert_one({
-            "address": self.store_location_service.get_address_from_coordinates(store[1]),
-            "loc": store[1]
+            server_consts.ADDRESS: self.get_address_from_coordinates(store[1]),
+            server_consts.LOCATION: store[1]
         })
 
     def add_list_of_stores_to_db(self, stores):
@@ -47,9 +67,9 @@ class locationRepository:
         nearest_stores = []
         for coll in self.db_stores.collection_names():
             for doc in self.db_stores[coll].find(
-                    {"loc": {"$near": point, "$maxDistance": self.DISTANCE}}):
-                str_info_find = coll + ': ' + doc['address'] + '| distance: ' + str(
-                    geopy.distance.distance(point, doc['loc']).km) + ' km'
+                    {server_consts.LOCATION: {"$near": point, "$maxDistance": self.DISTANCE}}):
+                str_info_find = coll + ': ' + doc[server_consts.ADDRESS] + '| distance: ' + str(
+                    geopy.distance.distance(point, doc[server_consts.LOCATION]).km) + ' km'
                 self.logger.print_info_message(str_info_find)
                 nearest_stores.append(coll)
                 break
@@ -58,7 +78,7 @@ class locationRepository:
         return nearest_stores
 
 
-    def get_location_stores_from_csv(file_path):
+    def get_location_stores_from_csv(self, file_path):
         file = open(file_path)
         import csv
         csvreader = csv.reader(file)

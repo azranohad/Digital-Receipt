@@ -2,8 +2,9 @@
 import React, { useState, Component, useEffect } from 'react';
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
 import { DataTable } from 'react-native-paper';
+import { useFocusEffect } from '@react-navigation/native';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { NFTCard, HomeHeader, FocusedStatusBar } from "../components";
+import { NFTCard, HomeHeader, FocusedStatusBar, Loading } from "../components";
 import { COLORS, NFTData } from "../constants";
 import { event } from 'react-native-reanimated';
 
@@ -16,26 +17,42 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
   const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
-  const [isLoading, setisLoading] = useState(true);
+  const [isLoading, setisLoading] = useState(false);
+  const [image, setImage] = useState(null)
+  const [stores, setStores] = useState([]);
+  const [filter, setFilter]= useState(false);
 
 
- useEffect(()=> {
-    getIdandCredits();
-  },[]);
+
+
+  useFocusEffect(
+    React.useCallback(()=>{
+      setAll([]);
+      if (userKey==''){
+        getIdandCredits();
+      }
+      else {
+        getAllCredits(userKey);
+        getStores(userKey);
+      }
+    },[]));
+ 
  
   const getIdandCredits = async () => {
-    // try {
-    //   const value = await AsyncStorage.getItem('userKey')
-    //   if(value !== null) {
-    //     console.log("getdata: ",value);
-    //     setuserKey(value);
-    //     getAllCredits(value);
-    //   }
-    // } catch(e) {
-    //   // error reading value
-    // }
-    setuserKey("ec2eac3508b24882bc45b09dfeee2ee3");
-    getAllCredits("ec2eac3508b24882bc45b09dfeee2ee3");
+    try {
+      const value = await AsyncStorage.getItem('userId')
+      if(value !== null) {
+        console.log("getdata: ",value);
+        setuserKey(value);
+        getAllCredits(value);
+        getStores(userKey);
+      }
+    } catch(e) {
+      // error reading value
+    }
+    // setuserKey(userKey);
+    // getAllCredits(userKey);
+    // getStores(userKey);
   }
 
    // set all variables:
@@ -66,48 +83,51 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
     });
   }
     
-    const searchName = ()=> {
+    const searchName = (s)=> {
  
       fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_name`, {
           method: 'GET',
           headers: {
               'content-type': 'aplication/json',
               'user_key' : userKey,
-              'name_search' : searchByName,
+              'name_search' : s,
           },
       }).then(res => res.json()).then(data => {
        setAll(data);
+       setFilter(true);
+
     });
   }
-  const getStores = ()=> {
+  const getStores = (val)=> {
     setisLoading(true);
     fetch(`http://${route.params.url}/scan_credit_controller/get_markets`, {
         method: 'GET',
         headers: {
             'content-type': 'aplication/json',
-            'user_key' : userKey,
+            'user_key' : val,
         },
     }).then(res => res.json()).then(data => {
-      console.log(data);
+      setStores(data);
+
   });
 }
 
-const getCreditsByStore = ()=> {
-  setisLoading(true);
+const getCreditsByStore = (val)=> {
   fetch(`http://${route.params.url}/scan_credit_controller/get_credit_by_market`, {
       method: 'GET',
       headers: {
           'content-type': 'aplication/json',
           'user_key' : userKey,
-          'market' : storeName,
+          'market' : val,
       },
   }).then(res => res.json()).then(data => {
    setAll(data);
+   setFilter(true);
+
 });
 }
 
 const getAllCredits = (val)=> {
-  setisLoading(true);
   fetch(`http://${route.params.url}/scan_credit_controller/get_all_credits_user`, {
       method: 'GET',
       headers: {
@@ -115,9 +135,9 @@ const getAllCredits = (val)=> {
           'user_key' : val,
       },
   }).then(res => res.json()).then(data => {
-    console.log(data);
    setAll(data);
    setOriginal(data);
+   setisLoading(false);
 });
 }
 
@@ -131,54 +151,43 @@ const trashCredit = (val)=> {
       headers: {
           'content-type': 'aplication/json',
       },
-  }).then(res => {console.log("res", res);; res.json();}).then(data => {
-    console.log(data);
-    if (data==true){
-      Object.values(JsonData).map((account)=>{
-        if (account._id==val){
-          x = JsonData[account._id]
-          console.log(x);
+    }).then(res => res.text()).then(data => {
+      console.log(data);
+      if (data=='True'){
+        Object.values(JsonData).map((account)=>{
+          if (account._id==val){
+            let x = JsonData[account._id]
+            console.log(x,val);
+            delete JsonData[val]
+        }
+          })
+          console.log(JsonData);
+        setJsonData(...JsonData);
       }
-        })
-    }
-    // setAll(data);
-});
-}
+  });
+  }
 
-const getImg =  (e)=> {
-  console.log(e);
-//   setisLoading(true);
-//   fetch(`http://${route.params.url}/scan_receipt_controller/get_all_receipts`, {
-//       method: 'GET',
-//       headers: {
-//           'content-type': 'aplication/json',
-//           'user_key' : 'b661e90ea0fe4cb5bb6c53b68ad5d555',
-//           'image_name' : 'ef2561389f2b4322b40d9c0c6e18240e',
-//       },
-//   }).then(res => res.json()).then(res => {
-//     console.log("res:",res);
-//     const imageBlob = res.blob();
-//     const imageObjectURL = URL.createObjectURL(imageBlob);
-//     //setImg(imageObjectURL);
-//     console.log(imageBlob);
-// });
-}
+  const getImg =  async (uri)=> {
+    setImage(uri);
+ 
+  }
 
 
 
-if (!isLoading){
+
+// if (!isLoading){
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
       <View style={{ flex: 1 }}>
         <View style={{ zIndex: 0 }}>
-          <FlatList
+          {JsonData?<FlatList
             data={Object.values(JsonData)}
-            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,-13)} price={90}  receipt={false}/>}
+            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,16)} price={item.total_price}  receipt={false} handleGetImg={getImg}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<HomeHeader/>}
-          />
+            ListHeaderComponent={<HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getCreditsByStore(val)} filter={filter} setFilter={setFilter} Type={"Credit"} setAll={setAll} original={original}/>}
+          />:<></>}
         </View>
 
         <View
@@ -192,22 +201,23 @@ if (!isLoading){
           }}
         >
           <View
-            style={{ height: 300, backgroundColor: COLORS.midnightblue }} />
+            style={{ height: 300, backgroundColor: COLORS.primary }} />
           <View style={{ flex: 1, backgroundColor: COLORS.white }} />
         </View>
       </View>
     </SafeAreaView>
   )
-}
-else {
-return (
-  <View style={styles.container}> 
+// }
+// else {
+// return (
+//   // <View style={styles.container}> 
 
-    <Text>Loading...</Text>
-    </View>
+//   //   <Text>Loading...</Text>
+//   //   </View>
+//   <Loading/>
 
-)
-}
+// )
+// }
 }
 
 const styles = StyleSheet.create({

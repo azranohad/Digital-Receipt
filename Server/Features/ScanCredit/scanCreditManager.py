@@ -1,40 +1,51 @@
+import uuid
+from datetime import datetime as datatime
+
+import cv2
+import dateutil
+from dateutil.parser import parse
+
 from Server.DataObjects.receiptDataObject import creditData
 from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.fireBaseRepository import fireBaseRepository, typeImage
 from Server.Repositories.mongoDbRepository import mongoDbRepository
-import dateutil
-from dateutil.parser import parse
 from Server.Repositories.serverLocalRepository import serverLocalRepository
 from Server.Services.parseReceiptDataService import parseReceiptDataService
 from Server.Services.preProcessReceiptService import preProcessReceiptService
 from Server.Services.scanImageService import scanImageService
-from datetime import datetime as datatime
-from singleton_decorator import singleton
-import uuid
-import cv2
+from Server.serverConsts import serverConsts
 
+server_consts = serverConsts()
 
 def credit_data_to_db(user_key, credit_name, image_id, credit_data_object):
     credit_dict = {
-        "_id": str(image_id),
-        "user_key": user_key,
-        "scan_date": dateutil.parser.parse(datatime.now().strftime('%d/%m/%Y')),
-        "name_for_client": str(credit_name),
-        "creditID": str(credit_data_object.creditID),
-        "date_of_credit": dateutil.parser.parse(credit_data_object.date_of_credit),
-        "expiration_date": dateutil.parser.parse(credit_data_object.expiration_date),
-        "market": str(credit_data_object.market),
-        "is_digital_credit": False
+        server_consts.ID: str(image_id),
+        server_consts.USER_KEY: user_key,
+        server_consts.SCAN_DATE: dateutil.parser.parse(datatime.now().strftime('%d/%m/%Y')),
+        server_consts.NAME_FOR_CLIENT: str(credit_name),
+        server_consts.IS_DIGITAL_RECEIPT: False
     }
+
+    try:
+        if credit_data_object.creditID is not None:
+            credit_dict[server_consts.CREDIT_ID] = str(credit_data_object.creditID)
+        if credit_data_object.date_of_credit is not None:
+            credit_dict[server_consts.DATE_OF_CREDIT] = dateutil.parser.parse(credit_data_object.date_of_credit)
+        if credit_data_object.expiration_date is not None:
+            credit_dict[server_consts.EXPIRATION_DATE] = dateutil.parser.parse(credit_data_object.expiration_date)
+        if credit_data_object.market is not None:
+            credit_dict[server_consts.MARKET] = str(credit_data_object.market)
+    except:
+        return {}
     return credit_dict
 
 
 def credit_data_to_app(credit_id, credit_data_object, credit_name):
     credit_dict = {
-        "_id": str(credit_id),
-        "expiration_date": dateutil.parser.parse(credit_data_object.expiration_date),
-        "market": str(credit_data_object.market),
-        "name_for_client": str(credit_name)
+        server_consts.ID: str(credit_id),
+        server_consts.EXPIRATION_DATE: dateutil.parser.parse(credit_data_object.expiration_date),
+        server_consts.MARKET: str(credit_data_object.market),
+        server_consts.NAME_FOR_CLIENT: str(credit_name)
     }
     return credit_dict
 

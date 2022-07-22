@@ -9,10 +9,12 @@ from cachetools import TTLCache
 from Server.DataObjects.userDataObject import userDataObject
 from Server.Features.SMSSender.smsService import smsService
 from Server.Repositories.userRepository import userRepository
+from Server.serverConsts import serverConsts
+from SystemFiles.logger.loggerService import loggerService
 
+server_consts = serverConsts()
 
 # @singleton
-from SystemFiles.logger.loggerService import loggerService
 
 
 class userService:
@@ -26,15 +28,16 @@ class userService:
         user_data = userDataObject()
         user_data.phone_number = phone_number
 
-        if self.user_repository.is_user_exist('phone_number', phone_number):
-            self.logger.print_info_message("the user is exist in system, details of user updated")
+        if self.user_repository.is_user_exist(server_consts.PHONE_NUMBER, phone_number):
+            self.logger.print_info_message("userService | the user is exist in system, details of user updated")
             # return user key from user_from_db
-            return "the user is exist in system"
+
+            return self.user_repository.get_users_by_generic_value(server_consts.PHONE_NUMBER, phone_number)[0]
 
         user_data.user_key = uuid.uuid4().hex
         user_data_dict = {
-            "user_key": user_data.user_key,
-            "phone_number": str(phone_number),
+            server_consts.USER_KEY: user_data.user_key,
+            server_consts.PHONE_NUMBER: str(phone_number),
         }
         self.user_repository.create_user(user_data_dict)
         self.user_repository.update_user(user_data.user_key, user_data_details)
@@ -43,12 +46,12 @@ class userService:
 
     # phone = str phone number to send sms
     def log_in_phone_number(self, phone_number):
-        if not self.user_repository.is_user_exist('phone_number', phone_number):
+        if not self.user_repository.is_user_exist(server_consts.PHONE_NUMBER, phone_number):
             self.create_user(phone_number, {})
         # generate random 6 digits to temp password
         temp_password = ''.join(random.choice(string.digits) for i in range(6))
         self.login_password_cache[phone_number] = temp_password
-        #self.sms_service.send_temp_password_login(phone, temp_password)
+        # self.sms_service.send_temp_password_login(phone_number, temp_password)
 
         # temp for test
         return temp_password
@@ -61,10 +64,10 @@ class userService:
 
     def get_user_key_sms_login(self, phone_number, temp_pass_from_user):
         if self.verify_sms_temp_password(phone_number, temp_pass_from_user):
-            self.logger.print_event('verify sms code for phone number: ' + str(phone_number))
-            return self.user_repository.get_users_by_generic_value('phone_number', phone_number)[0]
+            self.logger.print_event('userService | verify sms code for phone number: ' + str(phone_number))
+            return self.user_repository.get_users_by_generic_value(server_consts.PHONE_NUMBER, phone_number)[0]
 
-        self.logger.print_event('mismatch sms code for phone number: ' + str(phone_number))
+        self.logger.print_event('userService | mismatch sms code for phone number: ' + str(phone_number))
         return 'The code is wrong'
 
     def check_the_validity_of_a_password(self, password):
@@ -106,7 +109,7 @@ class userService:
         return hashlib.sha256(string_to_hash.encode('utf-8')).hexdigest()
 
     def add_user_name_and_password(self, user_key, user_name, password):
-        if not self.user_repository.is_user_exist(user_key, "user_key"):
+        if not self.user_repository.is_user_exist(server_consts.USER_KEY, user_key):
             return 'user key is not exist'
 
         valid_password = self.check_the_validity_of_a_password(password)
@@ -121,8 +124,8 @@ class userService:
             return 'That username is taken. Try another'
 
         self.user_repository.update_user_data(user_key, {
-            'user_name': user_name_hash,
-            'password': password_hash
+            server_consts.USER_NAME: user_name_hash,
+            server_consts.PASSWORD: password_hash
         })
         return 'created user name and password success'
 
@@ -138,7 +141,7 @@ class userService:
             return 'the password is not valid'
 
         self.user_repository.update_user_data(user_key, {
-            'password': self.get_hash_string(password)
+            server_consts.PASSWORD: self.get_hash_string(password)
         })
         self.logger.print_info_message('userService | the password of user: ' + user_key + ' updated')
         return 'the password updated'

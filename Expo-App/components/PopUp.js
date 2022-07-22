@@ -1,62 +1,104 @@
 import React, {useState, useContext} from "react";
 import { useNavigation } from "@react-navigation/native";
-import { View, Image , Text, TextInput, StyleSheet, TouchableOpacity} from "react-native";
+import { View, Image , Text, TextInput, StyleSheet, TouchableOpacity, ImageBackground} from "react-native";
 
-import { COLORS, SIZES, SHADOWS, assets } from "../constants";
+import { COLORS, SIZES, SHADOWS, assets, FONTS } from "../constants";
 import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
 //{ data,handlePress, date, price, receipt}
-export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, setExpireDate, setMarket, setName, isReceipt}) =>{
-  
-  const [specUrl, setSpecUrl] = useState('')
-  const [isUpLoading, setisUpLoading] = useState(false);
+export const PopUp = ({data, handleClose, handleConfirm, setAmount, setDate, setExpireDate, setMarket, setName, scanned_date, scanned_store, isReceipt}) =>{
+  const [name, setname] = useState('')
+  const [date, setdate] = useState(scanned_date)
+  const [store, setstore] = useState(scanned_store)
+  const [amount, setamount] = useState('')
+  const [expdate, setexpdate] = useState('')
   return (
     <>
     {/* <View style={{alignItems: 'center', backgroundColor: COLORS.white}}>
           </View> */}
-    <View style={{alignItems: 'center', backgroundColor: COLORS.white, borderRadius:SIZES.large}}>
-      <View style={styles.header}>
+
+
+    <View style={{alignItems: 'center', backgroundColor: COLORS.white, borderRadius:SIZES.large, paddingBottom:10, paddingTop:10}}>
+    {/* <ImageBackground
+       source={assets.nft01}
+       resizeMode="cover"
+       style={{
+        width: "100%",
+        borderTopLeftRadius: SIZES.font,
+        borderTopRightRadius: SIZES.font,
+        alignItems:"center",
+        justifyContent: "center",
+        paddingBottom:SIZES.small
+       }}
+       imageStyle={{ borderRadius: SIZES.large}}
+        > */}
+
+      {/* <View style={styles.header}>
         <TouchableOpacity onPress={()=>handleClose(false)}>
            <Image source={require('../Images/x.png')}
                     style={{height: 30, width: 30}}/>
         </TouchableOpacity>
-      </View>
+      </View> */}
       {/* <Image
         source={require('../Images/success.png')}
         style={{height: 150, width: 150, marginVertical: 10}}
       /> */}
-      {isUpLoading ? <Text>Uplaoding...</Text>:<>
+       <Text style={styles.textcontainer}>
+          <Text>Name:</Text>
+      </Text>
       <TextInput
-          value=""
-          onChangeText={(name) => setName(name)}
+          value={name}
+          // onEndEditing={(val)=>setName(val)}
+          onChangeText={(name) => {setname(name); setName(name);}}
           placeholder={'Name'}
           style={styles.input}
+          
+          // placeholderTextColor={COLORS.primary}
           />
-      <Text>Store: </Text>
-      <Text>Date: </Text>
-      {isReceipt && <>
-      <Text>Total Amount is: 90$</Text>
-      </>}
-      {!isReceipt && <>
-        <Text>Please Enter:</Text>
-        <TextInput
-          value="{expireDate}"
-          onChangeText={(lname) => setExpireDate(lname)}
-          placeholder={'Expiration Date'}
+        <Text style={styles.textcontainer}>
+          <Text>Store:</Text>
+      </Text>
+      <TextInput
+          value={store}
+          onChangeText={(store) => {setMarket(store); setstore(store)}}
+          placeholder={'Store'}
           style={styles.input}
-        />
+          />
+          <Text style={styles.textcontainer}>
+          <Text>Date:</Text>
+      </Text>
+          <TextInput
+          value={date}
+          onChangeText={(date) => {setDate(date); setdate(date)}}
+          placeholder={'Date'}
+          style={styles.input}
+          
+          />
+        <Text style={styles.textcontainer}>
+          <Text>Total:</Text>
+      </Text>
         <TextInput
-          value={data.total_price}
-          onChangeText={(name) => setAmount(name)}
+          value={amount}
+          onChangeText={(amount) => {setAmount(amount); setamount(amount)}}
           placeholder={'Total Amount'}
           style={styles.input}
           />
+      {!isReceipt && <>
+        <Text style={styles.textcontainer}>
+          <Text>Expiration Date:</Text>
+      </Text>
+        <TextInput
+          value={expdate}
+          onChangeText={(expdate) => {setExpireDate(expdate); setexpdate(expdate);}}
+          placeholder={'Expiration Date'}
+          style={styles.input}
+        />
       </>}
-      <RectButton minWidth={120} fontSize={SIZES.medium} {...SHADOWS.dark} buttonText={"Confirm"}/>
+      <RectButton  minWidth={120} fontSize={SIZES.medium} {...SHADOWS.dark} buttonText={"Confirm"} handlePress={()=>handleConfirm()}/>
       {/* <Button title="Confirm" onPress={()=>{sendUpdates();}}></Button>
       <Button title="Edit" onPress={()=>{}}></Button> */}
-    </>}
+{/* </ImageBackground> */}
     </View>
 </>
 
@@ -104,6 +146,32 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'flex-end',
     justifyContent: 'center',
+  },
+  input: {
+    width: 350,
+    height: 44,
+    padding: 10,
+    marginTop: 20,
+    marginBottom: 10,
+    backgroundColor: '#e8e8e8'
+  },
+  textcontainer: {
+    // fontWeight: 'bold',
+    width: 350,
+    fontFamily: FONTS.semiBold,
+    textAlign: 'right',
+    alignItems:'center',
+    padding: 0,
+    borderRadius: 1,
+    // borderWidth:1,
+    borderColor:'#dcdcdc',
+    marginTop: 10,
+    marginBottom: 0,
+    // backgroundColor: COLORS.lightgray,
+    color: COLORS.primary,
+    fontSize: 16,
+
+
   },
 });
 

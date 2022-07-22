@@ -43,7 +43,7 @@ export const EthPrice = ({ price }) => {
           color: COLORS.primary,
         }}
       >
-        {price}$
+        {price}{`\u20aa`}
       </Text>
     </View>
   );
