@@ -5,7 +5,7 @@ from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.locationRepository import locationRepository
 from Server.Repositories.userRepository import userRepository
 from Server.serverConsts import serverConsts
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 

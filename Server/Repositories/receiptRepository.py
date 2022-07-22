@@ -7,7 +7,7 @@ from Server.serverConsts import serverConsts
 import dateutil
 from dateutil.parser import parse
 
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
@@ -89,7 +89,10 @@ class receiptRepository:
         receipt_list = {}
         for record in cursor_sort:
             receipt_list[record[server_consts.ID]] = record
-        return self.list_to_dict(sorted(receipt_list.values(), key=lambda x: x[server_consts.DATE_OF_RECEIPT],  reverse=True))
+        try:
+            return self.list_to_dict(sorted(receipt_list.values(), key=lambda x: x[server_consts.DATE_OF_RECEIPT],  reverse=True))
+        except:
+            return receipt_list
 
     def get_receipt_by_name(self, user_key, name_search):
         list_of_names = self.get_values_by_key(user_key, server_consts.NAME_FOR_CLIENT)

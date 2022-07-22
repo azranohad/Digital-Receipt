@@ -7,9 +7,8 @@ from datetime import datetime
 # @singleton
 from Server.serverConsts import serverConsts
 from datetime import datetime
-import uuid
 
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
@@ -81,7 +80,11 @@ class creditRepository:
         credit_dict = {}
         for record in cursor_sort:
             credit_dict[record[server_consts.ID]] = record
-        return self.list_to_dict(sorted(credit_dict.values(), key=lambda x: x[server_consts.DATE_OF_CREDIT], reverse=True))
+        try:
+            return self.list_to_dict(sorted(credit_dict.values(), key=lambda x: x[server_consts.DATE_OF_CREDIT], reverse=True))
+        except:
+            return credit_dict
+
 
     def get_credit_by_name(self, user_key, name_search):
         list_of_names = self.get_values_by_key(user_key, server_consts.NAME_FOR_CLIENT)

@@ -14,7 +14,7 @@ from tempfile import NamedTemporaryFile
 from shutil import copyfileobj
 from flask import send_file
 
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
@@ -40,16 +40,18 @@ class receiptService:
         return self.receipt_repository.insert_receipt(user_key, receipt_data_dict)
 
     def delete_receipt(self, user_key, _id):
-        is_digital_receipt = self.receipt_repository.get_receipt_by_value(user_key, server_consts.ID, _id)[server_consts.IS_DIGITAL_RECEIPT]
+        receipt_data_dict = self.receipt_repository.get_receipt_by_value(user_key, server_consts.ID, _id).get(_id)
+        is_digital_receipt = receipt_data_dict[server_consts.IS_DIGITAL_RECEIPT]
         if is_digital_receipt:
-            return self.receipt_repository.delete_receipt(user_key, _id)
-        if not self.local_repository.delete_scan_image(user_key, _id):
-            self.logger.print_severe_message("receiptService | delete scan receipt from local DB Failed. user key: " + user_key)
-        if not self.receipt_repository.delete_receipt(user_key, _id):
-            self.logger.print_severe_message("receiptService | delete scan receipt  data from DB Failed. user key: " + user_key)
+            self.receipt_repository.delete_receipt(user_key, _id)
+
+        #delete from firebase
+        # if not self.fire_base_repository.delete_image(receipt_data_dict.get(server_consts.URL_SCAN_IMAGE)):
+        #     self.logger.print_severe_message('Error deleting image from firebase')
+        #     return str(False)
         self.logger.print_severe_message(
             "receiptService | delete scan receipt from DB Success. user key: " + user_key)
-        return True
+        return str(True)
 
 
     def get_barcode(self, receipt_id):

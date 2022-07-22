@@ -7,7 +7,7 @@ from flask import send_file
 from singleton_decorator import singleton
 
 from Server.serverConsts import serverConsts
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 

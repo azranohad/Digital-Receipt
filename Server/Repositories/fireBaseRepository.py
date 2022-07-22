@@ -4,7 +4,7 @@ import pyrebase
 from enum import Enum
 
 from Server.Services.generalService import generalService
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 
 class typeImage(Enum):

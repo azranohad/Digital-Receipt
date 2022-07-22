@@ -4,7 +4,7 @@ from Server.Repositories.creditRepository import creditRepository
 from Server.Repositories.serverLocalRepository import serverLocalRepository
 from Server.Services.creditService import creditService
 from Server.serverConsts import serverConsts
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 scan_credit_api = Blueprint('scan_credit_api', __name__)
 
@@ -16,7 +16,7 @@ server_local_repository = serverLocalRepository()
 server_consts = serverConsts()
 
 
-@scan_credit_api.route('/scan_credit', methods=['POST'])
+@scan_credit_api.route('/scan', methods=['POST'])
 def scan_credit():
     image_file = request.files[server_consts.IMAGE]
     user_key = request.form[server_consts.USER_KEY]
