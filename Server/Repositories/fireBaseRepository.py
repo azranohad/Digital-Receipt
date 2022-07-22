@@ -43,8 +43,8 @@ class fireBaseRepository:
 
     # return url
     def push_image(self, user_key, type, file_name, file_path):
-        self.logger.print_info_message(
-            "receiptRepository | push new scan " + type.value + " to user: " + str(user_key))
+        self.logger.print_event(
+            "fireBaseRepository | push new scan " + type.value + " to user: " + str(user_key))
         path_details = [user_key, type.value, file_name]
         storage_path = "/".join(path_details)
         self.get_storage().child(storage_path).put(file_path)
@@ -53,7 +53,7 @@ class fireBaseRepository:
     # return url
     def push_temp_image(self, file_name, file_path):
         self.logger.print_info_message(
-            "receiptRepository | push temp image")
+            "fireBaseRepository | push temp image")
         temp_path = ["temp", file_name]
         storage_path = "/".join(temp_path)
 
@@ -61,8 +61,13 @@ class fireBaseRepository:
         return self.get_storage().child(storage_path).get_url("image")
 
 
-    def delete_image(self, path_image_in_firebase):
-        self.get_storage().bucket.blob(path_image_in_firebase).delete()
+    def delete_image(self, user_key, _id):
+        path = user_key+"/receipt/"+_id
+        if self.get_storage().bucket.blob(path).delete() is None:
+            self.logger.print_event("fireBaseRepository | delete image from firebase: " + path)
+            return True
+
+        return False
 
 
 

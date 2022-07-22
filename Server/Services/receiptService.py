@@ -45,14 +45,17 @@ class receiptService:
         if is_digital_receipt:
             self.receipt_repository.delete_receipt(user_key, _id)
 
-        #delete from firebase
-        # if not self.fire_base_repository.delete_image(receipt_data_dict.get(server_consts.URL_SCAN_IMAGE)):
-        #     self.logger.print_severe_message('Error deleting image from firebase')
-        #     return str(False)
-        self.logger.print_severe_message(
+        if not self.receipt_repository.delete_receipt(user_key, _id):
+            self.logger.print_severe_message("receiptService | delete scan receipt  data from DB Failed. user key: " + user_key)
+            self.receipt_repository.delete_receipt(user_key, _id)
+        # delete from firebase
+        if not self.fire_base_repository.delete_image(user_key, receipt_data_dict.get(server_consts.ID)):
+            self.logger.print_severe_message('receiptService | Error deleting image from firebase')
+            return str(False)
+        self.logger.print_event(
             "receiptService | delete scan receipt from DB Success. user key: " + user_key)
-        return str(True)
 
+        return str(True)
 
     def get_barcode(self, receipt_id):
         barcode_image = EAN13(receipt_id, writer=ImageWriter())
