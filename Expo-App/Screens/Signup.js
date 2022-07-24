@@ -33,44 +33,6 @@ const SignupScreen = ({navigation, route}) => {
 
         }
       }
-    
-      // const datePicker = () => {
-      // return (<DatePicker
-      //     style={styles.datePickerStyle}
-      //     date={birthday}
-      //     mode="date"
-      //     placeholder="select date"
-      //     format="DD/MM/YYYY"
-      //     minDate="01-01-1900"
-      //     maxDate="01-01-2000"
-      //     confirmBtnText="Confirm"
-      //     cancelBtnText="Cancel"
-      //   //   customStyles={{
-      //   //     dateIcon: {
-      //   //       position: 'absolute',
-      //   //       right: -5,
-      //   //       top: 4,
-      //   //       marginLeft: 0,
-      //   //     },
-      //   //     dateInput: {
-      //   //       borderColor : "gray",
-      //   //       alignItems: "flex-start",
-      //   //       borderWidth: 0,
-      //   //       borderBottomWidth: 1,
-      //   //     },
-      //   //     placeholderText: {
-      //   //       fontSize: 17,
-      //   //       color: "gray"
-      //   //     },
-      //   //     dateText: {
-      //   //       fontSize: 17,
-      //   //     }
-      //   //   }}
-      //     onDateChange={(birthday) => {
-      //       setBirthday(birthday);
-      //     }}
-      //   />
-      // )};
       
     async function sendDetails() {
         if(username === '') {
@@ -85,29 +47,12 @@ const SignupScreen = ({navigation, route}) => {
          } else if (confirmPassword !== password) {
              alert('password and password confirmation is not equal');
              return;
-        // }  else if (name === '') {
-        //     alert('Please Enter Name');
-        //     return;
+
          } else if (phonenumber === '') {
              alert('Please Enter phone number');
              return;
          }
-        // }    else if (email === '') {
-        //     alert('Please Enter email');
-        //     return;
-        // } 
-        // fetch("http://192.168.43.254:3000/userName", {
-        //     method: 'POST',
-        //     body:JSON.stringify({"username": username}),
-        //     headers: {
-        //         'content-type': 'aplication/json',
-        //     },
-        // }).then(res => res.text()).then(data => {
-        //     console.log(data);
-        //     if (data=="wrong name"){
-        //         console.log("please enter new name");
-        //     }
-        // });
+
 
         fetch(`http://${route.params.url}/users_controller/create_user`, {
             method: 'POST',
@@ -128,21 +73,13 @@ const SignupScreen = ({navigation, route}) => {
             },
         }).then(res => res.text()).then(data => {
             console.log("data: ", data);
-            // let response = Object.values(data)[0];
-            // console.log("res: ",response);
-            // console.log("Object.keys(data): ",Object.keys(data));
-            // console.log("--------", Object.keys(data)[0]);
-            // console.log("--------", Object.values(data)[0]);
-            // if (Object.keys(data).length == 0){
-            //     console.log("NONE");
-            // }
+
             if (data=="Username already exists"){
                 console.log("Username already exists");
                 setError(response);
             }
             else {
-                // let id = Object.values(data)[0];
-                //id = data
+
                 console.log(data.toString())
                 storeData(data.toString());
                 navigation.navigate('Home');
@@ -244,14 +181,10 @@ const SignupScreen = ({navigation, route}) => {
                           onChangeText={(name) => setBirthday(name)}
                           placeholder={'Birth Date'}
                           style={styles.input}
-                          //keyboardType={'decimal-pad'}
 
                           />
-                          {/* <Button title="Submit" onPress={()=>sendDetails()}/> */}
                           <View>
-                            {/* <Pressable style={styles.button1} onPress={()=>sendDetails()}>
-                                <Text style={styles.text1}>Send</Text>
-                            </Pressable> */}
+
                             <RectButton marginTop={10} minWidth={170} fontSize={SIZES.large} {...SHADOWS.light} buttonText={"Sign Up"} handlePress={()=>sendDetails()}/>
                          </View>
                       

@@ -30,14 +30,15 @@ class userRepository:
 
     def update_user_data(self, user_key, dict_update_user):
         result = self.get_collection().update({server_consts.USER_KEY: user_key}, {'$set': dict_update_user})
-        if result['updatedExisting']:
+        update_success = result['updatedExisting']
+        if update_success:
             self.logger.print_info_message(
-                "usersRepository | details (" + str(dict_update_user.keys()) + ") of user: " + str(
+                "usersRepository | details of user: " + str(
                     user_key) + " updated in data base")
         else:
             self.logger.print_severe_message(
                 "usersRepository | failed update data of user: " + user_key)
-
+        return str(update_success)
     def get_user_from_db(self, request):
         for item in request:
             if item in self.identifier_data:
@@ -63,7 +64,7 @@ class userRepository:
             user_data_update[item] = request[item]
 
         user_data_update[server_consts.USER_KEY] = user_key
-        self.update_user_data(user_key, user_data_update)
+        return self.update_user_data(user_key, user_data_update)
 
     def delete_user(self, user_key):
         result = self.get_collection().delete_one({server_consts.USER_KEY: user_key})

@@ -38,7 +38,7 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.43.254:5000";
+  const url="192.168.0.111:5000";
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),
@@ -54,7 +54,7 @@ export default function App() {
   
   return (
     <NavigationContainer theme={theme} >
-      <Drawer.Navigator backBehavior="order" initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true, drawerItemStyle:{borderBottomWidth: 0.5}, drawerLabelStyle:{fontStyle:'italic'}}}>
+      <Drawer.Navigator backBehavior="order" initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true, drawerItemStyle:{borderBottomWidth: 0.5}, drawerLabelStyle:{fontStyle:'italic', fontSize:16}}}>
       <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
       <Drawer.Screen name="Home" component={ProductsScreen}  initialParams={{url: url}}/>
 
