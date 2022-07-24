@@ -7,7 +7,7 @@ import {useNavigation, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator  } from '@react-navigation/native-stack';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { NFTCard, HomeHeader, FocusedStatusBar ,RectButton} from "../components";
+import { Card, SearchBar, FocusedStatusBar ,RectButton} from "../components";
 import * as TaskManager from 'expo-task-manager';
 const LOCATION_TASK_NAME = "LOCATION_TASK"
 import {DefaultTheme } from "@react-navigation/native";

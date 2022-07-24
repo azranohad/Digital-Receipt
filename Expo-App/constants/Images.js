@@ -1,41 +1,15 @@
-// local imgs
-const Onboarding = require("../assets/imgs/bg.png");
-const Logo = require("../assets/imgs/argon-logo.png");
-const LogoOnboarding = require("../assets/imgs/argon-logo-onboarding.png");
-const ProfileBackground = require("../assets/imgs/profile-screen-bg.png");
-const RegisterBackground = require("../assets/imgs/register-bg.png");
-const Pro = require("../assets/imgs/getPro-bg.png");
-const ArgonLogo = require("../assets/imgs/argonlogo.png");
-const iOSLogo = require("../assets/imgs/ios.png");
-const androidLogo = require("../assets/imgs/android.png");
+
 // internet imgs
+const Barcode = "https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/barcode.png?alt=media&token=3ece088e-8be9-4e4a-b6ed-869db0fe7ead";
+const SuperPharmLogo = "https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/%D7%A1%D7%95%D7%A4%D7%A8-%D7%A4%D7%90%D7%A8%D7%9D-%D7%A9%D7%99%D7%A8%D7%95%D7%AA-%D7%9C%D7%A7%D7%95%D7%97%D7%95%D7%AA-%D7%9C%D7%95%D7%92%D7%95.jpg?alt=media&token=96ae2941-01be-4710-8366-59b2180f1c60";
+const WalmartLogo = "https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/Walmart.png?alt=media&token=48f0d6f0-fb49-4cde-80be-d6838ede4613";
+const FoxLogo = "https://firebasestorage.googleapis.com/v0/b/invertible-fin-335322.appspot.com/o/fox.jpg?alt=media&token=08acbec6-854d-4860-8726-e5b245d456b4";
 
-const ProfilePicture = 'https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?fit=crop&w=1650&q=80';
 
-const Viewed = [
-  'https://images.unsplash.com/photo-1501601983405-7c7cabaa1581?fit=crop&w=240&q=80',
-  'https://images.unsplash.com/photo-1543747579-795b9c2c3ada?fit=crop&w=240&q=80',
-  'https://images.unsplash.com/photo-1551798507-629020c81463?fit=crop&w=240&q=80',
-  'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?fit=crop&w=240&q=80',
-  'https://images.unsplash.com/photo-1503642551022-c011aafb3c88?fit=crop&w=240&q=80',
-  'https://images.unsplash.com/photo-1482686115713-0fbcaced6e28?fit=crop&w=240&q=80',
-];
-
-const Products = {
-  'View article': 'https://images.unsplash.com/photo-1501601983405-7c7cabaa1581?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=840&q=840',
-};
 
 export default {
-  Onboarding,
-  Logo,
-  LogoOnboarding,
-  ProfileBackground,
-  ProfilePicture,
-  RegisterBackground,
-  Viewed,
-  Products,
-  Pro,
-  ArgonLogo,
-  iOSLogo,
-  androidLogo
+  Barcode,
+  WalmartLogo,
+  SuperPharmLogo,
+  FoxLogo,
 };

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, Image, StatusBar, FlatList, StyleSheet, ScrollView } from "react-native";
 import {useNavigation} from '@react-navigation/native'
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { CircleButton, RectButton, SubInfo, DetailsDesc, DetailsBid, FocusedStatusBar,Loading } from "../components";
+import { CircleButton, RectButton, SubInfo, ItemDetails, FocusedStatusBar,Loading } from "../components";
 import {firebase} from '../firebase'
 
 const Header = ({navigation }) => (
@@ -36,7 +36,7 @@ const ScanedImage= ({ route}) => {
     <Header navigation={navigation}/>
     <ScrollView
   contentContainerStyle={{alignItems: 'center'}}>
-    <Image style={{height:800, width:"100%"}} source={{ uri: image }}/>
+    <Image style={{height:900, width:"100%"}} source={{ uri: image }}/>
 
     {/* <Image
       source={require('./fullSkeleton.png')}
@@ -46,6 +46,7 @@ const ScanedImage= ({ route}) => {
     {/* <Image style={{height:'100%', width:'100%'}} resizeMode='contain' source={{ uri: image }}/> */}
     {/* <Image style={{height:'100%', width:'100%'}} resizeMode='contain' source={{ uri: data.url_scan_image }}/> */}
     </>:
+    
     <Loading/>
   );
 };

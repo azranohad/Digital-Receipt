@@ -1,28 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet,
-  TextInput,
-  View,
-  Text,
-  SectionList,
-  SafeAreaView,
-  TouchableOpacity,
-  Image,
-  Button,
-  FlatList,} from "react-native";
-import { Colors } from "react-native-paper";
-import { DataTable } from 'react-native-paper';
-
+import React, { useState } from "react";
+import { StyleSheet,TextInput,View,Text,TouchableOpacity,Image,FlatList,} from "react-native";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
-import { RectButton } from "react-native-gesture-handler";
 import { CircleButton } from "./Button";
-import { useNavigation } from "@react-navigation/native";
 
-const HomeHeader = ({ data, onSelect, onSearch, filter, setFilter, searchByName, setSearchByName, Type, date, name, store, setStore, setName, setDate, original, setAll, setJsonData }) => {
-  const [show, setShow] = useState(false);
-  const [placeholder, setPlaceHolder] = useState('Search By Name..');
-const navigation = useNavigation();
-
+const SearchBar = ({ data, onSelect, onSearch, filter, setFilter, searchByName, setSearchByName, original, setAll, setJsonData, placeholder, storesFilter }) => {
 const ListItem = ({ item, onSelect, setFilter }) => {
   const [isPressed, setIsPressed] = useState(false);
 
@@ -53,31 +34,9 @@ const ListItem = ({ item, onSelect, setFilter }) => {
 };
 
   return (
-//   <View
-//   style={{
-//     backgroundColor: COLORS.midnightblue, //primary
-//     width: "100%",
-//       height: "30%",
-//     // padding: SIZES.font,
-//     // paddingTop: 20,
-//     // paddingLeft:50,
-//     // paddingRight:50,
-//     // paddingBottom:20,
-//   }}
-//   >
-
-//     <CircleButton
-//   imgUrl={assets.left}
-//   handlePress={() => navigation.navigate({Type}, { data })}
-//   right={25}
-//   top={StatusBar.currentHeight}
-//   padding={10}
-// />
-//   </View> 
-
   <View
   style={{
-    backgroundColor: COLORS.primary, //primary
+    backgroundColor: COLORS.primary, 
     padding: SIZES.font,
     paddingTop: 20,
     paddingLeft:50,
@@ -87,11 +46,9 @@ const ListItem = ({ item, onSelect, setFilter }) => {
   >
   {filter && <CircleButton
 imgUrl={assets.left}
-handlePress={() => {setFilter(false); setAll(original);}}
-right={10}
-top={70}
-// top={StatusBar.currentHeight}
-
+handlePress={() => {setFilter(false); setJsonData(original);}}
+right={SIZES.rightHeight}
+top={63}
 />}
       <View style={{ marginTop: SIZES.font }}>
         <View
@@ -113,20 +70,17 @@ top={70}
               />
           </TouchableOpacity>
             <TextInput
-              placeholder='Search By Name..'
+              placeholder={placeholder}
               style={{ flex: 1 }}
-              onEndEditing={()=>{onSearch(searchByName); setSearchByName('');}}
-              // onEndEditing={val=>setSearchByName(val)}
+              onEndEditing={()=>{if (searchByName!=""){onSearch(searchByName); setSearchByName('');}}}
               onChangeText={(val)=>setSearchByName(val)}
               />
-      {/* <TouchableOpacity onPress={()=>setShow(!show)}>
-        <Image source={assets.search}></Image>
-      </TouchableOpacity> */}
+  
 
         
     </View>
       </View>
-      {<FlatList
+      {storesFilter && <FlatList
       horizontal
       data={Object.keys(data)}
       renderItem={({ item }) => <ListItem item={data[item]} onSelect={onSelect} setFilter={setFilter}  />}
@@ -139,28 +93,9 @@ top={70}
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#121212',
-  },
-  sectionHeader: {
-    fontWeight: '800',
-    fontSize: 18,
-    color: '#f4f4f4',
-    marginTop: 20,
-    marginBottom: 5,
-  },
   item: {
     marginLeft: 5,
     marginTop: 15,
   },
-  itemPhoto: {
-    width: 200,
-    height: 200,
-  },
-  itemText: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    marginTop: 5,
-  },
 });
-export default HomeHeader;
+export default SearchBar;

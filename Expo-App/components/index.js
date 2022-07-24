@@ -1,20 +1,17 @@
-import HomeHeader from "./HomeHeader";
-import NFTCard from "./NFTCard";
+import SearchBar from "./SearchBar";
+import Card from "./Card";
 import ProductCard from "./ProductCard";
 import { PopUp } from "./PopUp";
-import SearchHeader from "./SearchHeader";
 import Loading from "./Loading";
 import { RectButton, CircleButton } from "./Button";
-import { SubInfo, People, EndDate, EthPrice, NFTTitle } from "./SubInfo";
-import DetailsBid from "./DetailsBid";
+import { SubInfo, People, EndDate, Price, CardTitle } from "./SubInfo";
+import ItemDetails from "./ItemDetails";
 import FocusedStatusBar from "./FocusedStatusBar";
-import DetailsDesc from './DetailsDesc';
 
 export {
-  HomeHeader,
+  SearchBar,
   Loading,
-  SearchHeader,
-  NFTCard,
+  Card,
   SubInfo,
   People,
   PopUp,
@@ -22,9 +19,8 @@ export {
   RectButton,
   CircleButton,
   ProductCard,
-  EthPrice,
-  NFTTitle,
-  DetailsBid,
+  Price,
+  CardTitle,
+  ItemDetails,
   FocusedStatusBar,
-  DetailsDesc,
 };

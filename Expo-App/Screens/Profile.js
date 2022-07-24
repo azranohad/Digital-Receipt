@@ -4,7 +4,7 @@ import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { useRoute } from '@react-navigation/native';
 import { Value } from 'react-native-reanimated';
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { NFTCard, HomeHeader, FocusedStatusBar ,RectButton} from "../components";
+import { Card, SearchBar, FocusedStatusBar ,RectButton} from "../components";
 
 const ProfileScreen = ({route}) => {
             const [userKey, setuserKey] = useState('');

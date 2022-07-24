@@ -1,15 +1,11 @@
 import React from "react";
-import { useNavigation } from "@react-navigation/native";
 import { View, Image, Text, Linking } from "react-native";
 
-import { COLORS, SIZES, SHADOWS, assets, FONTS } from "../constants";
-import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
-import { RectButton, CircleButton } from "./Button";
+import { COLORS, SIZES, SHADOWS, FONTS } from "../constants";
+import { Price, CardTitle } from "./SubInfo";
+import { RectButton } from "./Button";
 
 const ProductCard = ({ data}) => {
-  const navigation = useNavigation();
- 
-
   return (
     <View
       style={{
@@ -39,7 +35,7 @@ const ProductCard = ({ data}) => {
 
 
       <View style={{ width: "100%", padding: SIZES.font }} >
-        <NFTTitle
+        <CardTitle
           title={data.itemDescription}
           subTitle={data.brand}
           titleSize={SIZES.large}
@@ -59,7 +55,7 @@ const ProductCard = ({ data}) => {
             alignItems: "center",
           }}
         >
-          <EthPrice price={data.price} />
+          <Price price={data.price} />
           <RectButton
             minWidth={120}
             fontSize={SIZES.font}

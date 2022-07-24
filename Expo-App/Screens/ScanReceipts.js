@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import {StyleSheet,Text, TextInput,View,StatusBar, ImageBackground, Image, Pressable, Alert, KeyboardAvoidingView} from 'react-native'
+import {StyleSheet,Text, TextInput,View,StatusBar, ImageBackground,ActivityIndicator, KeyboardAvoidingView} from 'react-native'
 import { Camera } from 'expo-camera'
 import * as ImagePicker from 'expo-image-picker'
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
@@ -180,12 +180,12 @@ const ScanReceipts = ({navigation, route}) => {
       JsonData.date_of_receipt = date;
       JsonData.is_digital_receipt = false;
     }
-    //const obj = JSON.parse(JsonData)
-    JsonData.name_for_client = name;
-    JsonData.total_price = Number(amount);
+    amount==""?JsonData.total_price = 0:JsonData.total_price = Number(amount);
+    name==""?JsonData.name_for_client=(new Date()).toString().slice(0,15):JsonData.name_for_client = name;
     JsonData.user_key = userKey;
     JsonData.market = market;
     
+    console.log(JsonData);
 
     
     //JsonData.filename = filename
@@ -230,7 +230,7 @@ const ScanReceipts = ({navigation, route}) => {
       height: "100%",
     }}
   >
-    <ImageBackground
+    {!isUpLoading && <ImageBackground
        source={assets.nft01}
        resizeMode="cover"
        style={{
@@ -275,7 +275,6 @@ const ScanReceipts = ({navigation, route}) => {
 
        </View>
 
-    {isUpLoading && <Loading/>}
 
      {popUp && !isUpLoading &&
      <Modal
@@ -287,14 +286,41 @@ const ScanReceipts = ({navigation, route}) => {
      visible={modalVisible}
    >
         <PopUp data={JsonData} 
-        handleClose={()=>{ setModalVisible(false); setAmount("0"); setName(JsonData.market+" "+JsonData.date); sendUpdates();}} 
         handleConfirm={sendUpdates} setAmount={setAmount} setExpireDate={setExpireDate} 
         setDate={setDate} setMarket={setMarket} setName={setName} scanned_date={date} scanned_store={market}
         isReceipt={isReceipt} />
 
    </Modal>
 }   
-</ImageBackground>
+</ImageBackground>}
+    {isUpLoading &&     <View 
+    style={{
+      width: "100%",
+      height: "100%",
+      alignItems:"center",
+      flex: 1,
+    }}
+  >
+    <ImageBackground
+       source={assets.nft01}
+       resizeMode="cover"
+       style={{
+         width: "100%",
+         height: "100%",
+         borderTopLeftRadius: SIZES.font,
+         borderTopRightRadius: SIZES.font,
+        //  paddingTop: 450,
+        //  paddingBottom: 100,
+         alignItems:"center",
+         flex: 1,
+         justifyContent: "center",
+        }}
+     >
+       <ActivityIndicator size="large" color={COLORS.primary} />
+    <Text style={styles.text_header_date}>Loading...</Text>
+
+     </ImageBackground>
+     </View>}
     </View>
   )
 }
@@ -391,6 +417,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
     backgroundColor: '#e8e8e8'
+  },
+  text_header_date: {
+    fontFamily: FONTS.semiBold,
+    fontSize: SIZES.large,
+    color: COLORS.primary,
+    padding: 10,
+    alignContent: "center"
   },
   textcontainer: {
     // fontWeight: 'bold',

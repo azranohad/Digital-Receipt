@@ -16,6 +16,8 @@ export const SIZES = {
   medium: 16,
   large: 18,
   extraLarge: 24,
+  topHeight: 80,
+  rightHeight: 10,
 };
 
 export const FONTS = {
@@ -25,6 +27,10 @@ export const FONTS = {
   regular: "InterRegular",
   light: "InterLight",
 };
+
+export const CURRANCY = {
+  shekel: `\u20aa`,
+}
 
 export const SHADOWS = {
   light: {

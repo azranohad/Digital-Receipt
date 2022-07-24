@@ -4,7 +4,7 @@ import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } fro
 import { DataTable } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { NFTCard, HomeHeader, FocusedStatusBar, Loading, RectButton } from "../components";
+import { Card, SearchBar, FocusedStatusBar, Loading, RectButton } from "../components";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 
 import { event } from 'react-native-reanimated';
@@ -103,7 +103,7 @@ const trashCredit = (val)=> {
         <View style={{ zIndex: 0 }}>
           {JsonData?<FlatList
             data={Object.values(JsonData)}
-            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,16)} price={item.total_price}  receipt={false} handleGetImg={getImg}/>}
+            renderItem={({ item }) => <Card data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,16)} price={item.total_price}  receipt={false} handleGetImg={getImg}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
             ListHeaderComponent={<>

@@ -5,7 +5,7 @@ import GpsScreen from './Gps';
 import {useNavigation, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { NFTCard, HomeHeader, FocusedStatusBar ,RectButton} from "../components";
+import { Card, SearchBar, FocusedStatusBar ,RectButton} from "../components";
 
 const SMSLoginScreen = ( {route}) => {
     const [phoneNumber, setUsername] = useState('');

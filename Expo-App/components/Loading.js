@@ -1,30 +1,43 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text} from 'react-native';
-import { Platform } from 'react-native'
-import AnimatedLoader from 'react-native-animated-loader';
-import {ViewPropTypes} from 'deprecated-react-native-prop-types';
-import { COLORS } from '../constants';
+import {StyleSheet, Text, View, ImageBackground, ActivityIndicator} from 'react-native';
+import { COLORS, SIZES, FONTS, assets } from '../constants';
 
 export default function Loading() {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    setInterval(() => {
-      setVisible(!visible);
-    }, 2000);
-  }, []);
-  return (
-    <AnimatedLoader
-      visible={visible}
-      overlayColor="rgba(255,255,255,0.75)"
-      animationStyle={styles.lottie}
-      speed={1}>
-      <Text>Loading...</Text>
-    </AnimatedLoader>
-  );
+return(
+
+  <View 
+  style={{
+    width: "100%",
+    height: "100%",
+  }}
+>
+  <ImageBackground
+     source={assets.nft01}
+     resizeMode="cover"
+     style={styles.background}
+     >
+     <ActivityIndicator size="large" color={COLORS.primary} />
+  <Text style={styles.text_header_date}>Loading...</Text>
+
+   </ImageBackground>
+   </View>
+)
 }
+
 const styles = StyleSheet.create({
-  lottie: {
-    width: 100,
-    height: 100,
+  background: {
+    width: "100%",
+    height: "100%",
+    borderTopLeftRadius: SIZES.font,
+    borderTopRightRadius: SIZES.font,
+    alignItems:"center",
+    flex: 1,
+    justifyContent: "center",
+  },
+  text_header_date: {
+    fontFamily: FONTS.semiBold,
+    fontSize: SIZES.large,
+    color: COLORS.primary,
+    padding: 10,
+    alignContent: "center"
   },
 });

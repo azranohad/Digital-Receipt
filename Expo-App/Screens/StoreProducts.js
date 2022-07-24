@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { COLORS, FONTS, SIZES, assets } from "../constants";
 import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList,TouchableOpacity,Image} from 'react-native';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { ProductCard, HomeHeader, FocusedStatusBar, SearchHeader, Loading, RectButton } from "../components";
+import { ProductCard, SearchBar, FocusedStatusBar, Loading, RectButton } from "../components";
 import { useFocusEffect } from '@react-navigation/native';
 
 

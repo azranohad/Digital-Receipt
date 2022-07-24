@@ -3,15 +3,13 @@ import { useNavigation } from "@react-navigation/native";
 import { View, Image } from "react-native";
 
 import { COLORS, SIZES, SHADOWS, assets } from "../constants";
-import { SubInfo, EthPrice, NFTTitle } from "./SubInfo";
+import { SubInfo, Price, CardTitle } from "./SubInfo";
 import { RectButton, CircleButton } from "./Button";
 
 
-const NFTCard = ({ data,handlePress, date, price, receipt, handleGetImg}) => {
+const Card = ({ data,handlePress, date, price, receipt}) => {
   const navigation = useNavigation();
   const uri = data.url_scan_image;
-
-
 
   return (
     <View
@@ -46,7 +44,7 @@ const NFTCard = ({ data,handlePress, date, price, receipt, handleGetImg}) => {
       <SubInfo date={date} receipt={receipt}/>
 
       <View style={{ width: "100%", padding: SIZES.font }}>
-        <NFTTitle
+        <CardTitle
           title={data.name_for_client}
           subTitle={data.market}
           titleSize={SIZES.large}
@@ -61,18 +59,15 @@ const NFTCard = ({ data,handlePress, date, price, receipt, handleGetImg}) => {
             alignItems: "center",
           }}
         >
-          <EthPrice price={price.toFixed(2)} />
+          <Price price={price.toFixed(2)} />
           <RectButton
             minWidth={80}
             fontSize={SIZES.font}
             handlePress={() => {
               if (receipt){
-                console.log(data);
                 data.is_digital_receipt ? navigation.navigate("DigitalReceipt", { data }): navigation.navigate("ScanedImage", {uri});
               }
               else {
-                console.log(data.isDigitalCredit);
-
                 data.isDigitalCredit ? navigation.navigate("DigitalCredit", { data }): navigation.navigate("ScanedImage", {uri});
               }
             }}
@@ -84,4 +79,4 @@ const NFTCard = ({ data,handlePress, date, price, receipt, handleGetImg}) => {
   );
 };
 
-export default NFTCard;
+export default Card;

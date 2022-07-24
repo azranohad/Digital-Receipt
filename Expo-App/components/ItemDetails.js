@@ -1,10 +1,10 @@
 import React from "react";
-import { View, Text, Image } from "react-native";
+import { View, Text } from "react-native";
 
-import { EthPrice } from "./SubInfo";
+import { Price } from "./SubInfo";
 import { COLORS, SIZES, FONTS } from "../constants";
 
-const DetailsBid = ({ bid }) => {
+const ItemDetails = ({ item }) => {
   return (
     <View
       style={{
@@ -15,14 +15,8 @@ const DetailsBid = ({ bid }) => {
         marginVertical: SIZES.base,
         paddingHorizontal: SIZES.base,
       }}
-      key={bid._id}
+      key={item._id}
     >
-     
-      {/* <Image
-        source={bid.image}
-        resizeMode="contain"
-        style={{ width: 48, height: 48 }}
-      /> */}
        <View
         style={{
           flex: 1,
@@ -36,18 +30,15 @@ const DetailsBid = ({ bid }) => {
           fontFamily: FONTS.medium,
           fontSize: SIZES.small,
           color: COLORS.primary,
-
-          // paddingRight: SIZES.extraLarge
         }}
         >
-        x{bid.amount}
+        x{item.amount}
       </Text>
-      <EthPrice price={bid.price} />
+      <Price price={item.price} />
       </View>
       <View
         style={{
           flex: 1,
-          // alignItems: "center",
           paddingHorizontal: SIZES.base,
         }}
       >
@@ -58,7 +49,7 @@ const DetailsBid = ({ bid }) => {
             color: COLORS.primary,
           }}
         >
-          {bid.itemDescription}
+          {item.itemDescription}
         </Text>
         <Text
           style={{
@@ -68,12 +59,11 @@ const DetailsBid = ({ bid }) => {
             marginTop: 3,
           }}
         >
-          {bid.itemID}
+          {item.itemID}
         </Text>
       </View>
-
     </View>
   );
 };
 
-export default DetailsBid;
+export default ItemDetails;

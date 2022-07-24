@@ -4,13 +4,10 @@ import 'react-native-gesture-handler';
 import { ImageBackground,Image, StyleSheet, Text, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { DrawerActions, NavigationContainer } from '@react-navigation/native';
-import HomeScreen from './Screens/Home';
-import SettingScreen from './Screens/Settings';
-import ExpenseAnalysisScreen from './Screens/ExpenseAnalysis';
+
 import ScanReceiptsScreen from './Screens/ScanReceipts';
 import MyStoreCreditsScreen from './Screens/MyStoreCredits';
 import MyReceiptsScreen from './Screens/MyReceipts';
-import GpsScreen from './Screens/Gps';
 import LoginScreen from './Screens/Login';
 import SignupScreen from './Screens/Signup';
 import ProfileScreen from './Screens/Profile';
@@ -18,8 +15,6 @@ import SMSLoginScreen from './Screens/SMSLogin';
 import ProductsScreen from './Screens/Products';
 import DigitalReceipt from './components/DigitalReceipt';
 import DigitalCredit from './components/DigitalCredit';
-import newGpsScreen from './Screens/NewGps';
-import UserLocationScreen from './Screens/UserLocation';
 import ScanedImage from './Screens/ScanedImage';
 import StoreProducts from './Screens/StoreProducts';
 import StoreCreditSoonExpire from './Screens/StoreCreditSoonExpires';
@@ -43,7 +38,7 @@ const theme = {
 export default function App() {
   const Drawer = createDrawerNavigator(); 
   // create url
-  const url="192.168.0.111:5000";
+  const url="192.168.43.254:5000";
 
   const [loaded] = useFonts({
     InterBold: require("./assets/fonts/Inter-Bold.ttf"),

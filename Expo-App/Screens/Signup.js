@@ -3,7 +3,7 @@ import  AsyncStorage  from '@react-native-async-storage/async-storage';
 import { View, Text, ImageBackground,Image, Button,Pressable, TextInput, SafeAreaView, StyleSheet, ScrollView } from 'react-native'
 import { color } from 'react-native-reanimated';
 import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
-import { NFTCard, HomeHeader, FocusedStatusBar ,RectButton} from "../components";
+import { Card, SearchBar, FocusedStatusBar ,RectButton} from "../components";
 // import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 // import DatePicker from 'react-native-datepicker';
 

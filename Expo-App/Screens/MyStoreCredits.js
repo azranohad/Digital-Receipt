@@ -1,11 +1,11 @@
 
 import React, { useState, Component, useEffect } from 'react';
-import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
+import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList, ActivityIndicator, ImageBackground } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { NFTCard, HomeHeader, FocusedStatusBar, Loading } from "../components";
-import { COLORS, NFTData } from "../constants";
+import { Card, SearchBar, FocusedStatusBar, Loading } from "../components";
+import { COLORS, FONTS, SIZES, NFTData, assets } from "../constants";
 import { event } from 'react-native-reanimated';
 
 const MyStoreCreditsScreen = ({navigation, route}) => {
@@ -30,30 +30,31 @@ const MyStoreCreditsScreen = ({navigation, route}) => {
 
     if (!filter){
       //setAll([]);
-      if (userKey==''){
-        getIdandCredits().then(() => {
-          if (!isCancelled) {
-            setText("done!");
-          }
-      })}
-      else {
-        getAllCredits(userKey).then(()=>{
-          if (!isCancelled) {
-            setText("done!");
-          }
-         })
-        getStores(userKey).then(()=>{
-          if (!isCancelled) {
-            setText("done!");
-          }
-         })
-      }
+      getIdandCredits().then(() => {
+        if (!isCancelled) {
+          setText("done!");
+        }
+    })
+    //   if (userKey==''){
+    // }
+    //   else {
+    //     getAllCredits(userKey).then(()=>{
+    //       if (!isCancelled) {
+    //         setText("done!");
+    //       }
+    //      })
+    //     getStores(userKey).then(()=>{
+    //       if (!isCancelled) {
+    //         setText("done!");
+    //       }
+    //      })
+    //   }
     }
     return () => {
       isCancelled = true;
     };
 
-    },[]);
+    },[filter]);
   // useFocusEffect(
   //   React.useCallback(()=>{
   //     setAll([]);
@@ -204,7 +205,7 @@ const trashCredit = (val)=> {
 
 
 
-// if (!isLoading){
+if (!isLoading){
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <FocusedStatusBar backgroundColor={COLORS.primary} />
@@ -212,10 +213,10 @@ const trashCredit = (val)=> {
         <View style={{ zIndex: 0 }}>
           {JsonData?<FlatList
             data={Object.values(JsonData)}
-            renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,16)} price={item.total_price}  receipt={false} handleGetImg={getImg}/>}
+            renderItem={({ item }) => <Card data={item} handlePress={()=>trashCredit(item._id)} date={item.expiration_date.slice(0,16)} price={item.total_price}  receipt={false} handleGetImg={getImg}/>}
             keyExtractor={(item) => item._id}
             showsVerticalScrollIndicator={false}
-            ListHeaderComponent={<HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getCreditsByStore(val)} filter={filter} setFilter={setFilter} Type={"Credit"} setAll={setAll} original={original}/>}
+            ListHeaderComponent={<SearchBar data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getCreditsByStore(val)} filter={filter} setFilter={setFilter} Type={"Credit"} setAll={setAll} original={original}/>}
           />:<></>}
         </View>
 
@@ -236,8 +237,36 @@ const trashCredit = (val)=> {
       </View>
     </SafeAreaView>
   )
-// }
-// else {
+}
+else {
+  return(
+    <View 
+    style={{
+      width: "100%",
+      height: "100%",
+    }}
+  >
+    <ImageBackground
+       source={assets.nft01}
+       resizeMode="cover"
+       style={{
+         width: "100%",
+         height: "100%",
+         borderTopLeftRadius: SIZES.font,
+         borderTopRightRadius: SIZES.font,
+        //  paddingTop: 450,
+        //  paddingBottom: 100,
+         alignItems:"center",
+         flex: 1,
+         justifyContent: "center",
+        }}
+     >
+       <ActivityIndicator size="large" color={COLORS.primary} />
+    <Text style={styles.text_header_date}>Loading...</Text>
+
+     </ImageBackground>
+     </View>
+  )
 // return (
 //   // <View style={styles.container}> 
 
@@ -247,7 +276,7 @@ const trashCredit = (val)=> {
 
 // )
 // }
-}
+      }}
 
 const styles = StyleSheet.create({
 container: {
@@ -260,6 +289,13 @@ input: {
   marginTop: 20,
   marginBottom: 10,
   backgroundColor: '#e8e8e8'
+},
+text_header_date: {
+  fontFamily: FONTS.semiBold,
+  fontSize: SIZES.large,
+  color: COLORS.primary,
+  padding: 10,
+  alignContent: "center"
 },
 });
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import { COLORS, FONTS, SIZES, assets } from "../constants";
-import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList,TouchableOpacity,Image} from 'react-native';
+import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList,ImageBackground,TouchableOpacity,Image, ActivityIndicator} from 'react-native';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { ProductCard, HomeHeader, FocusedStatusBar, SearchHeader, Loading } from "../components";
+import { ProductCard, SearchBar, FocusedStatusBar, Loading } from "../components";
 import { useFocusEffect } from '@react-navigation/native';
 
 
@@ -60,19 +60,20 @@ const Products = ({route, navigation}) => {
    
     
       //setAll([]);
-      if (userKey==''){
-        getIdandProducts().then(() => {
-          if (!isCancelled) {
-            setText("done!");
-          }
-      })}
-      else {
-         getAllProducts(userKey).then(()=>{
-          if (!isCancelled) {
-            setText("done!");
-          }
-         })
-      }
+      getIdandProducts().then(() => {
+        if (!isCancelled) {
+          setText("done!");
+        }
+    })
+    //   if (userKey==''){
+    // }
+    //   else {
+    //      getAllProducts(userKey).then(()=>{
+    //       if (!isCancelled) {
+    //         setText("done!");
+    //       }
+    //      })
+    //   }
     
     return () => {
       isCancelled = true;
@@ -185,7 +186,7 @@ const getAllProducts = (val)=> {
               renderItem={({ item }) => <ProductCard data={item}/>}
               keyExtractor={(item) => item.itemID}
               showsVerticalScrollIndicator={false}
-              ListHeaderComponent={<SearchHeader handleSearch={(val)=>getByStore(val)} searchByName={searchByName} setSearchByName={setSearchByName} original={original} setJsonData={setJsonData} filter={filter} setFilter={setFilter}/>}
+              ListHeaderComponent={<SearchBar onSearch={(val)=>getByStore(val)} searchByName={searchByName} setSearchByName={setSearchByName} original={original} setJsonData={setJsonData} filter={filter} setFilter={setFilter} placeholder={"Search by store..."} storesFilter={false}/>}
             />
           </View>
   
@@ -208,11 +209,35 @@ const getAllProducts = (val)=> {
     )
 }
 else {
-  return null
-    // <Loading/>
-    // <View style={styles.container}> 
-    //   <Text>Loading...</Text>
-    //   </View>
+  //return null
+  return(
+<View 
+    style={{
+      width: "100%",
+      height: "100%",
+    }}
+  >
+    <ImageBackground
+       source={assets.nft01}
+       resizeMode="cover"
+       style={{
+         width: "100%",
+         height: "100%",
+         borderTopLeftRadius: SIZES.font,
+         borderTopRightRadius: SIZES.font,
+        //  paddingTop: 450,
+        //  paddingBottom: 100,
+         alignItems:"center",
+         flex: 1,
+         justifyContent: "center",
+        }}
+     >
+       <ActivityIndicator size="large" color={COLORS.primary} />
+    <Text style={styles.text_header_date}>Loading...</Text>
+
+     </ImageBackground>
+     </View>
+  )
 
   
 }
@@ -221,6 +246,13 @@ else {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 100,
+  },
+  text_header_date: {
+    fontFamily: FONTS.semiBold,
+    fontSize: SIZES.large,
+    color: COLORS.primary,
+    padding: 10,
+    alignContent: "center"
   },
   input: {
     width: 250,

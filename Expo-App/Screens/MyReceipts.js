@@ -1,10 +1,10 @@
 import React, { useState, Component, useEffect, useRef } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList } from 'react-native';
+import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList, ActivityIndicator,ImageBackground } from 'react-native';
 import { DataTable } from 'react-native-paper';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { NFTCard, HomeHeader, FocusedStatusBar, CircleButton, Loading } from "../components";
-import { COLORS, NFTData, assets } from "../constants";
+import { Card, SearchBar, FocusedStatusBar, CircleButton, Loading } from "../components";
+import { COLORS, FONTS, SIZES, NFTData, assets } from "../constants";
 import { event } from 'react-native-reanimated';
 import  {firebase} from '../firebase';
 import { NavigationHelpersContext } from '@react-navigation/native';
@@ -32,55 +32,56 @@ const MyReceiptsScreen = ({navigation, route}) => {
   const [image, setImage] = useState(null)
   const _isMounted = useRef(true);
   const [text, setText] = React.useState("waiting...");
-
   
-  // useFocusEffect(
-  //   React.useCallback(()=>{
-  //     if (!filter){
+  useFocusEffect(
+      React.useCallback(()=>{
+        console.log("useEffect");
+        if (!filter){
+          console.log("not filter");
+  
+          getIdandReceipts();
+          // if (userKey==''){
+          //   console.log("userkey ==''");
+  
+          // }
+          // else {
+          //   console.log("else stores+receipts");
+          //   getAllReceipts(userKey);
+          //   getStores(userKey);
+          // }
+        }
+      
+    },[updateScreen, filter, userKey]));
 
-  //       if (userKey==''){
-  //         console.log("userkey ==''");
-  //         getIdandReceipts();
+  // useEffect(()=>{
+  //   let isCancelled = false;
 
-  //       }
-  //       else {
-  //         console.log("else stores+receipts");
-  //         getAllReceipts(userKey);
-  //         getStores(userKey);
-  //       }
+  //   if (!filter){
+  //     //setAll([]);
+  //     if (userKey==''){
+  //       getIdandReceipts().then(() => {
+  //         if (!isCancelled) {
+  //           setText("done!");
+  //         }
+  //     })}
+  //     else {
+  //        getAllReceipts(userKey).then(()=>{
+  //         if (!isCancelled) {
+  //           setText("done!");
+  //         }
+  //        })
+  //       getStores(userKey).then(()=>{
+  //         if (!isCancelled) {
+  //           setText("done!");
+  //         }
+  //        })
   //     }
-    
-  //   },[updateScreen]));
+  //   }
+  //   return () => {
+  //     isCancelled = true;
+  //   };
 
-  useEffect(()=>{
-    let isCancelled = false;
-
-    if (!filter){
-      //setAll([]);
-      if (userKey==''){
-        getIdandReceipts().then(() => {
-          if (!isCancelled) {
-            setText("done!");
-          }
-      })}
-      else {
-         getAllReceipts(userKey).then(()=>{
-          if (!isCancelled) {
-            setText("done!");
-          }
-         })
-        getStores(userKey).then(()=>{
-          if (!isCancelled) {
-            setText("done!");
-          }
-         })
-      }
-    }
-    return () => {
-      isCancelled = true;
-    };
-
-    },[updateScreen]);
+  //   },[updateScreen]);
 
 
     // useEffect(()=>{
@@ -256,7 +257,7 @@ const trashReceipt = (val)=> {
       //   }
       //     })
       delete JsonData[val]
-      // setUpdateScreen(!updateScreen)
+      setUpdateScreen(!updateScreen)
       
       fetch(`http://${route.params.url}/scan_receipt_controller/delete_receipt`, {
         method: 'DELETE',
@@ -295,11 +296,11 @@ const trashReceipt = (val)=> {
             
             {JsonData?<FlatList
               data={Object.values(JsonData)}
-              renderItem={({ item }) => <NFTCard data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,16)} price={item.total_price} receipt={true} handleGetImg={(v)=>getImg(v)}/>}
+              renderItem={({ item }) => <Card data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,16)} price={item.total_price} receipt={true} handleGetImg={(v)=>getImg(v)}/>}
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
               ListHeaderComponent={
-              <HomeHeader data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={setFilter} Type={"Receipt"} setAll={setAll} original={original} setJsonData={setJsonData}/>}/>:<></>}
+              <SearchBar data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={setFilter} setAll={setAll} original={original} setJsonData={setJsonData} placeholder={"Search by name..."} storesFilter={true}/>}/>:<></>}
           </View>
   
           <View
@@ -322,11 +323,7 @@ const trashReceipt = (val)=> {
 }
 else {
   return (
-    <Loading/>
-    // <View style={styles.container}> 
-    //   <Text>Loading...</Text>
-    //   </View>
-
+   <Loading/>
   )
 }
 }
