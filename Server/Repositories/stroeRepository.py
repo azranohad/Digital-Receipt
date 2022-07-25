@@ -40,7 +40,7 @@ class storeRepository:
 
     def update_item_data(self, itemID, dict_update_item):
         result = self.get_collection().update({server_consts.ITEM_ID: itemID}, {'$set': dict_update_item})
-        if result['updatedExisting']:
+        if result[server_consts.UPDATED_EXISTING]:
             self.logger.print_info_message(
                 "storeRepository | details (" + str(dict_update_item.keys()) + ") of item: " + str(
                     itemID) + " updated in data base")

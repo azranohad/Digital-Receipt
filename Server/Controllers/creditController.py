@@ -80,7 +80,7 @@ def get_image_credit():
 
 @scan_credit_api.route('/update_credit_data', methods=['PATCH'])
 def update_credit_data():
-    _id = request.get_json(force=True)[server_consts.ID]
+    _id = request.get_json(force=True)[server_consts._ID]
     user_key = request.get_json(force=True)[server_consts.USER_KEY]
     logger.print_api_message("creditController | received update_credit_data request | user: " + user_key + "| _id:" + _id)
 
@@ -88,7 +88,7 @@ def update_credit_data():
 
 @scan_credit_api.route('/delete_credit', methods=['DELETE'])
 def delete_credit():
-    _id = request.get_json(force=True)[server_consts.ID]
+    _id = request.get_json(force=True)[server_consts._ID]
     user_key = request.get_json(force=True)[server_consts.USER_KEY]
     logger.print_api_message("creditController | received delete_credit request | user: " + user_key + "| _id:" + _id)
 

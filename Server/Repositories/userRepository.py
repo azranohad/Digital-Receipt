@@ -3,7 +3,7 @@ from Server.Repositories.mongoDbRepository import mongoDbRepository
 
 # @singleton
 from Server.serverConsts import serverConsts
-from systemFiles.logger.loggerService import loggerService
+from SystemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
 
@@ -11,14 +11,11 @@ class userRepository:
     def __init__(self):
         self.mongoDb_repository = mongoDbRepository()
         self.logger = loggerService()
-        self.identifier_data = ['ID', server_consts.USER_KEY, server_consts.PHONE_NUMBER, 'mail_address']
+        self.identifier_data = [server_consts.ID, server_consts.USER_KEY, server_consts.PHONE_NUMBER, server_consts.MAIL_ADDRESS]
 
 
     def get_collection(self):
-        return self.mongoDb_repository.get_client()["Users"]["users"]
-
-    def get_temp_password_coll(self):
-        return self.mongoDb_repository.get_client()["login"]["temp_pass"]
+        return self.mongoDb_repository.get_client()[server_consts.USERS_DB][server_consts.USERS_COLLECTION]
 
     def create_user(self, user_data_dict):
         result = self.get_collection().insert_one(user_data_dict)
@@ -30,8 +27,8 @@ class userRepository:
 
     def update_user_data(self, user_key, dict_update_user):
         result = self.get_collection().update({server_consts.USER_KEY: user_key}, {'$set': dict_update_user})
-        update_success = result['updatedExisting']
-        if update_success:
+        update_success = result[server_consts.UPDATED_EXISTING]
+        if result[server_consts.UPDATED_EXISTING]:
             self.logger.print_info_message(
                 "usersRepository | details of user: " + str(
                     user_key) + " updated in data base")
@@ -44,11 +41,11 @@ class userRepository:
             if item in self.identifier_data:
                 match_list = self.get_users_by_generic_value(item, request[item])
                 if len(match_list) > 0:
-                    self.logger.print_info_message("the user is exist, user_key: " + match_list[0])
+                    self.logger.print_info_message("usersRepository | the user is exist, user_key: " + match_list[0])
                     return match_list[0]
-        self.logger.print_info_message("the user is not exist")
+        self.logger.print_info_message("usersRepository | the user is not exist")
 
-        return "the user is not exist"
+        return server_consts.STRING_USER_EXIST
 
     def get_users_by_generic_value(self, field, value):
         users_collection = self.get_collection()
@@ -72,7 +69,7 @@ class userRepository:
             self.logger.print_event("usersRepository | user: " + user_key + " deleted from data base")
         else:
             self.logger.print_severe_message("usersRepository | delete user from Data Base Failed. user key: " + user_key)
-        return "user deleted from data base"
+        return server_consts.STRING_USER_DELETED
 
     def user_name_exist(self, user_name_hash):
         cursor = self.get_collection().find({server_consts.USER_NAME: user_name_hash})
@@ -96,7 +93,7 @@ class userRepository:
 
         # the user name or password incorrect
         self.logger.print_info_message('usersRepository | the user name or password incorrect')
-        return 'the user name or password incorrect'
+        return server_consts.STRING_INVALID_USER_NAME_OR_PASSWORD
 
     def get_user_data(self, user_key):
         cursor = self.get_collection().find({server_consts.USER_KEY: user_key})
@@ -107,7 +104,7 @@ class userRepository:
         list_of_keys = list(user_data_dict.keys())
 
         #filter keys
-        keys_unwanted_to_send = [server_consts.ID, server_consts.PASSWORD, server_consts.USER_NAME]
+        keys_unwanted_to_send = [server_consts._ID, server_consts.PASSWORD, server_consts.USER_NAME]
         for unwanted_key in keys_unwanted_to_send:
             if list_of_keys.__contains__(unwanted_key):
                 del user_data_dict[unwanted_key]

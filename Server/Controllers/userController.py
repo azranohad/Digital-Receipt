@@ -19,7 +19,7 @@ def create_user():
         phone_number = request.get_json(force=True)[server_consts.PHONE_NUMBER]
     except:
         logger.print_api_message("request for create user must contain phone_number field")
-        return "request for create user must contain phone_number field"
+        return server_consts.STRING_CREATE_USER_MUST_CONTAIN_PHONE_NUMBER
     logger.print_api_message("received create_user post request | user: " + phone_number)
     user_key = user_service.create_user(phone_number, request.get_json(force=True))
 
@@ -77,7 +77,6 @@ def change_password():
 def login_user_name_and_password():
     user_name = request.get_json(force=True)[server_consts.USER_NAME]
     password = request.get_json(force=True)[server_consts.PASSWORD]
-    print(user_name,password)
     return user_service.login_user_name_and_password(user_name, password)
 
 

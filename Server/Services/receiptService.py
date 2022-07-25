@@ -36,11 +36,11 @@ class receiptService:
         else:
             user_key = self.user_repository.get_user_from_db({server_consts.PHONE_NUMBER: phone_number})
         receipt_data_dict[server_consts.USER_KEY] = user_key
-        receipt_data_dict[server_consts.ID] = uuid.uuid4().hex
+        receipt_data_dict[server_consts._ID] = uuid.uuid4().hex
         return self.receipt_repository.insert_receipt(user_key, receipt_data_dict)
 
     def delete_receipt(self, user_key, _id):
-        receipt_data_dict = self.receipt_repository.get_receipt_by_value(user_key, server_consts.ID, _id).get(_id)
+        receipt_data_dict = self.receipt_repository.get_receipt_by_value(user_key, server_consts._ID, _id).get(_id)
         is_digital_receipt = receipt_data_dict[server_consts.IS_DIGITAL_RECEIPT]
         if is_digital_receipt:
             return self.receipt_repository.delete_receipt(user_key, _id)
@@ -48,7 +48,7 @@ class receiptService:
         if not self.receipt_repository.delete_receipt(user_key, _id):
             self.logger.print_severe_message("receiptService | delete scan receipt  data from DB Failed. user key: " + user_key)
         # delete from firebase
-        if not self.fire_base_repository.delete_image(user_key, receipt_data_dict.get(server_consts.ID)):
+        if not self.fire_base_repository.delete_image(user_key, receipt_data_dict.get(server_consts._ID)):
             self.logger.print_severe_message('receiptService | Error deleting image from firebase')
             return str(False)
         self.logger.print_event(

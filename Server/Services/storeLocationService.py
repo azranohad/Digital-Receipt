@@ -47,8 +47,8 @@ class storeLocationService:
         if nearest_stores:
             for store in nearest_stores:
                 for credit in credits.values():
-                    credit[server_consts.ID] = str(credit.get(server_consts.ID))
-                    credits_to_return[credit.get(server_consts.ID)] = credit
+                    credit[server_consts._ID] = str(credit.get(server_consts._ID))
+                    credits_to_return[credit.get(server_consts._ID)] = credit
 
         return credits_to_return
 

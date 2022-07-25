@@ -19,7 +19,7 @@ server_consts = serverConsts()
 
 def credit_data_to_db(user_key, credit_name, image_id, credit_data_object):
     credit_dict = {
-        server_consts.ID: str(image_id),
+        server_consts._ID: str(image_id),
         server_consts.USER_KEY: user_key,
         server_consts.SCAN_DATE: dateutil.parser.parse(datatime.now().strftime('%d/%m/%Y')),
         server_consts.NAME_FOR_CLIENT: str(credit_name),
@@ -42,7 +42,7 @@ def credit_data_to_db(user_key, credit_name, image_id, credit_data_object):
 
 def credit_data_to_app(credit_id, credit_data_object, credit_name):
     credit_dict = {
-        server_consts.ID: str(credit_id),
+        server_consts._ID: str(credit_id),
         server_consts.EXPIRATION_DATE: dateutil.parser.parse(credit_data_object.expiration_date),
         server_consts.MARKET: str(credit_data_object.market),
         server_consts.NAME_FOR_CLIENT: str(credit_name)

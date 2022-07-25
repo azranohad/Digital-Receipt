@@ -2,20 +2,16 @@ from Server.Repositories.stroeRepository import storeRepository
 import geopy.distance
 from singleton_decorator import singleton
 from pymongo import GEO2D
-from geopy.geocoders import Nominatim
-
 from Server.Repositories.mongoDbRepository import mongoDbRepository
-#from Server.Services.storeLocationService import storeLocationService
 from Server.serverConsts import serverConsts
 from geopy.geocoders import Nominatim
 
 from systemFiles.logger.loggerService import loggerService
 
 server_consts = serverConsts()
+geolocator = Nominatim(user_agent=server_consts.GOE_LOCATOR_AGENT)
 
-geolocator = Nominatim(user_agent="sample app")
-
-def get_address_from_coordinates(self, coordinates):
+def get_address_from_coordinates(coordinates):
     coordinates_str = str(coordinates[0]) + ', ' + (str(coordinates[1]))
     data_from_coordinates = geolocator.reverse(coordinates_str)
     return data_from_coordinates.address
@@ -88,6 +84,8 @@ class locationRepository:
             location = [float(location_split[0]), float(location_split[1])]
             stores.append([row[0], location])
         return stores
+
+
 # store_repo = locationRepository()
 # # store_location = get_location_stores_from_csv('stores_location.csv')
 # # store_repo.add_list_of_stores_to_db(store_location)
