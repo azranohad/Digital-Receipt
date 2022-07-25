@@ -31,19 +31,13 @@ const ScanReceipts = ({navigation, route}) => {
   const [isUpLoading, setisUpLoading] = useState(false);
   const [JsonData, setJsonData] = useState([]);
 
-  // useEffect(() => {
-  //   if (navigation.isFocused()) {
-  //     resetReviews(); // replace with your function
-  //   }
-  // }, [navigation.isFocused()]);
+  
   useFocusEffect(
     React.useCallback(()=>{
-      // getId();
-      // console.log("hereeee");
       setChooseAction(false)
       setPopUp(false)
-      
     },[]));
+
   useEffect(() => {
     if (navigation.isFocused()) {
     ;(async () => {
@@ -86,17 +80,13 @@ const ScanReceipts = ({navigation, route}) => {
     setImage(local_uri);
     setisUpLoading(true);
     setModalVisible(true);
-    // uploadImg(local_uri);
     
-    // ImagePicker saves the taken photo to disk and returns a local URI to it
     let filename = local_uri.split('/').pop();
     const formData = new FormData();
      // Infer the type of the image
     let match = /\.(\w+)$/.exec(filename);
     let type = match ? `image/${match[1]}` : `image`;
     let img = { uri: local_uri, name: filename, type }
-    // let img = { uri: local_uri, name: filename, type: 'image/jpeg' }
-
     formData.append('image', img);
     formData.append('user_key', userKey);
     fetch(`http://${route.params.url}/${specUrl}/scan`, {
@@ -119,10 +109,6 @@ const ScanReceipts = ({navigation, route}) => {
       setJsonData(data);
       setisUpLoading(false);
       setPopUp(true);
-
-      // setisUpLoading(false);
-      // setImageId(data._id);
-      // setPopUp(true);
     });
   }
 
@@ -156,19 +142,8 @@ const ScanReceipts = ({navigation, route}) => {
 
   const sendUpdates = async () => {
     setImage(null);
-    // setPopUp(false);
     setModalVisible(false);
-    
-    //Alert.alert("Uploaded successfully!                       ");
-
-    // setImage(null);
-    // setPopUp(false);
-    // setModalVisible(false);
-  
-
-    // setImage(image);
     var full_url='';
-    // setPopUp(false);
     if (!isReceipt){
       JsonData.expire_date = expireDate;
       full_url = `http://${route.params.url}/${specUrl}/update_credit_data`;
@@ -186,14 +161,6 @@ const ScanReceipts = ({navigation, route}) => {
     JsonData.market = market;
     
     console.log(JsonData);
-
-    
-    //JsonData.filename = filename
-    //JsonData.uri = uri
-    //const newS = JSON.stringify(obj)
-    console.log("news: ", JsonData)
-
-
     fetch(full_url, {
       method: 'PATCH',
       body:JSON.stringify(JsonData),
@@ -234,14 +201,10 @@ const ScanReceipts = ({navigation, route}) => {
        source={assets.nft01}
        resizeMode="cover"
        style={{
-        //  width: "100%",
-        //  height: "100%",
          borderTopLeftRadius: SIZES.font,
          borderTopRightRadius: SIZES.font,
          paddingTop: 450,
-        //  paddingBottom: 100,
          alignItems:"center",
-        //  flex: 1,
          justifyContent: "center",
         }}
      >
@@ -259,7 +222,6 @@ const ScanReceipts = ({navigation, route}) => {
       handlePress={() => setChooseAction(false)}
       right={10}
       top={50}
-      // top={StatusBar.currentHeight}
 
     />
         <View style={{padding: SIZES.base}}>

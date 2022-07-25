@@ -106,7 +106,7 @@ const getBarcode = (val)=>{
         </Text>
             <Image style={{height:'10%', width:'60%', paddingBottom:'50%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
             
-            <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} />
+            <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} handlePress={()=>{}} />
             
             </View>
           </React.Fragment>

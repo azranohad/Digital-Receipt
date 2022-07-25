@@ -111,7 +111,7 @@ const BackButton = ({navigation }) => (
     Expiration Date: {data.expiration_date.slice(0,16)}
     </Text>
     <Image style={{height:'10%', width:'50%', paddingBottom:'20%',paddingTop:'10%'}} resizeMode='contain' source={{uri: barcode}}/>
-    <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} />
+    <RectButton minWidth={170} fontSize={SIZES.large} {...SHADOWS.dark} buttonText={"Download"} handlePress={()=>{}}/>
     </View>
     </React.Fragment>    
   </SafeAreaView>:

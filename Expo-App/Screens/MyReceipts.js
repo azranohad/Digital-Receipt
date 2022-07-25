@@ -1,13 +1,9 @@
-import React, { useState, Component, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { StyleSheet, TextInput, View, Button, Text, SafeAreaView, FlatList, ActivityIndicator,ImageBackground } from 'react-native';
-import { DataTable } from 'react-native-paper';
+import { StyleSheet, View, SafeAreaView, FlatList } from 'react-native';
 import  AsyncStorage  from '@react-native-async-storage/async-storage';
-import { Card, SearchBar, FocusedStatusBar, CircleButton, Loading } from "../components";
-import { COLORS, FONTS, SIZES, NFTData, assets } from "../constants";
-import { event } from 'react-native-reanimated';
-import  {firebase} from '../firebase';
-import { NavigationHelpersContext } from '@react-navigation/native';
+import { Card, SearchBar, FocusedStatusBar, Loading } from "../components";
+import { COLORS } from "../constants";
 import {LogBox} from "react-native";
 
 LogBox.ignoreLogs([
@@ -15,147 +11,40 @@ LogBox.ignoreLogs([
 ])
 
 const MyReceiptsScreen = ({navigation, route}) => {
-  // const isCancelled = React.useRef(false);
   const[updateScreen,setUpdateScreen]=useState(true)
-  const [found, setFound]= useState(false);
   const [filter, setFilter]= useState(false);
   const [searchByName, setSearchByName] = useState('');
-  const [storeName, setStoreName] = useState('');
   const [userKey, setuserKey] = useState('');
-  // 33310727751848c19a8877140d3ce3ac
-  const [fromDate, setfromDate] = useState('1/1/1950');
-  const [toDate, settoDate] = useState('1/1/2023');
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
   const [stores, setStores] = useState([]);
   const [isLoading, setisLoading] = useState(true);
-  const [image, setImage] = useState(null)
-  const _isMounted = useRef(true);
-  const [text, setText] = React.useState("waiting...");
   
   useFocusEffect(
       React.useCallback(()=>{
-        console.log("useEffect");
         if (!filter){
-          console.log("not filter");
-  
           getIdandReceipts();
-          // if (userKey==''){
-          //   console.log("userkey ==''");
-  
-          // }
-          // else {
-          //   console.log("else stores+receipts");
-          //   getAllReceipts(userKey);
-          //   getStores(userKey);
-          // }
+          console.log("filter");
         }
-      
     },[updateScreen, filter, userKey]));
 
-  // useEffect(()=>{
-  //   let isCancelled = false;
-
-  //   if (!filter){
-  //     //setAll([]);
-  //     if (userKey==''){
-  //       getIdandReceipts().then(() => {
-  //         if (!isCancelled) {
-  //           setText("done!");
-  //         }
-  //     })}
-  //     else {
-  //        getAllReceipts(userKey).then(()=>{
-  //         if (!isCancelled) {
-  //           setText("done!");
-  //         }
-  //        })
-  //       getStores(userKey).then(()=>{
-  //         if (!isCancelled) {
-  //           setText("done!");
-  //         }
-  //        })
-  //     }
-  //   }
-  //   return () => {
-  //     isCancelled = true;
-  //   };
-
-  //   },[updateScreen]);
-
-
-    // useEffect(()=>{
-    //   console.log("333333333333333333333333333333",JsonData);
-    // },[updateScreen])
-
-
-
-//   useEffect(()=>{
-//     if (userKey==''){
-//       getIdandReceipts();
-//     }
-//     else {
-//       getAllReceipts(userKey);
-//       getStores(userKey);
-//     }
-//  },[]);
  
   // get id of user and all his receipts
   const getIdandReceipts = async () => {
     try {
       const value = await AsyncStorage.getItem('userId')
       if(value !== null) {
-        console.log("getdata: ",value);
         setuserKey(value);
-        getAllReceipts(value);
         getStores(value);
+        getAllReceipts(value);
       }
     } catch(e) {
       console.log(e);
       // error reading value
     }
-    // setuserKey("c590e1226f184638bb3753188e37917a");
-    // getAllReceipts("c590e1226f184638bb3753188e37917a");
-    // getStores("c590e1226f184638bb3753188e37917a");
-    // setuserKey(userKey)
-    // getAllReceipts(userKey)
-    // getStores(userKey);
-  }
-
-
-  // set all variables:
-  const setAll = (data)=>{
-    let len = (Object.keys(data)).length;
-    if (len==0){
-      setFound(false);
-    }
-    else {
-      setJsonData(data);
-      setFound(true);
-    }
-    setisLoading(false);
-  }
-
-
-  // default receipts view -  by date_of_receipt
-  async function getReceiptsByDate() {
-    setisLoading(true);
-    fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_date`, {
-        method: 'GET',
-        headers: {
-            'content-type': 'aplication/json',
-            'user_key': userKey,
-            'from_date': fromDate,
-            'to_date': toDate,
-        },
-    }).then(res => res.json()).then(data => {
-      setAll(data);
-    });
   }
     
     const searchName = (s)=> {
-      // setisLoading(true);
-      console.log(s);
       fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_name`, {
           method: 'GET',
           headers: {
@@ -164,7 +53,8 @@ const MyReceiptsScreen = ({navigation, route}) => {
               'name_search' : s,
           },
       }).then(res => res.json()).then(data => {
-        setAll(data);
+        setJsonData(data);
+        setisLoading(false);
         setFilter(true);
     });
   }
@@ -182,7 +72,6 @@ const MyReceiptsScreen = ({navigation, route}) => {
 }
 
 const getReceiptsByStore = (val)=> {
-  // setisLoading(true);
   fetch(`http://${route.params.url}/scan_receipt_controller/get_receipt_by_market`, {
       method: 'GET',
       headers: {
@@ -191,7 +80,8 @@ const getReceiptsByStore = (val)=> {
           'market' : val
       },
   }).then(res => res.json()).then(data => {
-    setAll(data);
+    setJsonData(data);
+    setisLoading(false);
     setFilter(true);
 });
 }
@@ -204,61 +94,20 @@ const getAllReceipts = (val)=> {
           'user_key' : val,
       },}).then(res=>res.json()).then(data => 
       {
-        // console.log(data);
     setOriginal(data);
-    setAll(data);
-    setisLoading(false);
+    setJsonData(data);
+    setisLoading(false);    
 });
 }
 
 const getImg =  async (uri)=> {
-  setImage(uri);
   navigation.navigate("ScanedImage", {uri})
-  // // setisLoading(true);
-  // const res = await fetch(uri)
-  // const blob = await res.blob();
-  // const filename = uri.substring(uri.lastIndexOf('/')+1);
-  // var ref = firebase.storage().ref().child(filename).put(blob);
-  // try {
-  //   await ref;
-  // } catch (e){
-  //   console.log(e);
-  // }
-  // Alert.alert('Photo uploaded');
-  // await firebase.storage().ref().child(filename).getDownloadURL(ref).then( img => {
-  //   setImage(img);
-  // })
-//   fetch(`http://${route.params.url}/scan_receipt_controller/get_image_receipt`, {
-//       method: 'GET',
-//       headers: {
-//           'content-type': 'multipart/form-data',
-//           'user_key' : userKey,
-//           '_id' : val,
-//       },
-//   }).then(res => 
-//     res.json()).then(res => {
-//     const imageBlob = res.blob();
-//     const imageObjectURL = URL.createObjectURL(imageBlob);
-// });
+
 }
 
 const trashReceipt = (val)=> {
-  // console.log("trash");
-  console.log("111111111111111111:", JsonData[val]);
-  // console.log("22222222222222222222222:", JsonData);
-  // delete JsonData[val]
-  // console.log("444444444444444444444444444444",JsonData);
-  // Object.values(JsonData).map((account)=>{
-    //     if (account._id==val){
-      //       let x = JsonData[account._id]
-      
-      //       setJsonData(delete JsonData[val]);
-      //       console.log("2222222222222:",JsonData);
-      //   }
-      //     })
       delete JsonData[val]
-      setUpdateScreen(!updateScreen)
-      
+      setUpdateScreen(!updateScreen)   
       fetch(`http://${route.params.url}/scan_receipt_controller/delete_receipt`, {
         method: 'DELETE',
         body: JSON.stringify({
@@ -269,18 +118,8 @@ const trashReceipt = (val)=> {
         'content-type': 'aplication/json',
       },
     }).then(res => res.text()).then(data => {
-      console.log("data:", data);
       if (data=='True'){
-        
         setJsonData(JsonData);
-      // Object.values(JsonData).map((account)=>{
-      //   if (account._id==val){
-      //     let x = JsonData[account._id]
-      //     delete JsonData[val]
-      //     setJsonData(JsonData);
-      //     console.log(JsonData);
-      // }
-      //   })
     }
 });
 }
@@ -296,26 +135,23 @@ const trashReceipt = (val)=> {
             
             {JsonData?<FlatList
               data={Object.values(JsonData)}
-              renderItem={({ item }) => <Card data={item} handlePress={()=>trashReceipt(item._id)} date={item.date_of_receipt.slice(0,16)} price={item.total_price} receipt={true} handleGetImg={(v)=>getImg(v)}/>}
+              renderItem={({ item }) => <Card data={item} handlePress={()=>trashReceipt(item._id)}
+                                              date={item.date_of_receipt.slice(0,16)} price={item.total_price} 
+                                              receipt={true} handleGetImg={(v)=>getImg(v)}/>}
               keyExtractor={(item) => item._id}
               showsVerticalScrollIndicator={false}
               ListHeaderComponent={
-              <SearchBar data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)} onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} setFilter={setFilter} setAll={setAll} original={original} setJsonData={setJsonData} placeholder={"Search by name..."} storesFilter={true}/>}/>:<></>}
+              <SearchBar data={stores} searchByName={searchByName} setSearchByName={(val)=>setSearchByName(val)}
+                         onSearch={searchName} onSelect={(val)=>getReceiptsByStore(val)} filter={filter} 
+                         setFilter={setFilter} original={original} setJsonData={setJsonData} 
+                         placeholder={"Search by name..."} storesFilter={true}/>}
+              />
+            :<></>}
           </View>
-  
-          <View
-            style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              right: 0,
-              left: 0,
-              zIndex: -1,
-            }}
-          >
+          <View style={{position: "absolute",top: 0,bottom: 0,right: 0, left: 0, zIndex: -1,}}>
             <View
-              style={{ height: 300, backgroundColor: COLORS.primary }} />
-            <View style={{ flex: 1, backgroundColor: COLORS.white }} />
+              style={{ height: "100%", backgroundColor: COLORS.white }} />
+            {/* <View style={{ flex: 1, backgroundColor: COLORS.white }} /> */}
           </View>
         </View>
       </SafeAreaView>
@@ -328,19 +164,6 @@ else {
 }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    paddingTop: 100,
-  },
-  input: {
-    width: 250,
-    height: 44,
-    padding: 10,
-    marginTop: 20,
-    marginBottom: 10,
-    backgroundColor: '#e8e8e8'
-  },
-});
 
 export default MyReceiptsScreen
 
