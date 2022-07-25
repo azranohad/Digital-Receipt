@@ -70,7 +70,7 @@ class recommendationSystemRepository:
         cursor = collection.find({key: value, server_consts.IS_DIGITAL_RECEIPT: True})
         receipt_list = {}
         for record in cursor:
-            receipt_list[record[server_consts.ID]] = record
+            receipt_list[record[server_consts._ID]] = record
         return receipt_list
 
     def get_all_distinct_users(self):
