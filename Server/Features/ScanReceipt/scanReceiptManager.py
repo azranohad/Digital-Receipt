@@ -7,8 +7,11 @@ from Server.Services.parseReceiptDataService import parseReceiptDataService
 from Server.Services.preProcessReceiptService import preProcessReceiptService
 from Server.Services.scanImageService import scanImageService
 from singleton_decorator import singleton
+from Server.serverConsts import serverConsts
+
 import uuid
 import cv2
+
 
 
 
@@ -28,13 +31,14 @@ class scanReceiptManager:
     def action_scan_receipt_manager(self, image_file, user_key):
 
         #save receipt in local server
-        image_key = uuid.uuid4().hex + '.jpg'
+        image_key = uuid.uuid4().hex + serverConsts.JPG
         path_image = self.server_local_repository.save_scan_image(image_file, image_key, user_key)
         url_image = self.fire_base_repository.push_image(user_key, typeImage.RECEIPT, image_key, path_image)
 
         image = cv2.imread(path_image)
         receipt_data_object = receiptData()
         receipt_data_object.url_scan_image = url_image
+
         process_image = self.pre_processing_image.gussianBlurProcess(image)  #pre processing image
         raw_string_receipt = self.scan_image_service.scan_image_to_string(process_image).lower()
         raw_data_receipt = self.scan_image_service.scan_image_to_data(process_image)

@@ -23,6 +23,7 @@ const ProfileScreen = ({route}) => {
             const getData = async () => {
               try {
                 const value = await AsyncStorage.getItem('userId')
+                setuserKey(value);
                 console.log("getdata: ",value);
                 return value;
 
@@ -41,7 +42,6 @@ const ProfileScreen = ({route}) => {
                 return value;
 
                 if(value !== null) {
-                  //console.log("getdata: ",value);
                 }
               } catch(e) {
                 // error reading value
@@ -50,18 +50,14 @@ const ProfileScreen = ({route}) => {
             
             useEffect(() =>
             {
-              setuserKey(getData().value);
                getData().then(res => setuserKey(res)).then(res => fetch(`http://${url}/users_controller/get_user_data`, {
           method: 'GET',
-          //body:JSON.stringify({"user_key": x}),
           headers: {
               'content-type': 'aplication/json',
               "user_key": "33310727751848c19a8877140d3ce3ac",
           },
       })).then(res => res.json()).then(data => {
-          //console.log("data: ", data);
-          // let response = Object.values(data)[0];
-          // console.log("res: ",response);
+
           if (data=="Incorrect username or password"){
               console.log("Incorrect username or password");
               setError(data);
@@ -70,9 +66,6 @@ const ProfileScreen = ({route}) => {
 
             console.log(data);
 
-            // if(data['username'] !== 'undefined') {
-            //   setUsername(data['username']);
-            // }
             if(data['private_name'] !== 'undefined') {
               setName(data['private_name']);
             }
@@ -82,39 +75,21 @@ const ProfileScreen = ({route}) => {
             if(data['phone_number'] !== 'undefined') {
               setPhonenumber(data['phone_number']);
             }
-            // if(data['email'] !== 'undefined') {
-            //   setEmail(data['email']);
-            // }
-            // if(data['country'] !== 'undefined') {
-            //   setCountry(data['country']);
-            // }
-            // if(data['city'] !== 'undefined') {
-            //   setCity(data['city']);
-            // }
-            // if(data['id'] !== 'undefined') {
-            //   setId(data['id']);
-            // }
             if(data['age'] !== 'undefined') {
               setAge(String(data['age']));
             }
-            // if(data['birthday'] !== 'undefined') {
-            //   setBirthday(data['birthday']);
-            // }
-              //storeData(data.toString());
           }
           console.log("end");
       });
 
     },[])
       async function sendUpdateReq() {
-        //console.log("getdata: ",value);
         await AsyncStorage.getItem('userId').then( response => {
           setuserKey(response);
           console.log(response);
         });
         console.log("userKey: ",userKey);
 
-        //setuserKey(value)
         fetch(`http://${url}/users_controller/update_user`, {
           method: 'POST',
           body:JSON.stringify({
@@ -133,20 +108,17 @@ const ProfileScreen = ({route}) => {
           headers: {
               'content-type': 'aplication/json',
           },
-      }).then(res => res.json()).then(data => {
-          //console.log("data: ", data);
-          // let response = Object.values(data)[0];
-          // console.log("res: ",response);
-          if (data=="Incorrect username or password"){
-              console.log("Incorrect username or password");
-              setError(data);
-          }
-          else {
-               let id = data['city'];
-               console.log(id);
-               //setTempPassword(id);
-              //storeData(data.toString());
-          }
+      }).then(data => {
+
+          // if (data=="Incorrect username or password"){
+          //     console.log("Incorrect username or password");
+          //     setError(data);
+          // }
+          // else {
+          //     //  let id = data['city'];
+          //     //  console.log(id);
+
+          // }
           console.log("end");
       });
       }

@@ -10,212 +10,214 @@ import { COLORS, SIZES, assets, SHADOWS, FONTS } from "../constants";
 import { Card, SearchBar, FocusedStatusBar ,RectButton} from "../components";
 import * as TaskManager from 'expo-task-manager';
 const LOCATION_TASK_NAME = "LOCATION_TASK"
+const LOCATION_CREDIT_TASK_ = "LOCATION_CREDIT_TASK"
+
 import {DefaultTheme } from "@react-navigation/native";
 import * as Notifications from 'expo-notifications';
 import * as Location from 'expo-location';
 
-// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-//   console.log("LOCATION_TASK_NAME");
-//   //const [expoPushToken, setExpoPushToken] = useState('');
-//   //let token;
-//   if (error) {
-//     console.error(error)
-//     return
-//   }
-//   if (data) {
-//     // Extract location coordinates from data
-//     let isNotification = false;
-//     const { locations } = data
-//     const location = locations[0]
-//     let latitude = locations[0].coords.latitude;
-//     let longitude = locations[0].coords.longitude;
-//     if (location) {
+TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
+  console.log("LOCATION_TASK_NAME");
+  //const [expoPushToken, setExpoPushToken] = useState('');
+  //let token;
+  if (error) {
+    console.error(error)
+    return
+  }
+  if (data) {
+    // Extract location coordinates from data
+    let isNotification = false;
+    const { locations } = data
+    const location = locations[0]
+    let latitude = locations[0].coords.latitude;
+    let longitude = locations[0].coords.longitude;
+    if (location) {
 
-//       (async () => {  fetch(`http://192.168.0.111:5000/location_controller/get_nearest_store`, {
-//         method: 'POST',
-//         body:JSON.stringify({latitude,longitude,"user_key":"b91c59eeca42460283ec295b1bab861c"                    
-//         }),
-//         headers: {
-//             'content-type': 'aplication/json',
-//             //'loaction':{latitude,longitude},
-//         },
-//     }).then(res => res.text()).then(async (data) => {
-//         //console.log("data: ", data);
-//         // let response = Object.values(data)[0];
-//         // console.log("res: ",response);
-//         if (data=="False"){
-//             console.log("false");
-//             //setError(data);
-//         }
-//         else {
-//             //console.log(data['1']);
-//             //console.log({expoPush});
-//             let storeName = JSON.parse(data)["1"]
-//             //let today = new Date().getDate();
-//             //console.log(today);
-//             isNotification = true;
-//             console.log("send notification");
+      (async () => {  fetch(`http://192.168.0.111:5000/location_controller/get_nearest_store`, {
+        method: 'POST',
+        body:JSON.stringify({latitude,longitude,"user_key":"b91c59eeca42460283ec295b1bab861c"                    
+        }),
+        headers: {
+            'content-type': 'aplication/json',
+            //'loaction':{latitude,longitude},
+        },
+    }).then(res => res.text()).then(async (data) => {
+        //console.log("data: ", data);
+        // let response = Object.values(data)[0];
+        // console.log("res: ",response);
+        if (data=="False"){
+            console.log("false");
+            //setError(data);
+        }
+        else {
+            //console.log(data['1']);
+            //console.log({expoPush});
+            let storeName = JSON.parse(data)["1"]
+            //let today = new Date().getDate();
+            //console.log(today);
+            isNotification = true;
+            console.log("send notification");
 
-//             console.log(JSON.parse(data)["1"]);
+            console.log(JSON.parse(data)["1"]);
 
-//             console.log("Location in background", location.coords);
-//         let token;
-//       if (Device.isDevice) {
-//       const { status: existingStatus } = await Notifications.getPermissionsAsync();
-//       let finalStatus = existingStatus;
-//       if (existingStatus !== 'granted') {
-//         const { status } = await Notifications.requestPermissionsAsync();
-//         finalStatus = status;
-//       }
-//       if (finalStatus !== 'granted') {
-//         alert('Failed to get push token for push notification!');
-//         return;
-//       }
-//       token = (await Notifications.getExpoPushTokenAsync()).data;
-//       //console.log(token);
-//       } else {
-//         alert('Must use physical device for Push Notifications');
-//       }
+            console.log("Location in background", location.coords);
+        let token;
+      if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      //console.log(token);
+      } else {
+        alert('Must use physical device for Push Notifications');
+      }
 
-//       if (Platform.OS === 'android') {
-//         Notifications.setNotificationChannelAsync('default', {
-//           name: 'default',
-//           importance: Notifications.AndroidImportance.MAX,
-//           vibrationPattern: [0, 250, 250, 250],
-//           lightColor: '#FF231F7C',
-//         });
-//       }
-//         console.log(token);
-//       // console.log({expoPushToken})
-//         let message = {
-//           to: token,
-//           sound: 'default',
-//           title: 'Digital-receipt Products',
-//           body: 'Watch all the '+ storeName +' products you might like',
-//           //data: { someData: 'goes here' },
-//           data: storeName,
-//         };
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+        console.log(token);
+      // console.log({expoPushToken})
+        let message = {
+          to: token,
+          sound: 'default',
+          title: 'Digital-receipt Products',
+          body: 'Watch all the '+ storeName +' products you might like',
+          //data: { someData: 'goes here' },
+          data: storeName,
+        };
       
-//         await fetch('https://exp.host/--/api/v2/push/send', {
-//           method: 'POST',
-//           headers: {
-//             Accept: 'application/json',
-//             'Accept-encoding': 'gzip, deflate',
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify(message),
-//         });
-//             //console.log(data);
+        await fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(message),
+        });
+            //console.log(data);
 
-//         }
-//         console.log("end");
-//     });
-//   })();
-//     }
-//     //registerForPushNotificationsAsync().then(token => {console.log(token)});
-//   }
-// })
-// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
-//   //const [expoPushToken, setExpoPushToken] = useState('');
-//   //let token;
-//   if (error) {
-//     console.error(error)
-//     return
-//   }
-//   if (data) {
-//     // Extract location coordinates from data
-//     let isNotification = false;
-//     const { locations } = data
-//     const location = locations[0]
-//     let latitude = locations[0].coords.latitude;
-//     let longitude = locations[0].coords.longitude;
-//     if (location) {
+        }
+        console.log("end");
+    });
+  })();
+    }
+    //registerForPushNotificationsAsync().then(token => {console.log(token)});
+  }
+})
+TaskManager.defineTask(LOCATION_CREDIT_TASK_, async ({ data, error }) => {
+  //const [expoPushToken, setExpoPushToken] = useState('');
+  //let token;
+  if (error) {
+    console.error(error)
+    return
+  }
+  if (data) {
+    // Extract location coordinates from data
+    let isNotification = false;
+    const { locations } = data
+    const location = locations[0]
+    let latitude = locations[0].coords.latitude;
+    let longitude = locations[0].coords.longitude;
+    if (location) {
 
-//       (async () => {  fetch(`http://192.168.0.111:5000/location_controller/exist_credit_to_nearest_store`, {
-//         method: 'POST',
-//         body:JSON.stringify({latitude,longitude,
-//                             "user_key":"530feb6b8263491d969d979e4234259c"                    
-//         }),
-//         headers: {
-//             'content-type': 'aplication/json',
-//             //'loaction':{latitude,longitude},
-//         },
-//     }).then(res => res.text()).then(async (data) => {
-//         //console.log("data: ", data);
-//         // let response = Object.values(data)[0];
-//         // console.log("res: ",response);
-//         if (data=="False"){
-//             console.log("false");
-//             //setError(data);
-//         }
-//         else {
-//             //console.log(data['1']);
-//             //console.log({expoPush});
-//             let storeName = JSON.parse(data)["1"]
-//             //let today = new Date().getDate();
-//             //console.log(today);
-//             isNotification = true;
-//             console.log("send notification");
+      (async () => {  fetch(`http://192.168.0.111:5000/location_controller/exist_credit_to_nearest_store`, {
+        method: 'POST',
+        body:JSON.stringify({latitude,longitude,
+                            "user_key":"530feb6b8263491d969d979e4234259c"                    
+        }),
+        headers: {
+            'content-type': 'aplication/json',
+            //'loaction':{latitude,longitude},
+        },
+    }).then(res => res.text()).then(async (data) => {
+        //console.log("data: ", data);
+        // let response = Object.values(data)[0];
+        // console.log("res: ",response);
+        if (data=="False"){
+            console.log("false");
+            //setError(data);
+        }
+        else {
+            //console.log(data['1']);
+            //console.log({expoPush});
+            let storeName = JSON.parse(data)["1"]
+            //let today = new Date().getDate();
+            //console.log(today);
+            isNotification = true;
+            console.log("send notification");
 
-//             console.log(JSON.parse(data)["1"]);
+            console.log(JSON.parse(data)["1"]);
 
-//             console.log("Location in background", location.coords);
-//         let token;
-//       if (Device.isDevice) {
-//       const { status: existingStatus } = await Notifications.getPermissionsAsync();
-//       let finalStatus = existingStatus;
-//       if (existingStatus !== 'granted') {
-//         const { status } = await Notifications.requestPermissionsAsync();
-//         finalStatus = status;
-//       }
-//       if (finalStatus !== 'granted') {
-//         alert('Failed to get push token for push notification!');
-//         return;
-//       }
-//       token = (await Notifications.getExpoPushTokenAsync()).data;
-//       //console.log(token);
-//       } else {
-//         alert('Must use physical device for Push Notifications');
-//       }
+            console.log("Location in background", location.coords);
+        let token;
+      if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!');
+        return;
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      //console.log(token);
+      } else {
+        alert('Must use physical device for Push Notifications');
+      }
 
-//       if (Platform.OS === 'android') {
-//         Notifications.setNotificationChannelAsync('default', {
-//           name: 'default',
-//           importance: Notifications.AndroidImportance.MAX,
-//           vibrationPattern: [0, 250, 250, 250],
-//           lightColor: '#FF231F7C',
-//         });
-//       }
-//         console.log(token);
-//        console.log({expoPushToken})
-//         let message = {
-//           to: token,
-//           sound: 'default',
-//           title: 'Digital-receipt Credits',
-//           body: 'Watch Your '+ storeName +' credits',
-//           data: storeName,
-//           //data: { someData: 'goes here' },
-//         };
+      if (Platform.OS === 'android') {
+        Notifications.setNotificationChannelAsync('default', {
+          name: 'default',
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: '#FF231F7C',
+        });
+      }
+        console.log(token);
+       console.log({expoPushToken})
+        let message = {
+          to: token,
+          sound: 'default',
+          title: 'Digital-receipt Credits',
+          body: 'Watch Your '+ storeName +' credits',
+          data: storeName,
+          //data: { someData: 'goes here' },
+        };
       
-//         await fetch('https://exp.host/--/api/v2/push/send', {
-//           method: 'POST',
-//           headers: {
-//             Accept: 'application/json',
-//             'Accept-encoding': 'gzip, deflate',
-//             'Content-Type': 'application/json',
-//           },
-//           body: JSON.stringify(message),
-//         });
-//             //console.log(data);
+        await fetch('https://exp.host/--/api/v2/push/send', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Accept-encoding': 'gzip, deflate',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(message),
+        });
+            //console.log(data);
 
-//         }
-//         console.log("end");
-//     });
-//   })();
-//     }
-//     //registerForPushNotificationsAsync().then(token => {console.log(token)});
-//   }
-// })
+        }
+        console.log("end");
+    });
+  })();
+    }
+    //registerForPushNotificationsAsync().then(token => {console.log(token)});
+  }
+})
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -315,13 +317,11 @@ const LoginScreen = ({ route}) => {
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
           setNotification(notification);
           setTimeOfLastPush(new Date().getDate());
-          //console.log(timeOfLastPush);
         });
     
         // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
           console.log(response["title"] );
-          //const navigation = useNavigation();
           if (response["title"] === "Digital-receipt Credits") {
             navigation.navigate('Store Credits');
           } else {
@@ -370,8 +370,7 @@ const LoginScreen = ({ route}) => {
             },
         }).then(res => res.text()).then(data => {
             console.log("data: ", data);
-            // let response = Object.values(data)[0];
-            // console.log("res: ",response);
+
             if (data=="the user name or password incorrect"){
                 console.log("the user name or password incorrect");
                 setError(data);
@@ -384,29 +383,20 @@ const LoginScreen = ({ route}) => {
                   body:JSON.stringify({"user_key": data.toString()}),
                   headers: {
                       'content-type': 'aplication/json',
-                      //"user_key": data.toString()
-                      //"user_key": "33310727751848c19a8877140d3ce3ac"
-                      //"user_key": "33310727751848c19a8877140d3ce3ac"
                   },
               }).then(res => res.text()).then(data1 => {
                   console.log("data: ", data1);
-                  // let response = Object.values(data)[0];
-                  // console.log("res: ",response);
                   if (data1=="false"){
                       console.log("false");
                       setModalVisible(false)
                       navigation.navigate('Home');
-                      //setError(data);
                   }
                   else {
                     setModalVisible(true)
-                      // let id = Object.values(data)[0];
                   }
-                  //console.log("end");
               });
            
             }
-            console.log("end");
         });
     }
     async function registerForPushNotificationsAsync() {
@@ -423,7 +413,6 @@ const LoginScreen = ({ route}) => {
           return;
         }
         token = (await Notifications.getExpoPushTokenAsync()).data;
-        //console.log(token);
       } else {
         alert('Must use physical device for Push Notifications');
       }
@@ -493,28 +482,19 @@ const LoginScreen = ({ route}) => {
                     style={styles.input2}
                     />
                      <View>
-                        {/* <Button style={styles.button}  title="Login" onPress={()=>sendDetails()}/> */}
-                     
-                     {/* <Pressable style={styles.button1} onPress={()=>sendDetails()}>
-                         <Text style={styles.text1}>Login</Text>
-                    </Pressable> */}
+
                     <RectButton marginTop={10} minWidth={170} fontSize={SIZES.large} {...SHADOWS.light} buttonText={"Sign in"} handlePress={()=>sendDetails()}/>
 
                     </View>
                     <View>
-                    {/* <Pressable style={styles.button1} onPress={()=>navigation.navigate('SMSLogin')}>
-                         <Text style={styles.text1}>Login via SMS</Text>
-                    </Pressable> */}
 
                     <RectButton marginTop={10} minWidth={170} fontSize={SIZES.large} {...SHADOWS.light} buttonText={"Login via SMS"} handlePress={()=>navigation.navigate('SMSLogin')}/>
-                     {/* <Button style={{marginVertical: 8}} title="Login via SMS" onPress={()=>navigation.navigate('SMSLogin')}/> */}
                      </View>
 
                      <View style={{marginVertical: 8}}>
                      <Pressable style={styles.button} onPress={()=>navigation.navigate('Sign Up')}>
                          <Text style={styles.text}>Don't have account? Sign up</Text>
                     </Pressable> 
-                     {/* <Button style={{marginVertical: 8}} title="Don't have account? Sign up" onPress={()=>navigation.navigate('Sign Up')}/> */}
                      </View>
 
                 </View>
@@ -631,7 +611,7 @@ container: {
     backgroundColor: "#F194FF",
   },
   buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: COLORS.primary,
   },
   textStyle: {
     color: "white",
@@ -639,6 +619,7 @@ container: {
     textAlign: "center"
   },
   modalText: {
+    fontSize: 18,
     marginBottom: 15,
     textAlign: "center"
   }

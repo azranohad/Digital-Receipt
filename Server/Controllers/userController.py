@@ -29,7 +29,7 @@ def create_user():
 @users_api.route('/update_user', methods=['POST'])
 def update_user_data():
     user_key = request.get_json(force=True)[server_consts.USER_KEY]
-    user_repository.update_user(user_key, request.get_json(force=True))
+    return user_repository.update_user(user_key, request.get_json(force=True))
 
 
 # unique identifier phone_number/mail_address/ID

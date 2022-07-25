@@ -25,6 +25,7 @@ class serverConsts:
     IMAGE_NAME = 'image_name'
     MARKET = 'market'
     ID = '_id'
+    JPG = '.jpg'
     EXPIRATION_DATE = "expiration_date"
     NAME_FOR_CLIENT = "name_for_client"
     FROM_DATE = "from_date"
