@@ -19,7 +19,7 @@ const MyStoreCreditsScreen = ({route}) => {
   const [JsonData, setJsonData] = useState([]);
   const [original, setOriginal] = useState([]);
   const [stores, setStores] = useState([]);
-  const [isLoading, setisLoading] = useState(false);
+  const [isLoading, setisLoading] = useState(true);
 
 
   useFocusEffect(
@@ -68,6 +68,8 @@ const MyStoreCreditsScreen = ({route}) => {
         },
     }).then(res => res.json()).then(data => {
       setStores(data);
+   setisLoading(false);
+
 
 
   });
@@ -98,7 +100,6 @@ const getAllCredits = (val)=> {
   }).then(res => res.json()).then(data => {
    setOriginal(data);
    setJsonData(data);
-   setisLoading(false);
 });
 }
 

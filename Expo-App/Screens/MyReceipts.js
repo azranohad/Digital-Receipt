@@ -68,6 +68,8 @@ const MyReceiptsScreen = ({navigation, route}) => {
         },
     }).then(res => res.json()).then(data => {
       setStores(data);
+    setisLoading(false);    
+
   });
 }
 
@@ -96,7 +98,6 @@ const getAllReceipts = (val)=> {
       {
     setOriginal(data);
     setJsonData(data);
-    setisLoading(false);    
 });
 }
 

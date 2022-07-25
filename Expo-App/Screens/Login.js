@@ -240,7 +240,7 @@ const LoginScreen = ({ route}) => {
     const [timeOfLastPush, setTimeOfLastPush] = useState(0);
     const notificationListener = useRef();
     const responseListener = useRef();
-    const url = "192.168.0.111";
+    const url = "192.168.43.254";
 
     const storeData = async (value) => {
         try {
