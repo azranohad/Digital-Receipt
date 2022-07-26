@@ -22,6 +22,7 @@ import StoreCreditSoonExpire from './Screens/StoreCreditSoonExpires';
 import {DefaultTheme } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import {LogBox} from "react-native";
+import { COLORS } from './constants';
 
 LogBox.ignoreLogs([
 "exported from 'deprecated-react-native-prop-types'.",
@@ -54,7 +55,7 @@ export default function App() {
   
   return (
     <NavigationContainer theme={theme} >
-      <Drawer.Navigator backBehavior="order" initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true, drawerItemStyle:{borderBottomWidth: 0.5}, drawerLabelStyle:{fontStyle:'italic', fontSize:16}}}>
+      <Drawer.Navigator backBehavior="order" initialRouteName = "Login" initialParams={{url: url}} screenOptions={{headerTitle:"", headerTransparent:true, drawerItemStyle:{borderBottomWidth: 0.5}, drawerLabelStyle:{fontStyle:'italic', fontSize:16},drawerActiveTintColor:COLORS.primary, drawerActiveBackgroundColor:"#E6E6FA"}}>
       <Drawer.Screen name="Login" component={LoginScreen} initialParams={{url: url}} options={{drawerItemStyle: {height:0}}}/>
       <Drawer.Screen name="Home" component={ProductsScreen}  initialParams={{url: url}}/>
 
