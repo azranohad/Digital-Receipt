@@ -44,7 +44,7 @@ class creditRepository:
             }, server_consts.USER_KEY: user_key})
         credit_list = {}
         for record in cursor:
-            credit_list[record[server_consts.ID]] = record
+            credit_list[record[server_consts._ID]] = record
         return credit_list
 
     # function generic search
@@ -63,14 +63,14 @@ class creditRepository:
         cursor = collection.find({key: value, server_consts.USER_KEY: user_key})
         credit_list = {}
         for record in cursor:
-            credit_list[record[server_consts.ID]] = record
+            credit_list[record[server_consts._ID]] = record
         return credit_list
     
     
     def list_to_dict(self, list):
         dict = {}
         for item in list:
-            dict[item.get(server_consts.ID)] = item
+            dict[item.get(server_consts._ID)] = item
         return dict
     
     
@@ -80,7 +80,7 @@ class creditRepository:
 
         credit_dict = {}
         for record in cursor_sort:
-            credit_dict[record[server_consts.ID]] = record
+            credit_dict[record[server_consts._ID]] = record
         try:
             return self.list_to_dict(sorted(credit_dict.values(), key=lambda x: x[server_consts.DATE_OF_CREDIT], reverse=True))
         except:
@@ -101,13 +101,13 @@ class creditRepository:
         for item in request:
             dict_update_credit[item] = request[item]
 
-        dict_update_credit.pop(server_consts.ID)
+        dict_update_credit.pop(server_consts._ID)
         dict_update_credit.pop(server_consts.USER_KEY)
         return self.update_credit_data_impl(user_key, _id, dict_update_credit)
 
     def update_credit_data_impl(self, user_key, _id, dict_update_credit):
-        result = self.get_collection().update({server_consts.USER_KEY: user_key, server_consts.ID: _id}, {'$set': dict_update_credit})
-        is_updated_existing = result['updatedExisting']
+        result = self.get_collection().update({server_consts.USER_KEY: user_key, server_consts._ID: _id}, {'$set': dict_update_credit})
+        is_updated_existing = result[server_consts.UPDATED_EXISTING]
         if is_updated_existing:
             self.logger.print_info_message(
                 "creditRepository | details (" + str(dict_update_credit.keys()) + ") of receeipt: " + str(
@@ -119,7 +119,7 @@ class creditRepository:
         return str(is_updated_existing)
 
     def delete_credit(self, user_key, credit_id):
-        result = self.get_collection().delete_one({server_consts.ID: credit_id, server_consts.USER_KEY: user_key})
+        result = self.get_collection().delete_one({server_consts._ID: credit_id, server_consts.USER_KEY: user_key})
         status = result.acknowledged
         if status:
             self.logger.print_event("creditRepository | credit: " + credit_id + " deleted from data base")

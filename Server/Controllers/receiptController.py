@@ -70,7 +70,7 @@ def get_receipt_by_name():
 @receipt_api.route('/get_image_receipt', methods=['GET'])
 def get_image_receipt():
     user_key = request.headers[server_consts.USER_KEY]
-    _id = request.headers[server_consts.ID]
+    _id = request.headers[server_consts._ID]
     logger.print_api_message("receiptController | received get_image_receipt request | user: " + user_key + "| _id:" + _id)
 
     return server_local_repository.get_scan_image(user_key, _id)
@@ -79,14 +79,14 @@ def get_image_receipt():
 @receipt_api.route('/get_digital_receipt', methods=['GET'])
 def get_digital_receipt():
     user_key = request.headers[server_consts.USER_KEY]
-    _id = request.headers[server_consts.ID]
+    _id = request.headers[server_consts._ID]
     logger.print_api_message("receiptController | received get_digital_receipt request | user: " + user_key + "| _id:" + _id)
 
-    return receipt_repository.get_receipt_by_value(user_key, server_consts.ID, _id)
+    return receipt_repository.get_receipt_by_value(user_key, server_consts._ID, _id)
 
 @receipt_api.route('/update_receipt_data', methods=['PATCH'])
 def update_receipt_data():
-    _id = request.get_json(force=True)[server_consts.ID]
+    _id = request.get_json(force=True)[server_consts._ID]
     user_key = request.get_json(force=True)[server_consts.USER_KEY]
     logger.print_api_message("receiptController | received update_receipt_data request | user: " + user_key + "| _id:" + _id)
 
@@ -94,7 +94,7 @@ def update_receipt_data():
 
 @receipt_api.route('/delete_receipt', methods=['DELETE'])
 def delete_receipt():
-    _id = request.get_json(force=True)[server_consts.ID]
+    _id = request.get_json(force=True)[server_consts._ID]
     user_key = request.get_json(force=True)[server_consts.USER_KEY]
     logger.print_api_message("receiptController | received delete_receipt request | user: " + user_key + "| _id:" + _id)
 

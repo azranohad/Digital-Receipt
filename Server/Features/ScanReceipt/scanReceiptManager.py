@@ -45,7 +45,7 @@ class scanReceiptManager:
 
         self.parse_data_from_receipt_image(raw_string_receipt, raw_data_receipt, receipt_data_object)
         self.receipt_repository.insert_receipt(user_key, self.parse_receipt_data_service.receipt_data_to_db(user_key, image_key, receipt_data_object))
-        self.server_local_repository.delete_scan_image(user_key, image_key)
+        self.server_local_repository.delete_scan_image(user_key, path_image)
         return self.parse_receipt_data_service.receipt_data_to_app(image_key, receipt_data_object)
 
 

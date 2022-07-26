@@ -46,8 +46,7 @@ class serverLocalRepository:
         return response
 
     def delete_scan_image(self, user_key, image_name):
-        path_image = os.path.join(self.get_user_folder_scans(user_key), image_name)
-        os.remove(path_image)
+        os.remove(image_name)
         self.logger.print_event("serverLocalRepository | delete scan image for user:" + user_key)
         return True
 
