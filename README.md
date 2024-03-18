@@ -3,6 +3,11 @@
 System for a digital receipt
 Recommendation system according to the consumption habits
 
+Architecture & Technologies 
+![image](https://github.com/azranohad/Digital-Receipt/assets/73065684/868682fb-1d4f-49cc-b904-664abf2709d7)
+
+
+
 
 Video 1 - Login user name and password, Notification – expiration date to credit store, Scan receipt, Show receipts, Show recommended items, Open item page in web store
 
